@@ -1,0 +1,43 @@
+#   Autoconf script
+#
+#
+#   This program is free software; you can redistribute it and/or
+#   modify it under the terms of the GNU General Public License
+#   as published by the Free Software Foundation; either version
+#   2 of the License, or (at your option) any later version.
+#
+AC_REVISION($Id: configure.in,v 1.1 2010-01-13 10:47:16 eric Exp $)
+dnl
+dnl Process this file with autoconf to produce a configure script.
+dnl
+AC_PREREQ(2.13)
+AC_INIT(./Makefile.in)
+AC_SUBST(VERSION)
+VERSION=`cat VERSION`
+AC_SUBST(RELEASE)
+RELEASE=`cat RELEASE`
+AC_SUBST(PACKAGE)
+PACKAGE=dynacase-httpapi-v1
+AC_SUBST(APPNAME)
+APPNAME=HTTPAPI_V1
+ac_default_prefix=/var/www/dynacase/dynacase
+AC_SUBST(PUBRULE)
+PUBRULE="$(pwd)/buildTools"
+AC_ARG_WITH(pubrule, [  --with-pubrule=dir	Path to PubRule], PUBRULE=$withval)
+if test -z ${PUBRULE}; then
+    PUBRULE=`pwd`
+fi
+if test -f $PUBRULE/PubRule; then
+    AC_MSG_NOTICE([PubRule located at $PUBRULE])
+else
+    AC_MSG_ERROR([Could not find PubRule])
+fi
+
+for file in `find . \( -name '*.in' -a -not -name configure.in \) -print`; do
+    AC_CONFIG_FILES(${file%.in})
+done
+
+AC_SUBST(LOCAL_BUILD_RULE)
+LOCAL_BUILD_RULE="$(pwd)"
+
+AC_OUTPUT
