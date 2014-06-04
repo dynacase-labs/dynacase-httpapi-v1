@@ -11,7 +11,7 @@ GZIP_ENV = --best
 
 export pubdir utildir appname applib PACKAGE localBuildRule
 
-SUBDIR= locale HTTPAPI_V1 Test
+SUBDIR= locale HTTPAPI_V1 
 
 include $(utildir)/PubRule
 include $(localBuildRule)/localBuildRule
