@@ -1,0 +1,31 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DOCUMENT\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-28 17:52+0200\n"
+"PO-Revision-Date: 2013-05-10 11:59+0200\n"
+"Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
+"Language-Team: English <distrib@anakeen.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Access to http api getter"
+msgstr ""
+
+msgid "Access to http api setter"
+msgstr ""
+
+msgid "User must be authenticate"
+msgstr ""
+
+msgid "maintenance in progress"
+msgstr ""
+
+msgid "not authenticated:ERRNO_BUG_639"
+msgstr ""
+
+msgid "toto"
+msgstr ""

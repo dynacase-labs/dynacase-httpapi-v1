@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<module name="@PACKAGE@" disabled="no" version="@VERSION@" release="@RELEASE@">
+
+    <description>@PACKAGE@</description>
+
+    <requires>
+        <module comp='ge' version='3.3.0' name='dynacase-core'/>
+    </requires>
+
+    <post-install>
+        <process command="programs/record_application HTTPAPI_V1" />
+
+        <process command="programs/update_catalog" />
+    </post-install>
+
+    <post-upgrade>
+        <process command="programs/record_application HTTPAPI_V1" />
+        <process command="programs/update_catalog" />
+    </post-upgrade>
+
+</module>

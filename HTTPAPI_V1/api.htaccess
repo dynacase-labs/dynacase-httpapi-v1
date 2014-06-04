@@ -1,0 +1,13 @@
+<FilesMatch "^.+$">
+  Order Allow,Deny
+  Allow from All
+</FilesMatch>
+
+RewriteEngine On
+
+
+RewriteRule ^([a-z]+)/?$ v1.php?resource=$1 [PT,L,QSA]
+RewriteRule ^([a-z]+)/([a-zA-Z0-9_]+)(\.[a-z]+)?/?$ v1.php?resource=$1&id=$2&ext=$3 [PT,L,QSA]
+
+
+RewriteRule ^(families)/([a-z]+)/([a-zA-Z0-9_]+)(\.[a-z]+)?$ v1.php?resource=$1&subresource=$2&id=$3&ext=$4 [PT,L,QSA]
