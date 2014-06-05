@@ -17,10 +17,10 @@ function jsonFatalShutdown()
         if ($error["type"] == E_ERROR) {
             ob_clean();
             
-            $return = new Dcp\HttpApi\RecordReturn();
+            $return = new Dcp\HttpApi\V1\RecordReturn();
             $return->setHttpStatusCode(500, "Dynacase Fatal Error");
             $return->code = $error["type"];
-            $message = new Dcp\HttpApi\RecordReturnMessage();
+            $message = new Dcp\HttpApi\V1\RecordReturnMessage();
             $message->contentText = $error["message"];
             $message->type = $message::ERROR;
             $return->addMessage($message);
@@ -33,9 +33,9 @@ register_shutdown_function('jsonFatalShutdown');
 
 if (file_exists('../maintenance.lock')) {
     
-    $return = new Dcp\HttpApi\RecordReturn();
+    $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(503, "Service Unavailable");
-    $message = new Dcp\HttpApi\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     $message->contentText = _("maintenance in progress");
     $message->type = $message::ERROR;
     $return->addMessage($message);
@@ -50,9 +50,9 @@ if ($authtype == 'apache') {
     // Apache has already handled the authentication
     global $_SERVER;
     if ($_SERVER['PHP_AUTH_USER'] == "") {
-        $return = new Dcp\HttpApi\RecordReturn();
+        $return = new Dcp\HttpApi\V1\RecordReturn();
         $return->setHttpStatusCode(403, "Forbidden");
-        $message = new Dcp\HttpApi\RecordReturnMessage();
+        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
         $message->contentText = _("User must be authenticate");
         $message->type = $message::ERROR;
         $return->addMessage($message);
@@ -86,9 +86,9 @@ if ($authtype == 'apache') {
 }
 // First control
 if (empty($_SERVER['PHP_AUTH_USER'])) {
-    $return = new Dcp\HttpApi\RecordReturn();
+    $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(403, "Forbidden");
-    $message = new Dcp\HttpApi\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     $message->contentText = _("User must be authenticated");
     $message->type = $message::ERROR;
     $return->addMessage($message);
@@ -100,15 +100,15 @@ try {
     WhatInitialisation();
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
-    $data = Dcp\HttpApi\apiRouter::execute($messages);
-    $return = new Dcp\HttpApi\RecordReturn();
+    $data = Dcp\HttpApi\V1\apiRouter::execute($messages);
+    $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setData($data);
     foreach ($messages as $message) {
         $return->addMessage($message);
     }
     $warnings = $action->parent->getWarningMsg();
     foreach ($warnings as $warning) {
-        $message = new Dcp\HttpApi\RecordReturnMessage();
+        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
         $message->contentText = $warning;
         $message->type = $message::WARNING;
         $return->addMessage($message);
@@ -116,7 +116,7 @@ try {
     $action->parent->clearWarningMsg();
     $warnings = $action->parent->getLogMsg();
     foreach ($warnings as $warning) {
-        $message = new Dcp\HttpApi\RecordReturnMessage();
+        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
         $message->contentText = $warning;
         $message->type = $message::NOTICE;
         $return->addMessage($message);
@@ -125,14 +125,14 @@ try {
     
     $return->send();
 }
-catch(\Dcp\HttpApi\Exception $e) {
+catch(\Dcp\HttpApi\V1\Exception $e) {
     
-    $return = new Dcp\HttpApi\RecordReturn();
+    $return = new Dcp\HttpApi\V1\RecordReturn();
     
     $return->setHttpStatusCode($e->getHttpStatus() , $e->getHttpMessage());
     
     $return->success = false;
-    $message = new Dcp\HttpApi\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     $message->contentText = $e->getDcpMessage();
     $message->type = $message::ERROR;
     $message->code = $e->getDcpCode();
@@ -141,10 +141,10 @@ catch(\Dcp\HttpApi\Exception $e) {
     $return->send();
 }
 catch(\Dcp\Exception $e) {
-    $return = new Dcp\HttpApi\RecordReturn();
+    $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
-    $message = new Dcp\HttpApi\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     $message->contentText = $e->getDcpMessage();
     $message->type = $message::ERROR;
     $message->code = $e->getDcpCode();
@@ -152,10 +152,10 @@ catch(\Dcp\Exception $e) {
     $return->send();
 }
 catch(\Exception $e) {
-    $return = new Dcp\HttpApi\RecordReturn();
+    $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
-    $message = new Dcp\HttpApi\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     $message->contentText = $e->getMessage();
     $message->type = $message::ERROR;
     $message->code = "API0001";

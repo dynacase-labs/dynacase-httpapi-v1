@@ -22,6 +22,10 @@ namespace {
          */
         const API0003 = 'Content type "%s" not supported';
         /**
+         * @errorCode in case ao incorrect url
+         */
+        const API0004 = 'No ressource detected';
+        /**
          * @errorCode Url no use a implemted ressource
          */
         const API0100 = 'Undefined Resource';
@@ -102,7 +106,7 @@ namespace {
         }
     }
 }
-namespace Dcp\HttpApi {
+namespace Dcp\HttpApi\V1 {
     class Exception extends \Dcp\Exception
     {
         

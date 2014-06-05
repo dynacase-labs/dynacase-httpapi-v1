@@ -5,7 +5,7 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi;
+namespace Dcp\HttpApi\V1;
 
 abstract class Crud
 {
@@ -14,14 +14,14 @@ abstract class Crud
      */
     protected $messages = array();
     /**
-     * @param \Dcp\HttpApi\RecordReturnMessage $message
+     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
      */
     public function addMessage(RecordReturnMessage $message)
     {
         $this->messages[] = $message;
     }
     /**
-     * @return \Dcp\HttpApi\RecordReturnMessage[]
+     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
      */
     public function getMessages()
     {

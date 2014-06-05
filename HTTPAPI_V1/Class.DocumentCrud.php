@@ -5,7 +5,7 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi;
+namespace Dcp\HttpApi\V1;
 
 class DocumentCrud extends Crud
 {

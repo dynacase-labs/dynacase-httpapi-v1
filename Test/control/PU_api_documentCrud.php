@@ -38,7 +38,7 @@ class TestDocumentCrud extends \Dcp\Pu\TestCaseDcpCommonFamily
         $doc = \Dcp\DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         
-        $dc = new \Dcp\HttpApi\DocumentCrud();
+        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
         if ($fields !== null) {
             $dc->setDefaultFields($fields);
         }
