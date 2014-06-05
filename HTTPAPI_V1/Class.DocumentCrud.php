@@ -15,6 +15,8 @@ class DocumentCrud extends Crud
     protected $_document = null;
     
     protected $defaultFields = "document.properties,document.attributes";
+    protected $returnFields = null;
+    protected $valueRender = array();
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -94,6 +96,13 @@ class DocumentCrud extends Crud
             throw $e;
         }
     }
+    
+    public function setDefaultFields($fields)
+    {
+        $this->returnFields = null;
+        $this->defaultFields = $fields;
+        return $this;
+    }
     /**
      * Get ressource
      * @param string $resourceId Resource identifier
@@ -102,6 +111,7 @@ class DocumentCrud extends Crud
      */
     public function get($resourceId)
     {
+        
         $this->setDocument($resourceId);
         
         $err = $this->_document->control("view");
@@ -178,6 +188,7 @@ class DocumentCrud extends Crud
             "title",
             "state",
             "fromname",
+            "fromtitle",
             "id",
             "initid",
             "postitid",
@@ -239,6 +250,15 @@ class DocumentCrud extends Crud
                         $props[$propId] = $this->_document->getTitle();
                         break;
 
+                    case "fromtitle":
+                        $famTitle = '';
+                        if ($this->_document->fromid > 0) {
+                            $fam = $this->_document->getFamilyDocument();
+                            $famTitle = $fam->getTitle();
+                        }
+                        $props[$propId] = $famTitle;
+                        break;
+
                     case "readonly":
                         if ($this->_document->id > 0) {
                             $props[$propId] = ($this->_document->canEdit() != "");
@@ -270,13 +290,12 @@ class DocumentCrud extends Crud
     
     protected function _getAttributes()
     {
-        static $render = array();
         
         if ($this->_document->id == 0) {
             return array();
         }
-        if ($render) {
-            return $render[0]["attributes"];
+        if ($this->valueRender) {
+            return $this->valueRender[0]["attributes"];
         }
         $dl = new \DocumentList();
         $dl->addDocumentIdentifiers(array(
@@ -291,8 +310,8 @@ class DocumentCrud extends Crud
                 $fmtCollection->addAttribute($aid);
             }
         }
-        $render = $fmtCollection->render();
-        return ($render[0]["attributes"]);
+        $this->valueRender = $fmtCollection->render();
+        return ($this->valueRender[0]["attributes"]);
     }
     
     protected function getUri()
@@ -309,17 +328,15 @@ class DocumentCrud extends Crud
     
     protected function getFields()
     {
-        static $returnFields = null;
-        
-        if ($returnFields === null) {
+        if ($this->returnFields === null) {
             if (!empty($_GET["fields"])) {
                 $fields = $_GET["fields"];
             } else {
                 $fields = $this->defaultFields;
             }
-            $returnFields = array_map("trim", explode(",", $fields));
+            $this->returnFields = array_map("trim", explode(",", $fields));
         }
-        return $returnFields;
+        return $this->returnFields;
     }
     
     protected function hasFields($fieldId, $subField = '')
@@ -342,7 +359,8 @@ class DocumentCrud extends Crud
         return false;
     }
     /**
-     *  Key for mustache
+     * Get document data
+     * @throws Exception
      * @return string
      */
     protected function documentData()
@@ -352,17 +370,27 @@ class DocumentCrud extends Crud
                 "uri" => $this->getUri() ,
             )
         );
-        
+        $correctField = false;
         if ($this->hasFields("document.properties", "document.property")) {
+            $correctField = true;
             $conf["document"]["properties"] = $this->_getProperties();
         }
         
         if ($this->hasFields("document.attributes", "document.attribute")) {
+            $correctField = true;
             $conf["document"]["attributes"] = $this->_getAttributes();
         }
         
         if ($this->hasFields("family.structure")) {
+            $correctField = true;
             $conf["family"]["structure"] = $this->_getDocumentStructure();
+        }
+        
+        if (!$correctField) {
+            $fields = $this->getFields();
+            if ($fields) {
+                throw new Exception("API0214", implode(",", $fields));
+            }
         }
         return $conf;
     }
