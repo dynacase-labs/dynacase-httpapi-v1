@@ -20,7 +20,13 @@ include $(localBuildRule)/localBuildRule
 # TRANSCSV += $(shell find ./Families -name "STRUCT_*.csv")
 
 publish-test:
-	make -C Test publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=DCPTEST
+	make -C Test publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=APITEST
+
+webinst-test:
+	make -C Test webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=APITEST
+	mv Test/*webinst .
+
+webinst: webinst-test
 
 clean:
 	/bin/rm -f *.*~ config.* Makefile configure $(appname)_init.php info.xml $(PACKAGE)-*webinst

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Example 1: get Document</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+    <script type="text/javascript" src="../../lib/jquery/jquery.js"></script>
+
+    <script>if (!("console" in window)) {
+        window.console = {'log': function (s) {
+        }}
+    }</script>
+
+    <script>
+
+        $(document).ready(function () {
+
+                    //   var baseurl = window.location.protocol + '//' + window.location.hostname + window.location.pathname.substr(0, window.location.pathname.indexOf('/APITEST/')) + '/';
+
+                    var baseurl = '../../';
+                    $("#createRest").on("click", function () {
+                        $.ajax({
+                            type: "GET",
+                            dataType: "json",
+                            contentType: 'application/x-www-form-urlencoded',
+                            url: baseurl + "api/families/" + $('#docid').val() + ".json",
+                            data: {
+                                ba_title: $('#title').val()
+                            }
+                        }).done(function (data) {
+
+                            $('#result').text(JSON.stringify(data, undefined, 4));
+                            $('#error').text('');
+                            $('#errorText').text('');
+                        }).fail(function (data) {
+                            data.responseJSON = JSON.parse(data.responseText);
+                            $('#error').text(JSON.stringify(data, undefined, 4));
+                            $('#errorText').text(data.responseJSON.messages[0].contentText);
+                            $('#result').text('');
+                        })
+
+                        ;
+                    });
+
+                }
+        );
+
+
+    </script>
+</head>
+
+<body>
+<h1>Get Document</h1>
+
+
+<label for="docid"></label><input id="docid" value="9"/>
+<input id="createRest" type="button" value="Get"/>
+
+<hr/>
+
+
+<pre id="result">RESULT HERE</pre>
+
+<div class="error">
+    <p id="errorText"></p>
+    <pre id="error">ERROR HERE</pre>
+</div>
+</body>
+</html>
