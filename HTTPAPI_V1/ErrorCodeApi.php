@@ -90,6 +90,10 @@ namespace {
          */
         const API0213 = 'Update family "%s" is not possible';
         /**
+         * @errorCode The fieds partial response indicate a wrong key
+         */
+        const API0214 = 'Document fields "%s" not known';
+        /**
          * for beautifier
          */
         private function _bo()
