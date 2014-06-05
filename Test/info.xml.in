@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<module name="@PACKAGE@-test" disabled="no" version="@VERSION@" release="@RELEASE@"
+        basecomponent="no">
+    <description>Test case for dynacase-httpapi-v1.</description>
+
+
+    <requires>
+        <module name="@PACKAGE@"/>
+        <module name="dynacase-core-test"/>
+    </requires>
+
+    <pre-install>
+       
+    </pre-install>
+
+    <post-install>
+        <process command="programs/update_catalog"/>
+    </post-install>
+
+    <pre-upgrade>
+        <check type="syscommand" command="xmllint">
+            <label lang="en">Check "xmllint". To check xml files</label>
+        </check>
+    </pre-upgrade>
+
+    <post-upgrade>
+        <process command="programs/update_catalog"/>
+    </post-upgrade>
+
+</module>

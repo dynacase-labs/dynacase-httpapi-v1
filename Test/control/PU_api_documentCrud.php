@@ -12,9 +12,9 @@ namespace Dcp\Pu\Api;
  * @package Dcp\Pu
  */
 
-require_once 'PU_testcase_dcp_commonfamily.php';
+require_once 'APITEST/PU_TestCaseApi.php';
 
-class TestDocumentCrud extends \Dcp\Pu\TestCaseDcpCommonFamily
+class TestDocumentCrud extends TestCaseApi
 {
     const familyName = "TSTAPI_DOCCRUD";
     /**
@@ -29,11 +29,12 @@ class TestDocumentCrud extends \Dcp\Pu\TestCaseDcpCommonFamily
         );
     }
     /**
-     * @param $name
-     * @param $expectedValues
+     * @param string $name
+     * @param string $fields
+     * @param array $expectedValues
      * @dataProvider datagetDocument
      */
-    public function testGetDocument($name, $fields, $expectedValues)
+    public function testGetDocument($name, $fields, array $expectedValues)
     {
         $doc = \Dcp\DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
@@ -72,7 +73,66 @@ class TestDocumentCrud extends \Dcp\Pu\TestCaseDcpCommonFamily
             $this->assertEquals($expectValue, $cdata, sprintf("wrong value for $dkey :%s ", print_r($data, true)));
         }
     }
+    /**
+     * @param string $name
+     * @param array $setValues
+     * @internal param array $expectedValues
+     * @dataProvider dataSetDocument
+     */
+    public function testSetDocument($name, array $setValues)
+    {
+        $doc = \Dcp\DocManager::getDocument($name);
+        $this->assertTrue($doc !== null, "Document $name not found");
+        
+        $this->simulatePostRecord($setValues, "POST");
+        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        
+        $data = $dc->update($name);
+        
+        foreach ($setValues as $aid => $value) {
+            $this->assertFalse(empty($data["document"]["attributes"][$aid]) , sprintf("Undefined %s : Ss", $aid, print_r($data, true)));
+            if (is_array($value)) {
+                $values = $data["document"]["attributes"][$aid];
+                foreach ($values as $k => $singleValue) {
+                    $this->assertEquals($value[$k], $singleValue->value);
+                }
+            } else {
+                $this->assertEquals($value, $data["document"]["attributes"][$aid]->value);
+            }
+        }
+    }
     
+    protected function simulatePostRecord(array $values, $method)
+    {
+        $_SERVER['REQUEST_METHOD'] = $method;
+        $_SERVER["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
+        foreach ($values as $k => $v) {
+            $_POST[$k] = $v;
+        }
+    }
+    public function dataSetDocument()
+    {
+        return array(
+            array(
+                "TST_APIB1",
+                array(
+                    "tst_title" => "test n°1",
+                    "tst_number" => 56
+                )
+            ) ,
+            array(
+                "TST_APIB2",
+                array(
+                    "tst_title" => "test n°2",
+                    "tst_number" => 678,
+                    "tst_text" => array(
+                        "Un",
+                        "Deux"
+                    )
+                )
+            )
+        );
+    }
     public function datagetDocument()
     {
         return array(
@@ -156,7 +216,7 @@ class TestDocumentCrud extends \Dcp\Pu\TestCaseDcpCommonFamily
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.id" => "tst_number",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.type" => "int",
                 )
-            ) ,
+            )
         );
     }
 }
