@@ -17,6 +17,7 @@ class DocumentCrud extends Crud
     protected $defaultFields = "document.properties,document.attributes";
     protected $returnFields = null;
     protected $valueRender = array();
+    protected $propRender = array();
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -187,6 +188,8 @@ class DocumentCrud extends Crud
         $defaultProperties = array(
             "title",
             "state",
+            "name",
+            "icon",
             "fromname",
             "fromtitle",
             "id",
@@ -218,10 +221,9 @@ class DocumentCrud extends Crud
     
     protected function _getProperties()
     {
-        static $props = array();
         
-        if ($props) {
-            return $props;
+        if ($this->propRender) {
+            return $this->propRender;
         }
         
         if ($this->_document) {
@@ -239,15 +241,15 @@ class DocumentCrud extends Crud
                     case "fromid":
                     case "owner":
                     case "id":
-                        $props[$propId] = intval($this->_document->getPropertyValue($propId));
+                        $this->propRender[$propId] = intval($this->_document->getPropertyValue($propId));
                         break;
 
                     case "icon":
-                        $props[$propId] = $this->_document->getIcon();
+                        $this->propRender[$propId] = $this->_document->getIcon();
                         break;
 
                     case "title":
-                        $props[$propId] = $this->_document->getTitle();
+                        $this->propRender[$propId] = $this->_document->getTitle();
                         break;
 
                     case "fromtitle":
@@ -256,36 +258,36 @@ class DocumentCrud extends Crud
                             $fam = $this->_document->getFamilyDocument();
                             $famTitle = $fam->getTitle();
                         }
-                        $props[$propId] = $famTitle;
+                        $this->propRender[$propId] = $famTitle;
                         break;
 
                     case "readonly":
                         if ($this->_document->id > 0) {
-                            $props[$propId] = ($this->_document->canEdit() != "");
+                            $this->propRender[$propId] = ($this->_document->canEdit() != "");
                         }
                         break;
 
                     case "revdate":
-                        $props[$propId] = strftime("%Y-%m-%d %H:%M:%S", $this->_document->revdate);
+                        $this->propRender[$propId] = strftime("%Y-%m-%d %H:%M:%S", $this->_document->revdate);
                         break;
 
                     case "labelstate":
-                        $props[$propId] = $this->_document->state ? _($this->_document->state) : '';
+                        $this->propRender[$propId] = $this->_document->state ? _($this->_document->state) : '';
                         break;
 
                     case "postitid":
-                        $props[$propId] = $this->_document->rawValueToArray($this->_document->getPropertyValue($propId));
+                        $this->propRender[$propId] = $this->_document->rawValueToArray($this->_document->getPropertyValue($propId));
                         break;
 
                     default:
-                        $props[$propId] = $this->_document->getPropertyValue($propId);
-                        if ($props[$propId] === false) {
+                        $this->propRender[$propId] = $this->_document->getPropertyValue($propId);
+                        if ($this->propRender[$propId] === false) {
                             throw new Exception("API0202", $propId);
                         }
                 }
             }
         }
-        return $props;
+        return $this->propRender;
     }
     
     protected function _getAttributes()
@@ -334,7 +336,11 @@ class DocumentCrud extends Crud
             } else {
                 $fields = $this->defaultFields;
             }
-            $this->returnFields = array_map("trim", explode(",", $fields));
+            if ($fields) {
+                $this->returnFields = array_map("trim", explode(",", $fields));
+            } else {
+                $this->returnFields = array();
+            }
         }
         return $this->returnFields;
     }
@@ -389,6 +395,7 @@ class DocumentCrud extends Crud
         if (!$correctField) {
             $fields = $this->getFields();
             if ($fields) {
+                print_r2($fields);
                 throw new Exception("API0214", implode(",", $fields));
             }
         }
