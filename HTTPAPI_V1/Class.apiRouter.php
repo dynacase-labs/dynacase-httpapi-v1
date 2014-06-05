@@ -5,14 +5,16 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi;
+namespace Dcp\HttpApi\V1;
 
 class apiRouter
 {
     
     protected static function getResource()
     {
-        
+        if (empty($_GET["resource"])) {
+            throw new Exception("API0100");
+        }
         $resource = $_GET["resource"];
         /* if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             parse_str(file_get_contents("php://input") , $_POST);

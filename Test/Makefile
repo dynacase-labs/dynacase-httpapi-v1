@@ -3,5 +3,5 @@
 #
 # ============================================
 
-SUBDIR= control input 
+SUBDIR= control input examples
 include $(utildir)/PubRule
