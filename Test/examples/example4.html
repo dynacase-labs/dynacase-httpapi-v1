@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Example 1: get Document</title>
+    <title>Example 1: delete Document</title>
     <style>
         .error {
             color: red;
@@ -22,9 +22,9 @@
                     //   var baseurl = window.location.protocol + '//' + window.location.hostname + window.location.pathname.substr(0, window.location.pathname.indexOf('/APITEST/')) + '/';
 
                     var baseurl = '../../';
-                    $("#createRest").on("click", function () {
+                    $("#deleteRest").on("click", function () {
                         $.ajax({
-                            type: "GET",
+                            type: "DELETE",
                             dataType: "json",
                             url: baseurl + "api/documents/" + $('#docid').val() + ".json",
                             data: {
@@ -53,11 +53,11 @@
 </head>
 
 <body>
-<h1>Get Document</h1>
+<h1>Delete Document</h1>
 
 
 <label for="docid"></label><input id="docid" value="9"/>
-<input id="createRest" type="button" value="Get"/>
+<input id="deleteRest" type="button" value="Delete"/>
 
 <hr/>
 

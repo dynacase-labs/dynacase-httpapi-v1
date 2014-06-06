@@ -40,7 +40,7 @@ class TestDocumentCrud extends TestCaseApi
         }
         $data = $dc->get($name);
         
-        $this->verifyData($data, $expectedValues);
+        $this->verifyData($data, $expectedValues, $doc);
     }
     
     public function datagetDocument()
@@ -57,7 +57,8 @@ class TestDocumentCrud extends TestCaseApi
                     "document.properties.title" => "Un élément",
                     "document.properties.name" => "TST_APIB1",
                     "document.properties.fromname" => "TST_APIBASE",
-                    "document.properties.fromtitle" => "Test Base"
+                    "document.properties.fromtitle" => "Test Base",
+                    "document.uri" => "api/documents/{id}.json"
                 )
             ) ,
             array(
@@ -81,7 +82,8 @@ class TestDocumentCrud extends TestCaseApi
                     "document.properties.title" => "Un deuxième élément",
                     "document.properties.name" => "TST_APIB2",
                     "document.properties.fromname" => "TST_APIBASE",
-                    "document.properties.fromtitle" => "Test Base"
+                    "document.properties.fromtitle" => "Test Base",
+                    "document.uri" => "api/documents/{id}.json"
                 )
             ) ,
             array(
@@ -92,7 +94,8 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_title.displayValue" => "<strong>Un élément</strong>",
                     "document.attributes.tst_number.value" => 23,
                     "document.attributes.tst_number.displayValue" => "023",
-                    "document.properties" => null
+                    "document.properties" => null,
+                    "document.uri" => "api/documents/{id}.json"
                 )
             ) ,
             array(
@@ -100,7 +103,8 @@ class TestDocumentCrud extends TestCaseApi
                 "",
                 array(
                     "document.attributes" => null,
-                    "document.properties" => null
+                    "document.properties" => null,
+                    "document.uri" => "api/documents/{id}.json"
                 )
             ) ,
             array(
@@ -109,7 +113,8 @@ class TestDocumentCrud extends TestCaseApi
                 array(
                     "document.properties.title" => "Un élément",
                     "document.properties.name" => "TST_APIB1",
-                    "document.properties.id" => null
+                    "document.properties.id" => null,
+                    "document.uri" => "api/documents/{id}.json"
                 )
             ) ,
             array(
@@ -125,12 +130,13 @@ class TestDocumentCrud extends TestCaseApi
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_title.type" => "text",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.id" => "tst_number",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.type" => "int",
+                    "document.uri" => "api/documents/{id}.json"
                 )
             )
         );
     }
     
-    protected function verifyData($data, $expectedValues)
+    protected function verifyData($data, $expectedValues, \Doc $document)
     {
         foreach ($expectedValues as $dkey => $expectValue) {
             $keys = explode(".", $dkey);
@@ -156,6 +162,9 @@ class TestDocumentCrud extends TestCaseApi
                         break;
                     }
                 }
+            }
+            if (is_string($expectValue)) {
+                $expectValue = str_replace('{id}', $document->id, $expectValue);
             }
             $this->assertEquals($expectValue, $cdata, sprintf("wrong value for $dkey :%s ", print_r($data, true)));
         }
@@ -187,7 +196,7 @@ class TestDocumentCrud extends TestCaseApi
                 $this->assertEquals($value, $data["document"]["attributes"][$aid]->value);
             }
         }
-        $this->verifyData($data, $expectedValues);
+        $this->verifyData($data, $expectedValues, $doc);
     }
     
     public function dataSetDocument()
@@ -204,7 +213,8 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_title.displayValue" => "<strong>test n°1</strong>",
                     "document.attributes.tst_number.value" => 56,
                     "document.attributes.tst_number.displayValue" => "056",
-                    "document.properties.title" => "test n°1"
+                    "document.properties.title" => "test n°1",
+                    "document.uri" => "api/documents/{id}.json"
                 )
             ) ,
             array(
@@ -223,6 +233,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 678,
                     "document.attributes.tst_number.displayValue" => "678",
                     "document.properties.title" => "test n°2",
+                    "document.uri" => "api/documents/{id}.json",
                     "document.attributes.tst_text" => array(
                         array(
                             "value" => "Un",
@@ -263,7 +274,7 @@ class TestDocumentCrud extends TestCaseApi
             array(
                 "TST_APIBASE",
                 array(
-                    "tst_title" => "test n°1",
+                    "tst_title" => "test",
                     "tst_number" => 56
                 )
             )
@@ -271,7 +282,8 @@ class TestDocumentCrud extends TestCaseApi
     }
     /**
      * @param $name
-     * @dataProvider dataCreateDocument
+     * @param array $expectedValues
+     * @dataProvider dataDeleteDocument
      */
     public function testdeleteDocument($name, array $expectedValues)
     {
@@ -283,9 +295,33 @@ class TestDocumentCrud extends TestCaseApi
         $dc = new \Dcp\HttpApi\V1\DocumentCrud();
         
         $data = $dc->delete($name);
-        $this->verifyData($data, $expectedValues);
+        $this->verifyData($data, $expectedValues, $doc);
+        
+        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        try {
+            $dc->get($name);
+            $this->assertFalse(true, "An exception must occur");
+        }
+        catch(\Dcp\HttpApi\V1\Exception $e) {
+            $this->assertEquals(404, $e->getHttpStatus());
+        }
     }
-    
+    public function dataDeleteDocument()
+    {
+        return array(
+            array(
+                "TST_APIB1",
+                array(
+                    "document.attributes.tst_title.value" => "Un élément",
+                    "document.attributes.tst_title.displayValue" => "<strong>Un élément</strong>",
+                    "document.properties.title" => "Un élément",
+                    "document.properties.locked" => - 1,
+                    "document.properties.doctype" => "Z",
+                    "document.uri" => "api/trash/{id}.json"
+                )
+            )
+        );
+    }
     protected function simulatePostRecord(array $values, $method)
     {
         $_SERVER['REQUEST_METHOD'] = $method;

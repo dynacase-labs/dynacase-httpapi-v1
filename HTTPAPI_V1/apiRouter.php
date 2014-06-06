@@ -98,6 +98,7 @@ if (empty($_SERVER['PHP_AUTH_USER'])) {
 try {
     global $action;
     WhatInitialisation();
+    $action->name = "HTTPAPI_V1";
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
     $data = Dcp\HttpApi\V1\apiRouter::execute($messages);

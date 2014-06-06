@@ -117,7 +117,7 @@ class DocumentCrud extends Crud
         
         $err = $this->_document->control("view");
         if ($err) {
-            $e = new Exception("API0201", $resourceId);
+            $e = new Exception("API0201", $resourceId, $err);
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
         }
@@ -130,10 +130,22 @@ class DocumentCrud extends Crud
      */
     public function delete($resourceId)
     {
-        // TODO: Implement delete() method.
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $this->setDocument($resourceId);
+        
+        $err = $this->_document->control("delete");
+        if ($err) {
+            $e = new Exception("API0216", $resourceId, $err);
+            $e->setHttpStatus("403", "Forbidden");
+            throw $e;
+        }
+        
+        $err = $this->_document->delete();
+        if ($err) {
+            $e = new Exception("API0215", $this->_document->getTitle() , $err);
+            throw $e;
+        }
+        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "httpapi") , \DocHisto::NOTICE);
+        return $this->documentData();
     }
     
     protected function getHttpAttributeValues()
@@ -197,6 +209,7 @@ class DocumentCrud extends Crud
             "postitid",
             "initid",
             "locked",
+            "doctype",
             "revision",
             "wid",
             "cvid",
@@ -325,7 +338,12 @@ class DocumentCrud extends Crud
             if ($this->_document->defDoctype === "C") {
                 return sprintf("api/families/%s.json", strtolower($this->_document->name));
             } else {
-                return sprintf("api/documents/%d.json", $this->_document->id);
+                if ($this->_document->doctype === "Z") {
+                    
+                    return sprintf("api/trash/%d.json", $this->_document->id);
+                } else {
+                    return sprintf("api/documents/%d.json", $this->_document->id);
+                }
             }
         }
         return null;
@@ -398,7 +416,6 @@ class DocumentCrud extends Crud
         if (!$correctField) {
             $fields = $this->getFields();
             if ($fields) {
-                print_r2($fields);
                 throw new Exception("API0214", implode(",", $fields));
             }
         }
