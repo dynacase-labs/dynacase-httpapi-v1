@@ -296,6 +296,9 @@ class DocumentCrud extends Crud
         if ($this->_document->id == 0) {
             return array();
         }
+        if ($this->_document->doctype === "C") {
+            return array();
+        }
         if ($this->valueRender) {
             return $this->valueRender[0]["attributes"];
         }

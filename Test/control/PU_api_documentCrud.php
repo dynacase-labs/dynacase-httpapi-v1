@@ -2,23 +2,18 @@
 /*
  * @author Anakeen
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
- * @package FDL
+ * @package Dcp\Pu
 */
 
 namespace Dcp\Pu\Api;
-/**
- * @author Anakeen
- * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
- * @package Dcp\Pu
- */
 
 require_once 'APITEST/PU_TestCaseApi.php';
 
 class TestDocumentCrud extends TestCaseApi
 {
-    const familyName = "TSTAPI_DOCCRUD";
+    const familyName = "TST_APIBASE";
     /**
-     * import TST_DOCENUM family
+     * import TST_APIBASE family
      * @static
      * @return string
      */
@@ -45,94 +40,9 @@ class TestDocumentCrud extends TestCaseApi
         }
         $data = $dc->get($name);
         
-        foreach ($expectedValues as $dkey => $expectValue) {
-            $keys = explode(".", $dkey);
-            $cdata = $data;
-            foreach ($keys as $key) {
-                if ($expectValue !== null) {
-                    $this->assertTrue(isset($cdata[$key]) , sprintf("key \"%s\" not found %s", $key, print_r($cdata, true)));
-                    $cdata = $cdata[$key];
-                    if (is_object($cdata)) {
-                        $cdata = get_object_vars($cdata);
-                    } elseif (is_array($cdata)) {
-                        foreach ($cdata as $k => $v) {
-                            if (is_object($v)) {
-                                $cdata[$k] = get_object_vars($v);
-                            }
-                        }
-                    }
-                } else {
-                    if (isset($cdata[$key])) {
-                        $cdata = $cdata[$key];
-                    } else {
-                        $cdata = null;
-                        break;
-                    }
-                }
-            }
-            $this->assertEquals($expectValue, $cdata, sprintf("wrong value for $dkey :%s ", print_r($data, true)));
-        }
-    }
-    /**
-     * @param string $name
-     * @param array $setValues
-     * @internal param array $expectedValues
-     * @dataProvider dataSetDocument
-     */
-    public function testSetDocument($name, array $setValues)
-    {
-        $doc = \Dcp\DocManager::getDocument($name);
-        $this->assertTrue($doc !== null, "Document $name not found");
-        
-        $this->simulatePostRecord($setValues, "POST");
-        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
-        
-        $data = $dc->update($name);
-        
-        foreach ($setValues as $aid => $value) {
-            $this->assertFalse(empty($data["document"]["attributes"][$aid]) , sprintf("Undefined %s : Ss", $aid, print_r($data, true)));
-            if (is_array($value)) {
-                $values = $data["document"]["attributes"][$aid];
-                foreach ($values as $k => $singleValue) {
-                    $this->assertEquals($value[$k], $singleValue->value);
-                }
-            } else {
-                $this->assertEquals($value, $data["document"]["attributes"][$aid]->value);
-            }
-        }
+        $this->verifyData($data, $expectedValues);
     }
     
-    protected function simulatePostRecord(array $values, $method)
-    {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $_SERVER["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
-        foreach ($values as $k => $v) {
-            $_POST[$k] = $v;
-        }
-    }
-    public function dataSetDocument()
-    {
-        return array(
-            array(
-                "TST_APIB1",
-                array(
-                    "tst_title" => "test n°1",
-                    "tst_number" => 56
-                )
-            ) ,
-            array(
-                "TST_APIB2",
-                array(
-                    "tst_title" => "test n°2",
-                    "tst_number" => 678,
-                    "tst_text" => array(
-                        "Un",
-                        "Deux"
-                    )
-                )
-            )
-        );
-    }
     public function datagetDocument()
     {
         return array(
@@ -218,5 +128,170 @@ class TestDocumentCrud extends TestCaseApi
                 )
             )
         );
+    }
+    
+    protected function verifyData($data, $expectedValues)
+    {
+        foreach ($expectedValues as $dkey => $expectValue) {
+            $keys = explode(".", $dkey);
+            $cdata = $data;
+            foreach ($keys as $key) {
+                if ($expectValue !== null) {
+                    $this->assertTrue(isset($cdata[$key]) , sprintf("key \"%s\" not found %s", $key, print_r($cdata, true)));
+                    $cdata = $cdata[$key];
+                    if (is_object($cdata)) {
+                        $cdata = get_object_vars($cdata);
+                    } elseif (is_array($cdata)) {
+                        foreach ($cdata as $k => $v) {
+                            if (is_object($v)) {
+                                $cdata[$k] = get_object_vars($v);
+                            }
+                        }
+                    }
+                } else {
+                    if (isset($cdata[$key])) {
+                        $cdata = $cdata[$key];
+                    } else {
+                        $cdata = null;
+                        break;
+                    }
+                }
+            }
+            $this->assertEquals($expectValue, $cdata, sprintf("wrong value for $dkey :%s ", print_r($data, true)));
+        }
+    }
+    /**
+     * @param string $name
+     * @param array $setValues
+     * @param array $expectedValues
+     * @dataProvider dataSetDocument
+     */
+    public function testSetDocument($name, array $setValues, array $expectedValues)
+    {
+        $doc = \Dcp\DocManager::getDocument($name);
+        $this->assertTrue($doc !== null, "Document $name not found");
+        
+        $this->simulatePostRecord($setValues, "POST");
+        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        
+        $data = $dc->update($name);
+        
+        foreach ($setValues as $aid => $value) {
+            $this->assertFalse(empty($data["document"]["attributes"][$aid]) , sprintf("Undefined %s : Ss", $aid, print_r($data, true)));
+            if (is_array($value)) {
+                $values = $data["document"]["attributes"][$aid];
+                foreach ($values as $k => $singleValue) {
+                    $this->assertEquals($value[$k], $singleValue->value);
+                }
+            } else {
+                $this->assertEquals($value, $data["document"]["attributes"][$aid]->value);
+            }
+        }
+        $this->verifyData($data, $expectedValues);
+    }
+    
+    public function dataSetDocument()
+    {
+        return array(
+            array(
+                "TST_APIB1",
+                array(
+                    "tst_title" => "test n°1",
+                    "tst_number" => 56
+                ) ,
+                array(
+                    "document.attributes.tst_title.value" => "test n°1",
+                    "document.attributes.tst_title.displayValue" => "<strong>test n°1</strong>",
+                    "document.attributes.tst_number.value" => 56,
+                    "document.attributes.tst_number.displayValue" => "056",
+                    "document.properties.title" => "test n°1"
+                )
+            ) ,
+            array(
+                "TST_APIB2",
+                array(
+                    "tst_title" => "test n°2",
+                    "tst_number" => 678,
+                    "tst_text" => array(
+                        "Un",
+                        "Deux"
+                    )
+                ) ,
+                array(
+                    "document.attributes.tst_title.value" => "test n°2",
+                    "document.attributes.tst_title.displayValue" => "<strong>test n°2</strong>",
+                    "document.attributes.tst_number.value" => 678,
+                    "document.attributes.tst_number.displayValue" => "678",
+                    "document.properties.title" => "test n°2",
+                    "document.attributes.tst_text" => array(
+                        array(
+                            "value" => "Un",
+                            "displayValue" => "Un"
+                        ) ,
+                        array(
+                            "value" => "Deux",
+                            "displayValue" => "Deux"
+                        )
+                    ) ,
+                )
+            )
+        );
+    }
+    /**
+     * @param $famName
+     * @param array $setValues
+     * @dataProvider dataCreateDocument
+     */
+    public function testCreateDocument(
+    /** @noinspection PhpUnusedParameterInspection */
+    $famName, array $setValues)
+    {
+        $this->simulatePostRecord($setValues, "POST");
+        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        try {
+            $dc->create();
+            $this->assertFalse(true, "An exception must occur");
+        }
+        catch(\Dcp\HttpApi\V1\Exception $e) {
+            $this->assertEquals(501, $e->getHttpStatus());
+        }
+    }
+    
+    public function dataCreateDocument()
+    {
+        return array(
+            array(
+                "TST_APIBASE",
+                array(
+                    "tst_title" => "test n°1",
+                    "tst_number" => 56
+                )
+            )
+        );
+    }
+    /**
+     * @param $name
+     * @dataProvider dataCreateDocument
+     */
+    public function testdeleteDocument($name, array $expectedValues)
+    {
+        
+        $doc = \Dcp\DocManager::getDocument($name);
+        $this->assertTrue($doc !== null, "Document $name not found");
+        $this->assertTrue($doc->isAlive() , "Document $name is already deleted");
+        
+        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        
+        $data = $dc->delete($name);
+        $this->verifyData($data, $expectedValues);
+    }
+    
+    protected function simulatePostRecord(array $values, $method)
+    {
+        $_SERVER['REQUEST_METHOD'] = $method;
+        $_SERVER["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
+        foreach ($values as $k => $v) {
+            $_POST[$k] = $v;
+        }
     }
 }
