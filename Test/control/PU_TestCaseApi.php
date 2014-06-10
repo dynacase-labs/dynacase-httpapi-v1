@@ -13,9 +13,4 @@ class TestCaseApi extends \Dcp\Pu\TestCaseDcpCommonFamily
 {
     
     protected static $testDirectory = "APITEST";
-    
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-    }
 }

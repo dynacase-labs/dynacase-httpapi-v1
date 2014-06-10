@@ -20,6 +20,7 @@ class SuiteApi
         $suite = new \Dcp\Pu\FrameworkDcp('Package');
         
         $suite->addTestSuite('Dcp\Pu\Api\TestDocumentCrud');
+        $suite->addTestSuite('Dcp\Pu\Api\TestFamilyCrud');
         // ...
         return $suite;
     }

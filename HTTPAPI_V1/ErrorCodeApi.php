@@ -44,7 +44,7 @@ namespace {
         /**
          * @errorCode The ressource cannot be get
          */
-        const API0201 = 'Document "%s" access deny';
+        const API0201 = 'Document "%s" access deny : %s';
         /**
          * @errorCode The fieds partial response indicate a wrong property
          */
@@ -97,6 +97,14 @@ namespace {
          * @errorCode The fieds partial response indicate a wrong key
          */
         const API0214 = 'Document fields "%s" not known';
+        /**
+         * @errorCode The document cannot be deleted
+         */
+        const API0215 = 'Delete Document "%s" fail : "%s" ';
+        /**
+         * @errorCode The document cannot be deleted
+         */
+        const API0216 = 'Delete deny for document "%s" fail : "%s" ';
         /**
          * for beautifier
          */
