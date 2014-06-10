@@ -106,6 +106,10 @@ namespace {
          */
         const API0216 = 'Delete deny for document "%s" fail : "%s" ';
         /**
+         * @errorCode Content-type said json and content must be contains {document:{attributes:[["x":{value:"a"}]}
+         */
+        const API0217 = 'Record fail. Json object attributes "%s" (multiple) no contain "value" fields : "%s"';
+        /**
          * for beautifier
          */
         private function _bo()
