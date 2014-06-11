@@ -175,10 +175,21 @@ class DocumentCrud extends Crud
         
         $newValues = array();
         foreach ($values as $aid => $value) {
-            if (!isset($value["value"])) {
-                throw new Exception("API0210", $body);
+            if (!isset($value["value"]) && is_array($value)) {
+                $mulValues = array();
+                foreach ($value as $singleValue) {
+                    if (!isset($singleValue["value"])) {
+                        throw new Exception("API0217", $aid, print_r($value, true));
+                    }
+                    $mulValues[] = $singleValue["value"];
+                }
+                $newValues[$aid] = $mulValues;
+            } else {
+                if (!isset($value["value"])) {
+                    throw new Exception("API0210", $body);
+                }
+                $newValues[$aid] = $value["value"];
             }
-            $newValues[$aid] = $value["value"];
         }
         return $newValues;
     }
@@ -329,7 +340,14 @@ class DocumentCrud extends Crud
             }
         }
         $this->valueRender = $fmtCollection->render();
-        return ($this->valueRender[0]["attributes"]);
+        $attributes = $this->valueRender[0]["attributes"];
+        $nullValue = new \UnknowAttributeValue(null);
+        foreach ($attributes as $k => $v) {
+            if ($v === null) {
+                $attributes[$k] = $nullValue;
+            }
+        }
+        return ($attributes);
     }
     
     protected function getUri()
