@@ -175,17 +175,17 @@ class DocumentCrud extends Crud
         
         $newValues = array();
         foreach ($values as $aid => $value) {
-            if (!isset($value["value"]) && is_array($value)) {
+            if (!array_key_exists("value", $value) && is_array($value)) {
                 $mulValues = array();
                 foreach ($value as $singleValue) {
-                    if (!isset($singleValue["value"])) {
+                    if (!array_key_exists("value", $singleValue)) {
                         throw new Exception("API0217", $aid, print_r($value, true));
                     }
                     $mulValues[] = $singleValue["value"];
                 }
                 $newValues[$aid] = $mulValues;
             } else {
-                if (!isset($value["value"])) {
+                if (!array_key_exists("value", $value)) {
                     throw new Exception("API0210", $body);
                 }
                 $newValues[$aid] = $value["value"];
