@@ -334,7 +334,7 @@ class DocumentCrud extends Crud
         $fmtCollection = new \FormatCollection($this->_document);
         $la = $this->_document->getNormalAttributes();
         foreach ($la as $aid => $attr) {
-            if ($attr->type != "array") {
+            if ($attr->type != "array" && $attr->mvisibility !== "I") {
                 
                 $fmtCollection->addAttribute($aid);
             }
@@ -446,7 +446,7 @@ class DocumentCrud extends Crud
         $t = array();
         $order = 0;
         foreach ($la as $oattr) {
-            if ($oattr->type === "array") {
+            if ($oattr->type === "array" || $oattr->mvisibility === "I") {
                 continue;
             }
             $parentAttr = $oattr->fieldSet;
