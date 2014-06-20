@@ -443,6 +443,7 @@ class DocumentCrud extends Crud
     protected function _getDocumentStructure()
     {
         $la = $this->_document->getNormalAttributes();
+
         $t = array();
         $order = 0;
         foreach ($la as $oattr) {
@@ -478,13 +479,12 @@ class DocumentCrud extends Crud
             }
             $target[$oattr->id] = $this->getAttributeInfo($oattr, $order++);
         }
-        
         return $t;
     }
     
     protected static function getAttributeInfo(\BasicAttribute $oa, $order = 0)
     {
-        return array(
+        $info= array(
             "id" => $oa->id,
             "visibility" => $oa->mvisibility,
             "label" => $oa->getLabel() ,
@@ -492,5 +492,14 @@ class DocumentCrud extends Crud
             "logicalOrder" => $order,
             "multiple" => $oa->isMultiple()
         );
+
+        if (isset($oa->needed)) {
+            /**
+             * @var \NormalAttribute $oa;
+             */
+            $info["needed"]=$oa->needed;
+
+        }
+        return $info;
     }
 }
