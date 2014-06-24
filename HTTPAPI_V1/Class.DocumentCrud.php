@@ -19,6 +19,10 @@ class DocumentCrud extends Crud
     protected $valueRender = array();
     protected $propRender = array();
     /**
+     * @var int document icon width in px
+     */
+    public $iconSize = 32;
+    /**
      * Update the ressource
      * @param string $resourceId Resource identifier
      * @throws Exception
@@ -269,7 +273,7 @@ class DocumentCrud extends Crud
                         break;
 
                     case "icon":
-                        $this->propRender[$propId] = $this->_document->getIcon();
+                        $this->propRender[$propId] = $this->_document->getIcon("", $this->iconSize);
                         break;
 
                     case "title":
@@ -344,7 +348,12 @@ class DocumentCrud extends Crud
         $nullValue = new \UnknowAttributeValue(null);
         foreach ($attributes as $k => $v) {
             if ($v === null) {
-                $attributes[$k] = $nullValue;
+                $oa = $this->_document->getAttribute($k);
+                if ($oa->isMultiple()) {
+                    $attributes[$k] = array();
+                } else {
+                    $attributes[$k] = $nullValue;
+                }
             }
         }
         return ($attributes);
@@ -490,7 +499,8 @@ class DocumentCrud extends Crud
             "label" => $oa->getLabel() ,
             "type" => $oa->type,
             "logicalOrder" => $order,
-            "multiple" => $oa->isMultiple()
+            "multiple" => $oa->isMultiple() ,
+            "options" => $oa->getOptions()
         );
         
         if (isset($oa->needed)) {
