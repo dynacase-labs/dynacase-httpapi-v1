@@ -35,6 +35,7 @@ class DocumentCrud extends Crud
         $err = $this->_document->canEdit();
         if ($err) {
             $e = new Exception("API0201", $resourceId);
+            $e->setUserMEssage(___("Update forbiden", "api"));
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
         }
@@ -55,6 +56,7 @@ class DocumentCrud extends Crud
             }
             if ($err) {
                 $e = new Exception("API0211", $this->_document->id, $aid, $err);
+                $e->setUserMEssage(___("Update failed", "api"));
                 $info = array(
                     "id" => $aid,
                     "index" => $kindex,
@@ -71,11 +73,13 @@ class DocumentCrud extends Crud
         $err = $this->_document->store($info);
         if ($err) {
             $e = new Exception("API0212", $this->_document->id, $err);
+            $e->setUserMEssage(___("Update failed", "api"));
             $e->setData($info);
             throw $e;
         }
         if ($info->refresh) {
             $message = new RecordReturnMessage();
+            $message->contentText = ___("Document information", "api");
             $message->contentHtml = $info->refresh;
             $message->type = $message::MESSAGE;
             $message->code = "refresh";

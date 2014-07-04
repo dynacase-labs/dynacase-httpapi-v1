@@ -131,10 +131,14 @@ catch(\Dcp\HttpApi\V1\Exception $e) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
     
     $return->setHttpStatusCode($e->getHttpStatus() , $e->getHttpMessage());
-    
+    $return->exceptionMessage = $e->getDcpMessage();
     $return->success = false;
     $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-    $message->contentText = $e->getDcpMessage();
+    
+    $message->contentText = $e->getUserMessage();
+    if (!$message->contentText) {
+        $message->contentText = $e->getDcpMessage();
+    }
     $message->type = $message::ERROR;
     $message->code = $e->getDcpCode();
     $message->data = $e->getData();

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-28 17:52+0200\n"
+"POT-Creation-Date: 2014-07-03 16:42+0200\n"
 "PO-Revision-Date: 2013-05-10 11:59+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: English <distrib@anakeen.com>\n"
@@ -18,14 +18,40 @@ msgstr ""
 msgid "Access to http api setter"
 msgstr ""
 
+msgctxt "httpapi"
+msgid "Create by HTTP API"
+msgstr ""
+
+msgctxt "httpapi"
+msgid "Deleted by HTTP API"
+msgstr ""
+
+msgid "Http Api"
+msgstr ""
+
+msgctxt "api"
+msgid "Update failed"
+msgstr ""
+
+msgctxt "api"
+msgid "Update forbiden"
+msgstr ""
+
+msgctxt "httpapi"
+msgid "Updated by HTTP API"
+msgstr ""
+
 msgid "User must be authenticate"
+msgstr ""
+
+msgid "User must be authenticated"
+msgstr ""
+
+msgid "api"
 msgstr ""
 
 msgid "maintenance in progress"
 msgstr ""
 
 msgid "not authenticated:ERRNO_BUG_639"
-msgstr ""
-
-msgid "toto"
 msgstr ""

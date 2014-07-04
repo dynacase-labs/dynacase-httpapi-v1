@@ -9,7 +9,7 @@ global $app_desc, $action_desc;
 
 $app_desc = array(
     "name" => "HTTPAPI_V1", //Name
-    "short_name" => "Http Api", //Short name
+    "short_name" => N_("Http Api"), //Short name
     "description" => "HTTP Api (version 1)", //long description
     "icon" => "httpapi.png", //Icon
     "displayable" => "N", //Should be displayed on an app list (Y,N)
