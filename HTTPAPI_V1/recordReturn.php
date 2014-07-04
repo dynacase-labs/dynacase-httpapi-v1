@@ -25,6 +25,10 @@ class RecordReturn
      */
     public $data = null;
     /**
+     * @var string system message
+     */
+    public $exceptionMessage = '';
+    /**
      * @param int $code HTTP status code like (200, 404, ...)
      * @param string $message simple text message
      */

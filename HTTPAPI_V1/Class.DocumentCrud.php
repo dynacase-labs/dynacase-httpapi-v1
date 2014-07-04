@@ -19,6 +19,10 @@ class DocumentCrud extends Crud
     protected $valueRender = array();
     protected $propRender = array();
     /**
+     * @var int document icon width in px
+     */
+    public $iconSize = 32;
+    /**
      * Update the ressource
      * @param string $resourceId Resource identifier
      * @throws Exception
@@ -31,6 +35,7 @@ class DocumentCrud extends Crud
         $err = $this->_document->canEdit();
         if ($err) {
             $e = new Exception("API0201", $resourceId);
+            $e->setUserMEssage(___("Update forbiden", "api"));
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
         }
@@ -43,9 +48,23 @@ class DocumentCrud extends Crud
         
         $newValues = $this->getHttpAttributeValues();
         foreach ($newValues as $aid => $value) {
-            $err = $this->_document->setValue($aid, $value);
+            $kindex = - 1;
+            if ($value === null or $value === '') {
+                $err = $this->_document->clearValue($aid);
+            } else {
+                $err = $this->_document->setValue($aid, $value, -1, $kindex);
+            }
             if ($err) {
-                throw new Exception("API0211", $this->_document->id, $aid, $err);
+                $e = new Exception("API0211", $this->_document->id, $aid, $err);
+                $e->setUserMEssage(___("Update failed", "api"));
+                $info = array(
+                    "id" => $aid,
+                    "index" => $kindex,
+                    "err" => $err
+                );
+                
+                $e->setData($info);
+                throw $e;
             }
         }
         /**
@@ -54,11 +73,13 @@ class DocumentCrud extends Crud
         $err = $this->_document->store($info);
         if ($err) {
             $e = new Exception("API0212", $this->_document->id, $err);
+            $e->setUserMEssage(___("Update failed", "api"));
             $e->setData($info);
             throw $e;
         }
         if ($info->refresh) {
             $message = new RecordReturnMessage();
+            $message->contentText = ___("Document information", "api");
             $message->contentHtml = $info->refresh;
             $message->type = $message::MESSAGE;
             $message->code = "refresh";
@@ -178,10 +199,18 @@ class DocumentCrud extends Crud
             if (!array_key_exists("value", $value) && is_array($value)) {
                 $mulValues = array();
                 foreach ($value as $singleValue) {
-                    if (!array_key_exists("value", $singleValue)) {
-                        throw new Exception("API0217", $aid, print_r($value, true));
+                    
+                    if (!array_key_exists("value", $singleValue) && is_array($singleValue)) {
+                        $mul2Values = array();
+                        foreach ($singleValue as $secondVValue) {
+                            $mul2Values[] = $secondVValue["value"];
+                        }
+                        $mulValues[] = $mul2Values;
+                        //throw new Exception("API0217", $aid, print_r($value, true));
+                        
+                    } else {
+                        $mulValues[] = $singleValue["value"];
                     }
-                    $mulValues[] = $singleValue["value"];
                 }
                 $newValues[$aid] = $mulValues;
             } else {
@@ -269,7 +298,7 @@ class DocumentCrud extends Crud
                         break;
 
                     case "icon":
-                        $this->propRender[$propId] = $this->_document->getIcon();
+                        $this->propRender[$propId] = $this->_document->getIcon("", $this->iconSize);
                         break;
 
                     case "title":
@@ -344,7 +373,12 @@ class DocumentCrud extends Crud
         $nullValue = new \UnknowAttributeValue(null);
         foreach ($attributes as $k => $v) {
             if ($v === null) {
-                $attributes[$k] = $nullValue;
+                $oa = $this->_document->getAttribute($k);
+                if ($oa->isMultiple()) {
+                    $attributes[$k] = array();
+                } else {
+                    $attributes[$k] = $nullValue;
+                }
             }
         }
         return ($attributes);
@@ -484,13 +518,15 @@ class DocumentCrud extends Crud
     
     protected static function getAttributeInfo(\BasicAttribute $oa, $order = 0)
     {
+        
         $info = array(
             "id" => $oa->id,
             "visibility" => $oa->mvisibility,
             "label" => $oa->getLabel() ,
             "type" => $oa->type,
             "logicalOrder" => $order,
-            "multiple" => $oa->isMultiple()
+            "multiple" => $oa->isMultiple() ,
+            "options" => $oa->getOptions()
         );
         
         if (isset($oa->needed)) {
@@ -498,6 +534,23 @@ class DocumentCrud extends Crud
              * @var \NormalAttribute $oa;
              */
             $info["needed"] = $oa->needed;
+        }
+        if (!empty($oa->phpfile)) {
+            /**
+             * @var \NormalAttribute $oa;
+             */
+            if ((strlen($oa->phpfile) > 1) && ($oa->phpfunc)) {
+                $oParse = new \parseFamilyFunction();
+                $strucFunc = $oParse->parse($oa->phpfunc);
+                foreach ($strucFunc->outputs as $k => $output) {
+                    if (substr($output, 0, 2) === "CT") {
+                        unset($strucFunc->outputs[$k]);
+                    } else {
+                        $strucFunc->outputs[$k] = strtolower($output);
+                    }
+                }
+                $info["helpOutputs"] = $strucFunc->outputs;
+            }
         }
         return $info;
     }

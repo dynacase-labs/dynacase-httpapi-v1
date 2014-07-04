@@ -125,6 +125,21 @@ namespace Dcp\HttpApi\V1 {
         protected $httpStatus = 400;
         protected $httpMessage = "Dcp Exception";
         protected $data = null;
+        protected $userMessage = '';
+        /**
+         * @param string $userMessage
+         */
+        public function setUserMessage($userMessage)
+        {
+            $this->userMessage = $userMessage;
+        }
+        /**
+         * @return string
+         */
+        public function getUserMessage()
+        {
+            return $this->userMessage;
+        }
         /**
          * @return null
          */
