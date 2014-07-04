@@ -58,7 +58,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.properties.name" => "TST_APIB1",
                     "document.properties.fromname" => "TST_APIBASE",
                     "document.properties.fromtitle" => "Test Base",
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             ) ,
             array(
@@ -83,7 +83,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.properties.name" => "TST_APIB2",
                     "document.properties.fromname" => "TST_APIBASE",
                     "document.properties.fromtitle" => "Test Base",
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             ) ,
             array(
@@ -95,7 +95,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 23,
                     "document.attributes.tst_number.displayValue" => "023",
                     "document.properties" => null,
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             ) ,
             array(
@@ -104,7 +104,7 @@ class TestDocumentCrud extends TestCaseApi
                 array(
                     "document.attributes" => null,
                     "document.properties" => null,
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             ) ,
             array(
@@ -114,7 +114,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.properties.title" => "Un élément",
                     "document.properties.name" => "TST_APIB1",
                     "document.properties.id" => null,
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             ) ,
             array(
@@ -130,7 +130,7 @@ class TestDocumentCrud extends TestCaseApi
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_title.type" => "text",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.id" => "tst_number",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.type" => "int",
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             )
         );
@@ -214,7 +214,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 56,
                     "document.attributes.tst_number.displayValue" => "056",
                     "document.properties.title" => "test n°1",
-                    "document.uri" => "api/documents/{id}.json"
+                    "document.uri" => "api/v1/documents/{id}.json"
                 )
             ) ,
             array(
@@ -233,7 +233,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 678,
                     "document.attributes.tst_number.displayValue" => "678",
                     "document.properties.title" => "test n°2",
-                    "document.uri" => "api/documents/{id}.json",
+                    "document.uri" => "api/v1/documents/{id}.json",
                     "document.attributes.tst_text" => array(
                         array(
                             "value" => "Un",
@@ -317,7 +317,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.properties.title" => "Un élément",
                     "document.properties.locked" => - 1,
                     "document.properties.doctype" => "Z",
-                    "document.uri" => "api/trash/{id}.json"
+                    "document.uri" => "api/v1/trash/{id}.json"
                 )
             )
         );
