@@ -354,13 +354,13 @@ class DocumentCrud extends Crud
     {
         if ($this->_document) {
             if ($this->_document->defDoctype === "C") {
-                return sprintf("api/families/%s.json", strtolower($this->_document->name));
+                return sprintf("api/v1/families/%s.json", strtolower($this->_document->name));
             } else {
                 if ($this->_document->doctype === "Z") {
                     
-                    return sprintf("api/trash/%d.json", $this->_document->id);
+                    return sprintf("api/v1/trash/%d.json", $this->_document->id);
                 } else {
-                    return sprintf("api/documents/%d.json", $this->_document->id);
+                    return sprintf("api/v1/documents/%d.json", $this->_document->id);
                 }
             }
         }
@@ -443,7 +443,7 @@ class DocumentCrud extends Crud
     protected function _getDocumentStructure()
     {
         $la = $this->_document->getNormalAttributes();
-
+        
         $t = array();
         $order = 0;
         foreach ($la as $oattr) {
@@ -484,7 +484,7 @@ class DocumentCrud extends Crud
     
     protected static function getAttributeInfo(\BasicAttribute $oa, $order = 0)
     {
-        $info= array(
+        $info = array(
             "id" => $oa->id,
             "visibility" => $oa->mvisibility,
             "label" => $oa->getLabel() ,
@@ -492,13 +492,12 @@ class DocumentCrud extends Crud
             "logicalOrder" => $order,
             "multiple" => $oa->isMultiple()
         );
-
+        
         if (isset($oa->needed)) {
             /**
              * @var \NormalAttribute $oa;
              */
-            $info["needed"]=$oa->needed;
-
+            $info["needed"] = $oa->needed;
         }
         return $info;
     }

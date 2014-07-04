@@ -55,7 +55,7 @@
                             type: "PUT",
                             dataType: "json",
                             contentType: 'application/x-www-form-urlencoded',
-                            url: baseurl + "api/documents/" + $('#docid').val() +'.json?fields=document.property.title, document.property.id, document.attributes',
+                            url: baseurl + "api/v1/documents/" + $('#docid').val() +'.json?fields=document.property.title, document.property.id, document.attributes',
                             data: getValues()
                         }).done(function (data) {
                             $('#result').text(JSON.stringify(data, undefined, 4));
@@ -75,7 +75,7 @@
                             type: "PUT",
                             dataType: "json",
                             contentType: 'application/json',
-                            url: baseurl + "api/documents/" + $('#docid').val() ,
+                            url: baseurl + "api/v1/documents/" + $('#docid').val() ,
                             data: JSON.stringify(getJSONValues())
                         }).done(function (data) {
                             $('#result').text(JSON.stringify(data, undefined, 4));

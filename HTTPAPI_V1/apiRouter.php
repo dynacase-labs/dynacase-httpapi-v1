@@ -101,7 +101,7 @@ try {
     $action->name = "HTTPAPI_V1";
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
-    $data = Dcp\HttpApi\V1\apiRouter::execute($messages);
+    $data = Dcp\HttpApi\V1\apiRouterV1::execute($messages);
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setData($data);
     foreach ($messages as $message) {

@@ -56,7 +56,7 @@
                             type: "POST",
                             dataType: "json",
                             contentType: 'application/x-www-form-urlencoded',
-                            url: baseurl + "api/families/" + $('#family').val() + "/",
+                            url: baseurl + "api/v1/families/" + $('#family').val() + "/",
                             data: getValues()
                         }).done(function (data) {
                             console.log(this);
@@ -77,7 +77,7 @@
                             type: "POST",
                             dataType: "json",
                             contentType: 'application/json',
-                            url: baseurl + "api/families/" + $('#family').val() + "/",
+                            url: baseurl + "api/v1/families/" + $('#family').val() + "/",
                             data: JSON.stringify(getJSONValues())
                         }).done(function (data) {
                             console.log(this);

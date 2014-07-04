@@ -26,7 +26,7 @@
                         $.ajax({
                             type: "DELETE",
                             dataType: "json",
-                            url: baseurl + "api/documents/" + $('#docid').val() + ".json",
+                            url: baseurl + "api/v1/documents/" + $('#docid').val() + ".json",
                             data: {
                                 ba_title: $('#title').val()
                             }
