@@ -349,6 +349,8 @@ class DocumentCrud extends Crud
     {
         if (!$this->fmtCollection) {
             $this->fmtCollection = new \FormatCollection($this->_document);
+            // No comma / want root numbers
+            $this->fmtCollection->setDecimalSeparator('.');
         }
         return $this->fmtCollection;
     }
@@ -565,17 +567,24 @@ class DocumentCrud extends Crud
         
         if ($oa->inArray()) {
             if ($this->_document->doctype === "C") {
-                $defVal = $this->_document->getDefValue($oa->id);
+                /**
+                 * @var \DocFam $family
+                 */
+                $family = $this->_document;
+                $defVal = $family->getDefValue($oa->id);
             } else {
                 $defVal = $this->_document->getFamilyDocument()->getDefValue($oa->id);
             }
             $fmtDefValue = $this->getFormatCollection()->getInfo($oa, $defVal, $this->_document);
-            if ($oa->isMultipleInArray()) {
-                foreach ($fmtDefValue as $aDefvalue) {
-                    $info["defaultValue"][] = $aDefvalue[0];
+            if ($fmtDefValue) {
+                if ($oa->isMultipleInArray()) {
+                    foreach ($fmtDefValue as $aDefvalue) {
+                        $info["defaultValue"][] = $aDefvalue[0];
+                    }
+                } else {
+                    
+                    $info["defaultValue"] = $fmtDefValue[0];
                 }
-            } else {
-                $info["defaultValue"] = $fmtDefValue[0];
             }
         }
         return $info;
