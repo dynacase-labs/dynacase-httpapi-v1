@@ -18,6 +18,7 @@ class DocumentCrud extends Crud
     protected $returnFields = null;
     protected $valueRender = array();
     protected $propRender = array();
+    protected $fmtCollection = null;
     /**
      * @var int document icon width in px
      */
@@ -135,7 +136,6 @@ class DocumentCrud extends Crud
     {
         
         $this->setDocument($resourceId);
-        
         $err = $this->_document->control("view");
         if ($err) {
             $e = new Exception("API0201", $resourceId, $err);
@@ -342,6 +342,18 @@ class DocumentCrud extends Crud
         }
         return $this->propRender;
     }
+    /**
+     * @return \FormatCollection
+     */
+    protected function getFormatCollection()
+    {
+        if (!$this->fmtCollection) {
+            $this->fmtCollection = new \FormatCollection($this->_document);
+            // No comma / want root numbers
+            $this->fmtCollection->setDecimalSeparator('.');
+        }
+        return $this->fmtCollection;
+    }
     
     protected function _getAttributes()
     {
@@ -360,7 +372,7 @@ class DocumentCrud extends Crud
             $this->_document->id
         ) , false);
         
-        $fmtCollection = new \FormatCollection($this->_document);
+        $fmtCollection = $this->getFormatCollection();
         $la = $this->_document->getNormalAttributes();
         foreach ($la as $aid => $attr) {
             if ($attr->type != "array" && $attr->mvisibility !== "I") {
@@ -516,7 +528,7 @@ class DocumentCrud extends Crud
         return $t;
     }
     
-    protected static function getAttributeInfo(\BasicAttribute $oa, $order = 0)
+    protected function getAttributeInfo(\BasicAttribute $oa, $order = 0)
     {
         
         $info = array(
@@ -550,6 +562,29 @@ class DocumentCrud extends Crud
                     }
                 }
                 $info["helpOutputs"] = $strucFunc->outputs;
+            }
+        }
+        
+        if ($oa->inArray()) {
+            if ($this->_document->doctype === "C") {
+                /**
+                 * @var \DocFam $family
+                 */
+                $family = $this->_document;
+                $defVal = $family->getDefValue($oa->id);
+            } else {
+                $defVal = $this->_document->getFamilyDocument()->getDefValue($oa->id);
+            }
+            $fmtDefValue = $this->getFormatCollection()->getInfo($oa, $defVal, $this->_document);
+            if ($fmtDefValue) {
+                if ($oa->isMultipleInArray()) {
+                    foreach ($fmtDefValue as $aDefvalue) {
+                        $info["defaultValue"][] = $aDefvalue[0];
+                    }
+                } else {
+                    
+                    $info["defaultValue"] = $fmtDefValue[0];
+                }
             }
         }
         return $info;
