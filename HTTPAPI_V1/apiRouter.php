@@ -24,6 +24,7 @@ function jsonFatalShutdown()
             $message->contentText = $error["message"];
             $message->type = $message::ERROR;
             $return->addMessage($message);
+            $return->success=false;
             $return->send();
         }
     }
@@ -97,7 +98,7 @@ if (empty($_SERVER['PHP_AUTH_USER'])) {
 }
 try {
     global $action;
-    WhatInitialisation();
+    WhatInitialisation(AuthenticatorManager::$session);
     $action->name = "HTTPAPI_V1";
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
