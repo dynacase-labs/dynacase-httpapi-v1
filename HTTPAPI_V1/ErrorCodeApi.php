@@ -118,6 +118,10 @@ namespace {
          */
         const API0301 = 'No file information for "%s" file';
         /**
+         * @errorCode Could append when max_file_upload limit is reached
+         */
+        const API0302 = 'No file transferred';
+        /**
          * for beautifier
          */
         private function _bo()
