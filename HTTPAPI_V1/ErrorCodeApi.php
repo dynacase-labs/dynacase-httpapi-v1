@@ -110,6 +110,18 @@ namespace {
          */
         const API0217 = 'Record fail. Json object attributes "%s" (multiple) no contain "value" fields : "%s"';
         /**
+         * @errorCode The file cannot be saved to vaulft
+         */
+        const API0300 = 'File Record fail.  : "%s"';
+        /**
+         * @errorCode The file is not found in vault
+         */
+        const API0301 = 'No file information for "%s" file';
+        /**
+         * @errorCode Could append when max_file_upload limit is reached
+         */
+        const API0302 = 'No file transferred';
+        /**
          * for beautifier
          */
         private function _bo()

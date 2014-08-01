@@ -351,6 +351,7 @@ class DocumentCrud extends Crud
             $this->fmtCollection = new \FormatCollection($this->_document);
             // No comma / want root numbers
             $this->fmtCollection->setDecimalSeparator('.');
+            $this->fmtCollection->mimeTypeIconSize = 20;
         }
         return $this->fmtCollection;
     }
