@@ -147,6 +147,7 @@ class DocumentCrud extends Crud
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
+     * @throws Exception
      * @return mixed
      */
     public function delete($resourceId)

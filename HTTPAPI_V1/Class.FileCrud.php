@@ -20,6 +20,45 @@ class FileCrud extends Crud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+    
+    public static function getUploadLimit()
+    {
+        /**
+         * Converts shorthands like "2M” or "512K” to bytes
+         *
+         * @param $size
+         * @return mixed
+         */
+        $normalize = function ($size)
+        {
+            if (preg_match('/^([\d\.]+)([KMG])$/i', $size, $match)) {
+                $pos = array_search($match[2], array(
+                    "K",
+                    "M",
+                    "G"
+                ));
+                if ($pos !== false) {
+                    $size = $match[1] * pow(1024, $pos + 1);
+                }
+            }
+            return $size;
+        };
+        $max_upload = $normalize(ini_get('upload_max_filesize'));
+        
+        $max_post = (ini_get('post_max_size') == 0) ? function ()
+        {
+            throw new Exception('Check Your php.ini settings');
+        } : $normalize(ini_get('post_max_size'));
+        
+        $memory_limit = (ini_get('memory_limit') == - 1) ? $max_post : $normalize(ini_get('memory_limit'));
+        
+        if ($memory_limit < $max_post || $memory_limit < $max_upload) return $memory_limit;
+        
+        if ($max_post < $max_upload) return $max_post;
+        
+        $maxFileSize = min($max_upload, $max_post, $memory_limit);
+        return $maxFileSize;
+    }
     /**
      * Create new ressource
      * @return mixed
@@ -30,7 +69,7 @@ class FileCrud extends Crud
         if (count($_FILES) === 0) {
             
             $e = new Exception("API0302", "");
-            $e->setUserMessage(___("File not recorded, Size limit reached", "api"));
+            $e->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "api") , $this->getUploadLimit()/1024/1024));
             throw $e;
         }
         $file = current($_FILES);
@@ -44,9 +83,17 @@ class FileCrud extends Crud
             }
         }
         catch(\Dcp\Exception $e) {
-            $e = new Exception("API0300", $e->getDcpMessage());
-            $e->setUserMessage($e->getDcpMessage());
-            throw $e;
+            $ne = new Exception("API0300", $e->getDcpMessage());
+            switch ($e->getDcpCode()) {
+                case "VAULT0002":
+                    $ne->setUserMessage(___("Cannot store file because vault size limit is reached", "api"));
+                    break;
+
+                default:
+                    $ne->setUserMessage($e->getDcpMessage());
+            }
+            
+            throw $ne;
         }
         
         $iconFile = getIconMimeFile($info->mime_s);
