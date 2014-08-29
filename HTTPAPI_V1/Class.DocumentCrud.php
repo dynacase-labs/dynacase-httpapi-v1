@@ -353,6 +353,7 @@ class DocumentCrud extends Crud
             // No comma / want root numbers
             $this->fmtCollection->setDecimalSeparator('.');
             $this->fmtCollection->mimeTypeIconSize = 20;
+            $this->fmtCollection->useShowEmptyOption = false;
         }
         return $this->fmtCollection;
     }
@@ -584,11 +585,20 @@ class DocumentCrud extends Crud
                         $info["defaultValue"][] = $aDefvalue[0];
                     }
                 } else {
-                    
                     $info["defaultValue"] = $fmtDefValue[0];
                 }
             }
         }
+
+        if ($oa->type === "enum" && $oa->getOption("eformat")!=="auto") {
+            $enums=$oa->getEnumLabel();
+            $enumItems=array();
+            foreach ($enums as $key=>$label) {
+                $enumItems[]=array("key"=>$key, "label"=>$label);
+            }
+            $info["enumItems"] = $enumItems;
+        }
+
         return $info;
     }
 }
