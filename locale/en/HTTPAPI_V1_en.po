@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-03 16:42+0200\n"
+"POT-Creation-Date: 2014-08-26 10:43+0200\n"
 "PO-Revision-Date: 2013-05-10 11:59+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: English <distrib@anakeen.com>\n"
@@ -18,12 +18,25 @@ msgstr ""
 msgid "Access to http api setter"
 msgstr ""
 
+msgctxt "api"
+msgid "Cannot store file because vault size limit is reached"
+msgstr ""
+
 msgctxt "httpapi"
 msgid "Create by HTTP API"
 msgstr ""
 
 msgctxt "httpapi"
 msgid "Deleted by HTTP API"
+msgstr ""
+
+msgctxt "api"
+msgid "Document information"
+msgstr ""
+
+#, php-format
+msgctxt "api"
+msgid "File not recorded, File size transfert limited to %d Mb"
 msgstr ""
 
 msgid "Http Api"

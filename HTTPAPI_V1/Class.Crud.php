@@ -34,7 +34,10 @@ abstract class Crud
     
     protected function getRessourceIdentifier()
     {
-        return $_GET["id"];
+        if (isset($_GET["id"])) {
+            return $_GET["id"];
+        }
+        return null;
     }
     /**
      * Update the ressource

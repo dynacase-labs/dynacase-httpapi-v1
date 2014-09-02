@@ -42,11 +42,13 @@ class apiRouterV1
         if (self::$resource === null) {
             throw new Exception("API0100");
         }
+        
         switch (self::$resource) {
             case 'documents':
                 self::$resource_id = array_shift($elmts);
                 break;
 
+            case 'enums':
             case 'families':
                 self::$subresource = array_shift($elmts);
                 self::$resource_id = array_shift($elmts);
@@ -84,6 +86,11 @@ class apiRouterV1
 
             case "files":
                 $crud = new FileCrud();
+                break;
+
+            case "enums":
+                $enumIdentifier = self::$subresource;
+                $crud = new EnumCrud($enumIdentifier);
                 break;
 
             case "trash":
