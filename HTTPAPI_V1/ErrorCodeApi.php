@@ -122,6 +122,18 @@ namespace {
          */
         const API0302 = 'No file transferred';
         /**
+         * @errorCode The enum attribute is not a part of family structure
+         */
+        const API0400 = 'Enum "%s" not exists in family "%s"';
+        /**
+         * @errorCode The attribute is not an enum
+         */
+        const API0401 = 'Attribute "%s" is not an enum (type "%s") in family "%s"';
+        /**
+         * @errorCode Only operators startsWith and contains are allowed
+         */
+        const API0402 = 'Filter operateur "%s" not available. Availables are "%s"';
+        /**
          * for beautifier
          */
         private function _bo()

@@ -550,7 +550,7 @@ class DocumentCrud extends Crud
              */
             $info["needed"] = $oa->needed;
         }
-        if (!empty($oa->phpfile)) {
+        if (!empty($oa->phpfile) && $oa->type !== "enum") {
             /**
              * @var \NormalAttribute $oa;
              */
@@ -589,16 +589,22 @@ class DocumentCrud extends Crud
                 }
             }
         }
-
-        if ($oa->type === "enum" && $oa->getOption("eformat")!=="auto") {
-            $enums=$oa->getEnumLabel();
-            $enumItems=array();
-            foreach ($enums as $key=>$label) {
-                $enumItems[]=array("key"=>$key, "label"=>$label);
+        
+        if ($oa->type === "enum") {
+            if ($oa->getOption("eformat") !== "auto") {
+                $enums = $oa->getEnumLabel();
+                $enumItems = array();
+                foreach ($enums as $key => $label) {
+                    $enumItems[] = array(
+                        "key" => $key,
+                        "label" => $label
+                    );
+                }
+                $info["enumItems"] = $enumItems;
             }
-            $info["enumItems"] = $enumItems;
+            $info["enumUri"] = sprintf("api/v1/enums/%s/%s", $this->_document->fromname, $oa->id);
         }
-
+        
         return $info;
     }
 }
