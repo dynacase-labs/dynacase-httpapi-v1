@@ -49,9 +49,12 @@ class apiRouterV1
                 break;
 
             case 'enums':
-            case 'families':
                 self::$subresource = array_shift($elmts);
                 self::$resource_id = array_shift($elmts);
+                break;
+            case 'families':
+                self::$resource_id = array_shift($elmts);
+                self::$subresource = array_shift($elmts);
                 break;
         }
         if (self::$resource_id !== null) {
