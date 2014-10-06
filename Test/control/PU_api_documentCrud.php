@@ -31,7 +31,7 @@ class TestDocumentCrud extends TestCaseApi
      */
     public function testGetDocument($name, $fields, array $expectedValues)
     {
-        $doc = \Dcp\DocManager::getDocument($name);
+        $doc = \Dcp\HttpApi\V1\DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         
         $dc = new \Dcp\HttpApi\V1\DocumentCrud();
@@ -72,11 +72,11 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_money" => array(
                         array(
                             "value" => 23.03,
-                            "displayValue" => "23,03 €"
+                            "displayValue" => "23.03 €"
                         ) ,
                         array(
                             "value" => 14.5,
-                            "displayValue" => "14,5 €"
+                            "displayValue" => "14.5 €"
                         )
                     ) ,
                     "document.properties.title" => "Un deuxième élément",
@@ -177,7 +177,7 @@ class TestDocumentCrud extends TestCaseApi
      */
     public function testSetDocument($name, array $setValues, array $expectedValues)
     {
-        $doc = \Dcp\DocManager::getDocument($name);
+        $doc = \Dcp\HttpApi\V1\DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         
         $this->simulatePostRecord($setValues, "POST");
@@ -287,8 +287,8 @@ class TestDocumentCrud extends TestCaseApi
      */
     public function testdeleteDocument($name, array $expectedValues)
     {
-        
-        $doc = \Dcp\DocManager::getDocument($name);
+        self::resetDocumentCache();
+        $doc = \Dcp\HttpApi\V1\DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         $this->assertTrue($doc->isAlive() , "Document $name is already deleted");
         

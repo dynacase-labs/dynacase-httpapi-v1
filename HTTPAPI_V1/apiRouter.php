@@ -32,7 +32,7 @@ function jsonFatalShutdown()
 
 register_shutdown_function('jsonFatalShutdown');
 
-if (file_exists('../maintenance.lock')) {
+if (file_exists('maintenance.lock')) {
     
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(503, "Service Unavailable");
@@ -89,6 +89,7 @@ if ($authtype == 'apache') {
 if (empty($_SERVER['PHP_AUTH_USER'])) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(403, "Forbidden");
+    $return->success = false;
     $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     $message->contentText = _("User must be authenticated");
     $message->type = $message::ERROR;

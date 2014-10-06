@@ -18,7 +18,7 @@ class FamilyCrud extends DocumentCrud
     {
         $familyId = $this->getRessourceIdentifier();
         
-        $this->_family = \Dcp\DocManager::getFamily($familyId);
+        $this->_family = \Dcp\HttpApi\V1\DocManager::getFamily($familyId);
         if ($this->_family === null) {
             $e = new Exception("API0203", $familyId);
             $e->setHttpStatus(404, "Family not found");
@@ -54,10 +54,10 @@ class FamilyCrud extends DocumentCrud
     {
         $this->setFamily();
         try {
-            $this->_document = \Dcp\DocManager::createDocument($this->_family->id);
+            $this->_document = \Dcp\HttpApi\V1\DocManager::createDocument($this->_family->id);
         }
-        catch(\Dcp\DocManager\Exception $e) {
-            if ($e->getDcpCode() === "DMG0003") {
+        catch(\Dcp\HttpApi\V1\DocManager\Exception $e) {
+            if ($e->getDcpCode() === "APIDM0003") {
                 $e = new Exception("API0204", $this->_family->name);
                 $e->setHttpStatus(403, "Forbidden");
                 throw $e;
@@ -81,7 +81,7 @@ class FamilyCrud extends DocumentCrud
             throw $e;
         }
         $this->_document->addHistoryEntry(___("Create by HTTP API", "httpapi") , \DocHisto::NOTICE);
-        \Dcp\DocManager::cache()->addDocument($this->_document);
+        \Dcp\HttpApi\V1\DocManager::cache()->addDocument($this->_document);
         
         return $this->get($this->_document->id);
     }

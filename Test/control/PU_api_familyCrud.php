@@ -36,7 +36,7 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testgetFamily($name, $fields, array $expectedValues)
     {
-        $doc = \Dcp\DocManager::getFamily($name);
+        $doc = \Dcp\HttpApi\V1\DocManager::getFamily($name);
         $this->assertTrue($doc !== null, "Family $name not found");
         
         $dc = new \Dcp\HttpApi\V1\FamilyCrud();

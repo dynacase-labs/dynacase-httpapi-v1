@@ -15,7 +15,7 @@ class FamilyDocumentCrud extends DocumentCrud
     protected $_family = null;
     public function __construct($familyId)
     {
-        $this->_family = \Dcp\DocManager::getFamily($familyId);
+        $this->_family = \Dcp\HttpApi\V1\DocManager::getFamily($familyId);
         if ($this->_family === null) {
             $e = new Exception("API0207", $familyId);
             $e->setHttpStatus(404, "Family not found");

@@ -4,7 +4,6 @@
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FDL
 */
-
 namespace Dcp\HttpApi\V1;
 
 class DocumentCrud extends Crud
@@ -94,7 +93,7 @@ class DocumentCrud extends Crud
             $this->addMessage($message);
         }
         $this->_document->addHistoryEntry(___("Updated by HTTP API", "httpapi") , \DocHisto::NOTICE);
-        \Dcp\DocManager::cache()->addDocument($this->_document);
+        \Dcp\HttpApi\V1\DocManager::cache()->addDocument($this->_document);
         
         return $this->get($this->_document->id);
     }
@@ -112,7 +111,7 @@ class DocumentCrud extends Crud
     
     protected function setDocument($resourceId)
     {
-        $this->_document = \Dcp\DocManager::getDocument($resourceId);
+        $this->_document = \Dcp\HttpApi\V1\DocManager::getDocument($resourceId);
         if (!$this->_document) {
             $e = new Exception("API0200", $resourceId);
             $e->setHttpStatus("404", "Document not found");
@@ -349,6 +348,10 @@ class DocumentCrud extends Crud
 
                     case "postitid":
                         $this->propRender[$propId] = $this->_document->rawValueToArray($this->_document->getPropertyValue($propId));
+                        break;
+
+                    case "fromname":
+                        $this->propRender[$propId] = $this->_document->fromname;
                         break;
 
                     default:

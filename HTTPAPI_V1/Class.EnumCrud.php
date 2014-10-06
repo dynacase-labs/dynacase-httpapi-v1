@@ -22,7 +22,7 @@ class EnumCrud extends Crud
     
     public function __construct($familyId)
     {
-        $this->family = \Dcp\DocManager::getFamily($familyId);
+        $this->family = \Dcp\HttpApi\V1\DocManager::getFamily($familyId);
         if (!$this->family) {
             $e = new Exception("API0200", $familyId);
             $e->setHttpStatus("404", "Family not found");

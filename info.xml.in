@@ -4,7 +4,7 @@
     <description>@PACKAGE@</description>
 
     <requires>
-        <module comp='ge' version='3.3.0' name='dynacase-core'/>
+        <module comp='ge' version='3.2.18' name='dynacase-core'/>
     </requires>
 
     <post-install>
