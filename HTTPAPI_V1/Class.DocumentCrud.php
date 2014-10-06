@@ -126,6 +126,21 @@ class DocumentCrud extends Crud
         $this->defaultFields = $fields;
         return $this;
     }
+
+
+     /**
+     * Get data from document object
+      * No access control are done
+     * @param \Doc $document Document
+     * @throws Exception
+     * @return mixed
+     */
+    public function getInternal(\Doc $document)
+    {
+        $this->_document = $document;
+        return $this->documentData();
+    }
+
     /**
      * Get ressource
      * @param string $resourceId Resource identifier
@@ -141,6 +156,9 @@ class DocumentCrud extends Crud
             $e = new Exception("API0201", $resourceId, $err);
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
+        }
+        if ($this->_document->mid == 0) {
+        $this->_document->applyMask(\Doc::USEMASKCVVIEW);
         }
         return $this->documentData();
     }
@@ -361,9 +379,7 @@ class DocumentCrud extends Crud
     protected function _getAttributes()
     {
         
-        if ($this->_document->id == 0) {
-            return array();
-        }
+
         if ($this->_document->doctype === "C") {
             return array();
         }
