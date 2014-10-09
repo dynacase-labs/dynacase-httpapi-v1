@@ -13,56 +13,43 @@ abstract class Crud
      * @var RecordReturnMessage[]
      */
     protected $messages = array();
-    /**
-     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
-     */
-    public function addMessage(RecordReturnMessage $message)
+
+    public function __construct()
     {
-        $this->messages[] = $message;
+
     }
-    /**
-     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
-     */
-    public function getMessages()
-    {
-        return $this->messages;
-    }
-    protected static function getHttpMethod()
-    {
-        return strtoupper($_SERVER['REQUEST_METHOD']);
-    }
-    
-    protected function getRessourceIdentifier()
-    {
-        if (isset($_GET["id"])) {
-            return $_GET["id"];
-        }
-        return null;
-    }
-    /**
-     * Update the ressource
-     * @param string $resourceId Resource identifier
-     * @return mixed
-     */
-    abstract public function update($resourceId);
+    //region CRUD part
     /**
      * Create new ressource
      * @return mixed
      */
     abstract public function create();
+
     /**
-     * Get ressource
-     * @param string $resourceId Resource identifier
+     * Read a ressource
+     * @param string|int $resourceId Resource identifier
      * @return mixed
      */
-    abstract public function get($resourceId);
+    abstract public function read($resourceId);
+
+    /**
+     * Update the ressource
+     * @param string|int $resourceId Resource identifier
+     * @return mixed
+     */
+    abstract public function update($resourceId);
+
     /**
      * Delete ressource
-     * @param string $resourceId Resource identifier
+     * @param string|int $resourceId Resource identifier
      * @return mixed
      */
     abstract public function delete($resourceId);
+    //endregion
     /**
+     * Execute the request
+     * Find the CRUD action to execute and execute it
+     *
      * @param array $messages list of messages to send
      * @return mixed data of process
      * @throws Exception
@@ -70,7 +57,7 @@ abstract class Crud
     public function execute(array & $messages = array())
     {
         $method = self::getHttpMethod();
-        
+
         switch ($method) {
             case "PUT":
                 $data = $this->update($this->getRessourceIdentifier());
@@ -81,7 +68,7 @@ abstract class Crud
                 break;
 
             case "GET":
-                $data = $this->get($this->getRessourceIdentifier());
+                $data = $this->read($this->getRessourceIdentifier());
                 break;
 
             case "DELETE":
@@ -93,5 +80,48 @@ abstract class Crud
         }
         $messages = $this->getMessages();
         return $data;
+    }
+
+    /**
+     * Add a message to be sended with the response
+     *
+     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
+     */
+    public function addMessage(RecordReturnMessage $message)
+    {
+        $this->messages[] = $message;
+    }
+
+    /**
+     * Get all the added messages
+     *
+     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * Get the current method
+     *
+     * @return string
+     */
+    protected static function getHttpMethod()
+    {
+        return strtoupper($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * Get the current id of the ressource
+     *
+     * @return null
+     */
+    protected function getRessourceIdentifier()
+    {
+        if (isset($_GET["id"])) {
+            return $_GET["id"];
+        }
+        return null;
     }
 }

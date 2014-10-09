@@ -6,22 +6,69 @@
 */
 namespace Dcp\HttpApi\V1;
 
+use Dcp\HttpApi\V1\DocManager;
+
 class DocumentCrud extends Crud
 {
+
+    const GET_PROPERTIES = "document.properties";
+    const GET_PROPERTY = "document.properties.";
+    const GET_ATTRIBUTES = "document.attributes";
+    const GET_ATTRIBUTE = "document.attributes.";
+    const GET_STRUCTURE = "family.structure";
     /**
      * @var \Doc document instance
      */
     protected $_document = null;
     
-    protected $defaultFields = "document.properties,document.attributes";
+    protected $defaultFields = null;
     protected $returnFields = null;
     protected $valueRender = array();
     protected $propRender = array();
-    protected $fmtCollection = null;
+    protected $formatCollection = null;
     /**
      * @var int document icon width in px
      */
     public $iconSize = 32;
+
+    public function __construct() {
+        parent::__construct();
+        $this->defaultFields = self::GET_PROPERTIES.",".self::GET_ATTRIBUTES;
+    }
+
+    //region CRUD part
+    /**
+     * Create new ressource
+     * @throws Exception
+     * @return mixed
+     */
+    public function create()
+    {
+        $e = new Exception("API0002", __METHOD__);
+        $e->setHttpStatus("501", "Not implemented");
+        throw $e;
+    }
+    /**
+     * Get ressource
+     * @param string $resourceId Resource identifier
+     * @throws Exception
+     * @return mixed
+     */
+    public function read($resourceId)
+    {
+
+        $this->setDocument($resourceId);
+        $err = $this->_document->control("view");
+        if ($err) {
+            $e = new Exception("API0201", $resourceId, $err);
+            $e->setHttpStatus("403", "Forbidden");
+            throw $e;
+        }
+        if ($this->_document->mid == 0) {
+            $this->_document->applyMask(\Doc::USEMASKCVVIEW);
+        }
+        return $this->documentData();
+    }
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -34,16 +81,16 @@ class DocumentCrud extends Crud
         
         $err = $this->_document->canEdit();
         if ($err) {
-            $e = new Exception("API0201", $resourceId);
-            $e->setUserMEssage(___("Update forbiden", "api"));
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
+            $exception = new Exception("API0201", $resourceId, $err);
+            $exception->setUserMEssage(___("Update forbidden", "api"));
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
         }
         
         if ($this->_document->doctype === 'C') {
-            $e = new Exception("API0213", $this->_document->name);
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
+            $exception = new Exception("API0213", $this->_document->name);
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
         }
         
         $newValues = $this->getHttpAttributeValues();
@@ -55,16 +102,17 @@ class DocumentCrud extends Crud
                 $err = $this->_document->setValue($aid, $value, -1, $kindex);
             }
             if ($err) {
-                $e = new Exception("API0211", $this->_document->id, $aid, $err);
-                $e->setUserMEssage(___("Update failed", "api"));
+                $exception = new Exception("API0211", $this->_document->id, $aid, $err);
+                $exception->setHttpStatus("500", "Unable to modify the document");
+                $exception->setUserMEssage(___("Update failed", "api"));
                 $info = array(
                     "id" => $aid,
                     "index" => $kindex,
                     "err" => $err
                 );
                 
-                $e->setData($info);
-                throw $e;
+                $exception->setData($info);
+                throw $exception;
             }
         }
         /**
@@ -72,10 +120,11 @@ class DocumentCrud extends Crud
          */
         $err = $this->_document->store($info);
         if ($err) {
-            $e = new Exception("API0212", $this->_document->id, $err);
-            $e->setUserMEssage(___("Update failed", "api"));
-            $e->setData($info);
-            throw $e;
+            $exception = new Exception("API0212", $this->_document->id, $err);
+            $exception->setHttpStatus("500", "Unable to modify the document");
+            $exception->setUserMEssage(___("Update failed", "api"));
+            $exception->setData($info);
+            throw $exception;
         }
         if ($info->refresh) {
             $message = new RecordReturnMessage();
@@ -93,40 +142,68 @@ class DocumentCrud extends Crud
             $this->addMessage($message);
         }
         $this->_document->addHistoryEntry(___("Updated by HTTP API", "httpapi") , \DocHisto::NOTICE);
-        \Dcp\HttpApi\V1\DocManager::cache()->addDocument($this->_document);
+        DocManager::cache()->addDocument($this->_document);
         
-        return $this->get($this->_document->id);
+        return $this->read($this->_document->id);
     }
     /**
-     * Create new ressource
+     * Delete ressource
+     * @param string $resourceId Resource identifier
      * @throws Exception
      * @return mixed
      */
-    public function create()
+    public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $this->setDocument($resourceId);
+
+        $err = $this->_document->control("delete");
+        if ($err) {
+            $e = new Exception("API0216", $resourceId, $err);
+            $e->setHttpStatus("403", "Forbidden");
+            throw $e;
+        }
+
+        $err = $this->_document->delete();
+        if ($err) {
+            $e = new Exception("API0215", $this->_document->getTitle(), $err);
+            throw $e;
+        }
+        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "httpapi"), \DocHisto::NOTICE);
+        return $this->documentData();
     }
-    
+    //endregion CRUD part
+    /**
+     * Find the current document and set it in the internal options
+     *
+     * @param $resourceId
+     * @throws Exception
+     */
     protected function setDocument($resourceId)
     {
-        $this->_document = \Dcp\HttpApi\V1\DocManager::getDocument($resourceId);
+        $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
             $e = new Exception("API0200", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
+        if ($this->_document->doctype === "Z") {
+            $e = new Exception("API0219", $resourceId);
+            $e->setHttpStatus("404", "Document deleted");
+            throw $e;
+        }
     }
-    
+    /**
+     * Initialize the default fields
+     *
+     * @param $fields
+     * @return $this
+     */
     public function setDefaultFields($fields)
     {
         $this->returnFields = null;
         $this->defaultFields = $fields;
         return $this;
     }
-
-
      /**
      * Get data from document object
       * No access control are done
@@ -141,64 +218,27 @@ class DocumentCrud extends Crud
     }
 
     /**
-     * Get ressource
-     * @param string $resourceId Resource identifier
+     * Analyze the content type and return the values
+     *
+     * @return Array
      * @throws Exception
-     * @return mixed
      */
-    public function get($resourceId)
-    {
-        
-        $this->setDocument($resourceId);
-        $err = $this->_document->control("view");
-        if ($err) {
-            $e = new Exception("API0201", $resourceId, $err);
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
-        }
-        if ($this->_document->mid == 0) {
-        $this->_document->applyMask(\Doc::USEMASKCVVIEW);
-        }
-        return $this->documentData();
-    }
-    /**
-     * Delete ressource
-     * @param string $resourceId Resource identifier
-     * @throws Exception
-     * @return mixed
-     */
-    public function delete($resourceId)
-    {
-        $this->setDocument($resourceId);
-        
-        $err = $this->_document->control("delete");
-        if ($err) {
-            $e = new Exception("API0216", $resourceId, $err);
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
-        }
-        
-        $err = $this->_document->delete();
-        if ($err) {
-            $e = new Exception("API0215", $this->_document->getTitle() , $err);
-            throw $e;
-        }
-        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "httpapi") , \DocHisto::NOTICE);
-        return $this->documentData();
-    }
-    
     protected function getHttpAttributeValues()
     {
         if (preg_match('/(x-www-form-urlencoded|form-data)/', $_SERVER["CONTENT_TYPE"])) {
-            return $this->getPostAttributeValues();
+            return $this->getFormAttributeValues();
         } elseif (preg_match('/application\/json/', $_SERVER["CONTENT_TYPE"])) {
-            
             return $this->getJSONAttributeValues();
         } else {
             throw new Exception("API0003", $_SERVER["CONTENT_TYPE"]);
         }
     }
-    
+    /**
+     * Analyze the json content of the current request and extract values
+     *
+     * @return array
+     * @throws Exception
+     */
     protected function getJSONAttributeValues()
     {
         $body = file_get_contents("php://input");
@@ -215,22 +255,20 @@ class DocumentCrud extends Crud
         $newValues = array();
         foreach ($values as $aid => $value) {
             if (!array_key_exists("value", $value) && is_array($value)) {
-                $mulValues = array();
+                $multipleValues = array();
                 foreach ($value as $singleValue) {
                     
                     if (!array_key_exists("value", $singleValue) && is_array($singleValue)) {
-                        $mul2Values = array();
+                        $multipleSecondLevelValues = array();
                         foreach ($singleValue as $secondVValue) {
-                            $mul2Values[] = $secondVValue["value"];
+                            $multipleSecondLevelValues[] = $secondVValue["value"];
                         }
-                        $mulValues[] = $mul2Values;
-                        //throw new Exception("API0217", $aid, print_r($value, true));
-                        
+                        $multipleValues[] = $multipleSecondLevelValues;
                     } else {
-                        $mulValues[] = $singleValue["value"];
+                        $multipleValues[] = $singleValue["value"];
                     }
                 }
-                $newValues[$aid] = $mulValues;
+                $newValues[$aid] = $multipleValues;
             } else {
                 if (!array_key_exists("value", $value)) {
                     throw new Exception("API0210", $body);
@@ -240,19 +278,30 @@ class DocumentCrud extends Crud
         }
         return $newValues;
     }
-    
-    protected function getPostAttributeValues()
+
+    /**
+     * Analyze the values from the form data
+     *
+     * @return array
+     */
+    protected function getFormAttributeValues()
     {
+        $values = $_POST;
         if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-            parse_str(file_get_contents("php://input") , $_POST);
+            parse_str(file_get_contents("php://input") , $values);
         }
         $newValues = array();
-        foreach ($_POST as $aid => $value) {
-            $newValues[strtolower($aid) ] = $value;
+        foreach ($values as $attrid => $value) {
+            $newValues[strtolower($attrid)] = $value;
         }
         return $newValues;
     }
-    
+
+    /**
+     * Get the list of the properties required
+     *
+     * @return array
+     */
     protected function _getPropertiesId()
     {
         $defaultProperties = array(
@@ -276,20 +325,25 @@ class DocumentCrud extends Crud
             "owner",
             "domainid"
         );
-        if ($this->hasFields("document.properties")) {
+        if ($this->hasFields(self::GET_PROPERTIES)) {
             return $defaultProperties;
         }
         $defaultProperties = array();
         $returnFields = $this->getFields();
-        $subField = "document.property";
+        $subField = self::GET_PROPERTY;
         foreach ($returnFields as $aField) {
             if (strpos($aField, $subField) === 0) {
-                $defaultProperties[] = substr($aField, 18);
+                $defaultProperties[] = substr($aField, mb_strlen(self::GET_PROPERTY));
             }
         }
         return $defaultProperties;
     }
-    
+    /**
+     * Return the array of properties of the current doc
+     *
+     * @return array
+     * @throws Exception
+     */
     protected function _getProperties()
     {
         
@@ -298,7 +352,6 @@ class DocumentCrud extends Crud
         }
         
         if ($this->_document) {
-            
             $propIds = $this->_getPropertiesId();
             foreach ($propIds as $propId) {
                 switch ($propId) {
@@ -365,23 +418,29 @@ class DocumentCrud extends Crud
         return $this->propRender;
     }
     /**
+     * Initialize, cache and return a format collection object
+     *
      * @return \FormatCollection
      */
     protected function getFormatCollection()
     {
-        if (!$this->fmtCollection) {
-            $this->fmtCollection = new \FormatCollection($this->_document);
+        if (!$this->formatCollection) {
+            $this->formatCollection = new \FormatCollection($this->_document);
             // No comma / want root numbers
-            $this->fmtCollection->setDecimalSeparator('.');
-            $this->fmtCollection->mimeTypeIconSize = 20;
-            $this->fmtCollection->useShowEmptyOption = false;
+            $this->formatCollection->setDecimalSeparator('.');
+            $this->formatCollection->mimeTypeIconSize = 20;
+            $this->formatCollection->useShowEmptyOption = false;
         }
-        return $this->fmtCollection;
+        return $this->formatCollection;
     }
-    
+    /**
+     * Get the attributes values
+     *
+     * @return mixed
+     * @throws \Dcp\Fmtc\Exception
+     */
     protected function _getAttributes()
     {
-        
 
         if ($this->_document->doctype === "C") {
             return array();
@@ -389,35 +448,44 @@ class DocumentCrud extends Crud
         if ($this->valueRender) {
             return $this->valueRender[0]["attributes"];
         }
-        $dl = new \DocumentList();
-        $dl->addDocumentIdentifiers(array(
+        $documentList = new \DocumentList();
+        $documentList->addDocumentIdentifiers(array(
             $this->_document->id
         ) , false);
         
-        $fmtCollection = $this->getFormatCollection();
-        $la = $this->_document->getNormalAttributes();
-        foreach ($la as $aid => $attr) {
-            if ($attr->type != "array" && $attr->mvisibility !== "I") {
-                
-                $fmtCollection->addAttribute($aid);
+        $formatCollection = $this->getFormatCollection();
+        $normalAttributes = $this->_document->getNormalAttributes();
+        $filteredAttributes = $this->getAttributeFields();
+        foreach ($normalAttributes as $attrId => $attribute) {
+            if ($attribute->type != "array" && $attribute->mvisibility !== "I") {
+                if (!empty($filteredAttributes) && !in_array($attrId, $filteredAttributes)) {
+                    continue;
+                }
+                $formatCollection->addAttribute($attrId);
             }
         }
-        $this->valueRender = $fmtCollection->render();
+        $this->valueRender = $formatCollection->render();
         $attributes = $this->valueRender[0]["attributes"];
         $nullValue = new \UnknowAttributeValue(null);
-        foreach ($attributes as $k => $v) {
-            if ($v === null) {
-                $oa = $this->_document->getAttribute($k);
-                if ($oa->isMultiple()) {
-                    $attributes[$k] = array();
-                } else {
-                    $attributes[$k] = $nullValue;
+        if (!empty($attributes)) {
+            foreach ($attributes as $attrid => $value) {
+                if ($value === null) {
+                    $objectAttribute = $this->_document->getAttribute($attrid);
+                    if ($objectAttribute->isMultiple()) {
+                        $attributes[$attrid] = array();
+                    } else {
+                        $attributes[$attrid] = $nullValue;
+                    }
                 }
             }
         }
         return ($attributes);
     }
-    
+    /**
+     * Generate the default URI of the current ressource
+     *
+     * @return null|string
+     */
     protected function getUri()
     {
         if ($this->_document) {
@@ -425,7 +493,6 @@ class DocumentCrud extends Crud
                 return sprintf("api/v1/families/%s.json", strtolower($this->_document->name));
             } else {
                 if ($this->_document->doctype === "Z") {
-                    
                     return sprintf("api/v1/trash/%d.json", $this->_document->id);
                 } else {
                     return sprintf("api/v1/documents/%d.json", $this->_document->id);
@@ -434,7 +501,13 @@ class DocumentCrud extends Crud
         }
         return null;
     }
-    
+    /**
+     * Get the restrict fields value
+     *
+     * The restrict fields is used for restrict the return of the get request
+     *
+     * @return array|null
+     */
     protected function getFields()
     {
         if ($this->returnFields === null) {
@@ -451,17 +524,22 @@ class DocumentCrud extends Crud
         }
         return $this->returnFields;
     }
-    
+
+    /**
+     * Check if the current restrict field exist
+     *
+     * @param $fieldId
+     * @param string $subField
+     * @return bool
+     */
     protected function hasFields($fieldId, $subField = '')
     {
-        
         $returnFields = $this->getFields();
         if (in_array($fieldId, $returnFields)) {
             return true;
         }
         
         if ($subField) {
-            $subField.= ".";
             foreach ($returnFields as $aField) {
                 if (strpos($aField, $subField) === 0) {
                     return true;
@@ -471,8 +549,38 @@ class DocumentCrud extends Crud
         
         return false;
     }
+
+    /**
+     * Get the restricted attributes
+     *
+     * @throws Exception
+     * @return array
+     */
+    protected function getAttributeFields() {
+        $prefix = self::GET_ATTRIBUTE;
+        $currentDoc = $this->_document;
+        $fields = $this->getFields();
+        $falseAttribute = array();
+        $attributes = array_filter($fields, function($currentField) use ($prefix){
+            return mb_stripos($currentField, $prefix) === 0 && $currentField !== $prefix;
+        });
+        $attributes = array_unique($attributes);
+        $attributes = array_map(function($currentField) use ($prefix, &$currentDoc, &$falseAttribute) {
+            $attributeId =  str_replace($prefix, "", $currentField);
+            /* @var \Doc $currentDoc */
+            if ($currentDoc->getAttribute($attributeId) === false) {
+                $falseAttribute[] = $attributeId;
+            }
+            return $attributeId;
+        }, $attributes);
+        if (!empty($falseAttribute)) {
+            throw new Exception("API0218",join(" and attribute ", $falseAttribute));
+        }
+        return $attributes;
+    }
     /**
      * Get document data
+     *
      * @throws Exception
      * @return string
      */
@@ -484,17 +592,17 @@ class DocumentCrud extends Crud
             )
         );
         $correctField = false;
-        if ($this->hasFields("document.properties", "document.property")) {
+        if ($this->hasFields(self::GET_PROPERTY, self::GET_PROPERTIES)) {
             $correctField = true;
             $conf["document"]["properties"] = $this->_getProperties();
         }
         
-        if ($this->hasFields("document.attributes", "document.attribute")) {
+        if ($this->hasFields(self::GET_ATTRIBUTES, self::GET_ATTRIBUTE)) {
             $correctField = true;
             $conf["document"]["attributes"] = $this->_getAttributes();
         }
         
-        if ($this->hasFields("family.structure")) {
+        if ($this->hasFields(self::GET_STRUCTURE)) {
             $correctField = true;
             $conf["family"]["structure"] = $this->_getDocumentStructure();
         }
@@ -507,23 +615,27 @@ class DocumentCrud extends Crud
         }
         return $conf;
     }
-    
+    /**
+     * Generate the structure of the document
+     *
+     * @return array
+     */
     protected function _getDocumentStructure()
     {
-        $la = $this->_document->getNormalAttributes();
+        $normalAttributes = $this->_document->getNormalAttributes();
         
-        $t = array();
+        $return = array();
         $order = 0;
-        foreach ($la as $oattr) {
-            if ($oattr->type === "array" || $oattr->mvisibility === "I") {
+        foreach ($normalAttributes as $attribute) {
+            if ($attribute->type === "array" || $attribute->mvisibility === "I") {
                 continue;
             }
-            $parentAttr = $oattr->fieldSet;
+            $parentAttribute = $attribute->fieldSet;
             $parentIds = array();
-            while ($parentAttr && $parentAttr->id != 'FIELD_HIDDENS') {
-                $parentId = $parentAttr->id;
+            while ($parentAttribute && $parentAttribute->id != 'FIELD_HIDDENS') {
+                $parentId = $parentAttribute->id;
                 $parentIds[] = $parentId;
-                $parentAttr = $parentAttr->fieldSet;
+                $parentAttribute = $parentAttribute->fieldSet;
             }
             $parentIds = array_reverse($parentIds);
             $previousId = null;
@@ -531,11 +643,11 @@ class DocumentCrud extends Crud
             
             foreach ($parentIds as $aid) {
                 if ($previousId === null) {
-                    if (!isset($t[$aid])) {
-                        $t[$aid] = $this->getAttributeInfo($this->_document->getAttribute($aid) , $order++);
-                        $t[$aid]["content"] = array();
+                    if (!isset($return[$aid])) {
+                        $return[$aid] = $this->getAttributeInfo($this->_document->getAttribute($aid) , $order++);
+                        $return[$aid]["content"] = array();
                     }
-                    $target = & $t[$aid]["content"];
+                    $target = & $return[$aid]["content"];
                 } else {
                     if (!isset($target[$aid])) {
                         $target[$aid] = $this->getAttributeInfo($this->_document->getAttribute($aid) , $order++);
@@ -545,73 +657,78 @@ class DocumentCrud extends Crud
                 }
                 $previousId = $aid;
             }
-            $target[$oattr->id] = $this->getAttributeInfo($oattr, $order++);
+            $target[$attribute->id] = $this->getAttributeInfo($attribute, $order++);
         }
-        return $t;
+        return $return;
     }
-    
-    protected function getAttributeInfo(\BasicAttribute $oa, $order = 0)
+    /**
+     * Get the attribute info
+     *
+     * @param \BasicAttribute $attribute
+     * @param int $order
+     * @return array
+     */
+    protected function getAttributeInfo(\BasicAttribute $attribute, $order = 0)
     {
-        
         $info = array(
-            "id" => $oa->id,
-            "visibility" => $oa->mvisibility,
-            "label" => $oa->getLabel() ,
-            "type" => $oa->type,
+            "id" => $attribute->id,
+            "visibility" => $attribute->mvisibility,
+            "label" => $attribute->getLabel() ,
+            "type" => $attribute->type,
             "logicalOrder" => $order,
-            "multiple" => $oa->isMultiple() ,
-            "options" => $oa->getOptions()
+            "multiple" => $attribute->isMultiple() ,
+            "options" => $attribute->getOptions()
         );
         
-        if (isset($oa->needed)) {
+        if (isset($attribute->needed)) {
             /**
-             * @var \NormalAttribute $oa;
+             * @var \NormalAttribute $attribute;
              */
-            $info["needed"] = $oa->needed;
+            $info["needed"] = $attribute->needed;
         }
-        if (!empty($oa->phpfile) && $oa->type !== "enum") {
+        if (!empty($attribute->phpfile) && $attribute->type !== "enum") {
             /**
-             * @var \NormalAttribute $oa;
+             * @var \NormalAttribute $attribute;
              */
-            if ((strlen($oa->phpfile) > 1) && ($oa->phpfunc)) {
-                $oParse = new \parseFamilyFunction();
-                $strucFunc = $oParse->parse($oa->phpfunc);
-                foreach ($strucFunc->outputs as $k => $output) {
+            if ((strlen($attribute->phpfile) > 1) && ($attribute->phpfunc)) {
+                $familyParser = new \ParseFamilyFunction();
+                $structureFunction = $familyParser->parse($attribute->phpfunc);
+                foreach ($structureFunction->outputs as $k => $output) {
                     if (substr($output, 0, 2) === "CT") {
-                        unset($strucFunc->outputs[$k]);
+                        unset($structureFunction->outputs[$k]);
                     } else {
-                        $strucFunc->outputs[$k] = strtolower($output);
+                        $structureFunction->outputs[$k] = strtolower($output);
                     }
                 }
-                $info["helpOutputs"] = $strucFunc->outputs;
+                $info["helpOutputs"] = $structureFunction->outputs;
             }
         }
         
-        if ($oa->inArray()) {
+        if ($attribute->inArray()) {
             if ($this->_document->doctype === "C") {
                 /**
                  * @var \DocFam $family
                  */
                 $family = $this->_document;
-                $defVal = $family->getDefValue($oa->id);
+                $defaultValue = $family->getDefValue($attribute->id);
             } else {
-                $defVal = $this->_document->getFamilyDocument()->getDefValue($oa->id);
+                $defaultValue = $this->_document->getFamilyDocument()->getDefValue($attribute->id);
             }
-            $fmtDefValue = $this->getFormatCollection()->getInfo($oa, $defVal, $this->_document);
-            if ($fmtDefValue) {
-                if ($oa->isMultipleInArray()) {
-                    foreach ($fmtDefValue as $aDefvalue) {
+            $formatDefaultValue = $this->getFormatCollection()->getInfo($attribute, $defaultValue, $this->_document);
+            if ($formatDefaultValue) {
+                if ($attribute->isMultipleInArray()) {
+                    foreach ($formatDefaultValue as $aDefvalue) {
                         $info["defaultValue"][] = $aDefvalue[0];
                     }
                 } else {
-                    $info["defaultValue"] = $fmtDefValue[0];
+                    $info["defaultValue"] = $formatDefaultValue[0];
                 }
             }
         }
         
-        if ($oa->type === "enum") {
-            if ($oa->getOption("eformat") !== "auto") {
-                $enums = $oa->getEnumLabel();
+        if ($attribute->type === "enum") {
+            if ($attribute->getOption("eformat") !== "auto") {
+                $enums = $attribute->getEnumLabel();
                 $enumItems = array();
                 foreach ($enums as $key => $label) {
                     $enumItems[] = array(
@@ -621,7 +738,7 @@ class DocumentCrud extends Crud
                 }
                 $info["enumItems"] = $enumItems;
             }
-            $info["enumUri"] = sprintf("api/v1/enums/%s/%s", $this->_document->fromname, $oa->id);
+            $info["enumUri"] = sprintf("api/v1/enums/%s/%s", $this->_document->fromname, $attribute->id);
         }
         
         return $info;

@@ -29,6 +29,8 @@ class RecordReturn
      */
     public $exceptionMessage = '';
     /**
+     * Set the http status code
+     *
      * @param int $code HTTP status code like (200, 404, ...)
      * @param string $message simple text message
      */
@@ -39,6 +41,7 @@ class RecordReturn
     }
     /**
      * Add new message to return structure
+     *
      * @param RecordReturnMessage $message
      */
     public function addMessage(RecordReturnMessage $message)
@@ -47,13 +50,17 @@ class RecordReturn
     }
     /**
      * Add data to return structure
+     *
      * @param mixed $data
      */
     public function setData($data)
     {
         $this->data = $data;
     }
-    
+
+    /**
+     * Send the message
+     */
     public function send()
     {
         header(sprintf('HTTP/1.0 %d %s', $this->httpStatus, str_replace(array(

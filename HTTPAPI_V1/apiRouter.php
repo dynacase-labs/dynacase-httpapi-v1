@@ -19,9 +19,8 @@ function jsonFatalShutdown()
             
             $return = new Dcp\HttpApi\V1\RecordReturn();
             $return->setHttpStatusCode(500, "Dynacase Fatal Error");
-            $return->code = $error["type"];
             $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-            $message->contentText = $error["message"];
+            $message->contentText = $error["type"]." ".$error["message"];
             $message->type = $message::ERROR;
             $return->addMessage($message);
             $return->success=false;
@@ -128,42 +127,42 @@ try {
     
     $return->send();
 }
-catch(\Dcp\HttpApi\V1\Exception $e) {
+catch(\Dcp\HttpApi\V1\Exception $exception) {
     
     $return = new Dcp\HttpApi\V1\RecordReturn();
     
-    $return->setHttpStatusCode($e->getHttpStatus() , $e->getHttpMessage());
-    $return->exceptionMessage = $e->getDcpMessage();
+    $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
+    $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
     $message = new Dcp\HttpApi\V1\RecordReturnMessage();
     
-    $message->contentText = $e->getUserMessage();
+    $message->contentText = $exception->getUserMessage();
     if (!$message->contentText) {
-        $message->contentText = $e->getDcpMessage();
+        $message->contentText = $exception->getDcpMessage();
     }
     $message->type = $message::ERROR;
-    $message->code = $e->getDcpCode();
-    $message->data = $e->getData();
+    $message->code = $exception->getDcpCode();
+    $message->data = $exception->getData();
     $return->addMessage($message);
     $return->send();
 }
-catch(\Dcp\Exception $e) {
+catch(\Dcp\Exception $exception) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
     $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-    $message->contentText = $e->getDcpMessage();
+    $message->contentText = $exception->getDcpMessage();
     $message->type = $message::ERROR;
-    $message->code = $e->getDcpCode();
+    $message->code = $exception->getDcpCode();
     $return->addMessage($message);
     $return->send();
 }
-catch(\Exception $e) {
+catch(\Exception $exception) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
     $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-    $message->contentText = $e->getMessage();
+    $message->contentText = $exception->getMessage();
     $message->type = $message::ERROR;
     $message->code = "API0001";
     $return->addMessage($message);
