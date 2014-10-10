@@ -7,6 +7,8 @@
 
 namespace Dcp\HttpApi\V1;
 
+use Dcp\HttpApi\V1\DocManager;
+
 class EnumCrud extends Crud
 {
     
@@ -19,58 +21,65 @@ class EnumCrud extends Crud
     protected $enumid = null;
     protected $keywordFilter = '';
     protected $operatorFilter = self::containsOperator;
-    
+
+    /**
+     * @param string|int $familyId
+     * @throws Exception
+     */
     public function __construct($familyId)
     {
-        $this->family = \Dcp\HttpApi\V1\DocManager::getFamily($familyId);
+        parent::__construct();
+        $this->family = DocManager::getFamily($familyId);
         if (!$this->family) {
-            $e = new Exception("API0200", $familyId);
-            $e->setHttpStatus("404", "Family not found");
-            throw $e;
+            $exception = new Exception("API0200", $familyId);
+            $exception->setHttpStatus("404", "Family not found");
+            throw $exception;
         }
         $this->enumid = $this->getRessourceIdentifier();
         $this->parseParameters();
     }
-    
-    protected function parseParameters()
+    //region CRUD part
+    /**
+     * Create new ressource
+     * @throws Exception
+     * @return mixed
+     */
+    public function create()
     {
-        if (isset($_GET["keyword"])) {
-            $this->setKeywordFilter($_GET["keyword"]);
-        }
-        if (isset($_GET["operator"])) {
-            $this->setOperatorFilter($_GET["operator"]);
-        }
+        $e = new Exception("API0002", __METHOD__);
+        $e->setHttpStatus("501", "Not implemented");
+        throw $e;
     }
     /**
      * Get ressource
+     *
      * @param string $resourceId Resource identifier
      * @throws Exception
      * @return mixed
      */
-    public function get($resourceId)
+    public function read($resourceId)
     {
-        
-        $oa = $this->family->getAttribute($resourceId);
-        if (!$oa) {
+        $attribute = $this->family->getAttribute($resourceId);
+        if (!$attribute) {
             throw new Exception("API0400", $resourceId, $this->family->name);
         }
-        if ($oa->type !== "enum") {
-            throw new Exception("API0401", $resourceId, $oa->type, $this->family->name);
+        if ($attribute->type !== "enum") {
+            throw new Exception("API0401", $resourceId, $attribute->type, $this->family->name);
         }
         /**
-         * @var \NormalAttribute $oa
+         * @var \NormalAttribute $attribute
          */
-        $enums = $oa->getEnumLabel();
+        $enums = $attribute->getEnumLabel();
         $info = array(
             "uri" => sprintf("enums/%s/%s", $this->family->name, $resourceId) ,
-            "label" => $oa->getLabel()
+            "label" => $attribute->getLabel()
         );
         
         $filterKeyword = $this->getFilterKeyword();
-        $filterOp = $this->getOperatorFilter();
+        $filterOperator = $this->getOperatorFilter();
         $pattern = '';
         if ($filterKeyword !== "") {
-            switch ($filterOp) {
+            switch ($filterOperator) {
                 case self::containsOperator:
                     $pattern = sprintf("/%s/i", str_replace("/", "\\/", preg_quote($filterKeyword)));
                     break;
@@ -85,7 +94,6 @@ class EnumCrud extends Crud
         foreach ($enums as $key => $label) {
             $good = true;
             if ($filterKeyword !== "") {
-                
                 if (!preg_match($pattern, $label, $reg)) {
                     $good = false;
                 }
@@ -99,14 +107,58 @@ class EnumCrud extends Crud
             }
         }
         $info["filter"] = array(
-            "operator" => $filterOp,
+            "operator" => $filterOperator,
             "keyword" => $filterKeyword
         );
         $info["enumItems"] = $enumItems;
         
         return $info;
     }
-    
+
+    /**
+     * Update the ressource
+     * @param string $resourceId Resource identifier
+     * @throws Exception
+     * @return mixed
+     */
+    public function update($resourceId)
+    {
+        $e = new Exception("API0002", __METHOD__);
+        $e->setHttpStatus("501", "Not implemented");
+        throw $e;
+    }
+    /**
+     * Delete ressource
+     * @param string $resourceId Resource identifier
+     * @throws Exception
+     * @return mixed
+     */
+    public function delete($resourceId)
+    {
+        $e = new Exception("API0002", __METHOD__);
+        $e->setHttpStatus("501", "Not implemented");
+        throw $e;
+    }
+    //endregion CRUD part
+    /**
+     * Analyze the parameters of the request
+     *
+     * @throws Exception
+     */
+    protected function parseParameters()
+    {
+        if (isset($_GET["keyword"])) {
+            $this->setKeywordFilter($_GET["keyword"]);
+        }
+        if (isset($_GET["operator"])) {
+            $this->setOperatorFilter($_GET["operator"]);
+        }
+    }
+    /**
+     * Register the keyword
+     *
+     * @param $word
+     */
     protected function setKeywordFilter($word)
     {
         if ($word === null) {
@@ -115,6 +167,8 @@ class EnumCrud extends Crud
         $this->keywordFilter = $word;
     }
     /**
+     * Return the operator filter
+     *
      * @return string
      */
     public function getOperatorFilter()
@@ -122,6 +176,8 @@ class EnumCrud extends Crud
         return $this->operatorFilter;
     }
     /**
+     * Set the operator filter
+     *
      * @param string $operatorFilter
      * @throws Exception
      */
@@ -136,45 +192,14 @@ class EnumCrud extends Crud
         }
         $this->operatorFilter = $operatorFilter;
     }
-    
+    /**
+     * Return the filter keyword
+     *
+     * @return string
+     */
     protected function getFilterKeyword()
     {
-        
         return $this->keywordFilter;
     }
-    /**
-     * Delete ressource
-     * @param string $resourceId Resource identifier
-     * @throws Exception
-     * @return mixed
-     */
-    public function delete($resourceId)
-    {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
-    }
-    /**
-     * Update the ressource
-     * @param string $resourceId Resource identifier
-     * @throws Exception
-     * @return mixed
-     */
-    public function update($resourceId)
-    {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
-    }
-    /**
-     * Create new ressource
-     * @throws Exception
-     * @return mixed
-     */
-    public function create()
-    {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
-    }
+
 }

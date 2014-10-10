@@ -7,6 +7,8 @@
 
 namespace Dcp\HttpApi\V1;
 
+use Dcp\HttpApi\V1\DocManager;
+
 class FamilyDocumentCrud extends DocumentCrud
 {
     /**
@@ -15,11 +17,11 @@ class FamilyDocumentCrud extends DocumentCrud
     protected $_family = null;
     public function __construct($familyId)
     {
-        $this->_family = \Dcp\HttpApi\V1\DocManager::getFamily($familyId);
+        $this->_family = DocManager::getFamily($familyId);
         if ($this->_family === null) {
-            $e = new Exception("API0207", $familyId);
-            $e->setHttpStatus(404, "Family not found");
-            throw $e;
+            $exception = new Exception("API0207", $familyId);
+            $exception->setHttpStatus(404, "Family not found");
+            throw $exception;
         }
     }
 }

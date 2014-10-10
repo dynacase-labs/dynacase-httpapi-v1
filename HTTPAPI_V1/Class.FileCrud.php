@@ -9,68 +9,18 @@ namespace Dcp\HttpApi\V1;
 
 class FileCrud extends Crud
 {
-    /**
-     * Update the ressource
-     * @param string $resourceId Resource identifier
-     * @return mixed
-     */
-    public function update($resourceId)
-    {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
-    }
-    
-    public static function getUploadLimit()
-    {
-        /**
-         * Converts shorthands like "2M” or "512K” to bytes
-         *
-         * @param $size
-         * @return mixed
-         */
-        $normalize = function ($size)
-        {
-            if (preg_match('/^([\d\.]+)([KMG])$/i', $size, $match)) {
-                $pos = array_search($match[2], array(
-                    "K",
-                    "M",
-                    "G"
-                ));
-                if ($pos !== false) {
-                    $size = $match[1] * pow(1024, $pos + 1);
-                }
-            }
-            return $size;
-        };
-        $max_upload = $normalize(ini_get('upload_max_filesize'));
-        
-        $max_post = (ini_get('post_max_size') == 0) ? function ()
-        {
-            throw new Exception('Check Your php.ini settings');
-        } : $normalize(ini_get('post_max_size'));
-        
-        $memory_limit = (ini_get('memory_limit') == - 1) ? $max_post : $normalize(ini_get('memory_limit'));
-        
-        if ($memory_limit < $max_post || $memory_limit < $max_upload) return $memory_limit;
-        
-        if ($max_post < $max_upload) return $max_post;
-        
-        $maxFileSize = min($max_upload, $max_post, $memory_limit);
-        return $maxFileSize;
-    }
+    //region CRUD part
     /**
      * Create new ressource
+     * @throws Exception
      * @return mixed
      */
     public function create()
     {
-        // print_r(__METHOD__);
         if (count($_FILES) === 0) {
-            
-            $e = new Exception("API0302", "");
-            $e->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "api") , $this->getUploadLimit()/1024/1024));
-            throw $e;
+            $exception = new Exception("API0302", "");
+            $exception->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "api") , $this->getUploadLimit()/1024/1024));
+            throw $exception;
         }
         $file = current($_FILES);
         include_once ('FDL/Lib.Vault.php');
@@ -78,22 +28,22 @@ class FileCrud extends Crud
             $vaultid = \Dcp\VaultManager::storeTemporaryFile($file["tmp_name"], $file["name"]);
             $info = \Dcp\VaultManager::getFileInfo($vaultid);
             if ($info === null) {
-                $e = new Exception("API0301", $file["name"]);
-                throw $e;
+                $exception = new Exception("API0301", $file["name"]);
+                throw $exception;
             }
         }
-        catch(\Dcp\Exception $e) {
-            $ne = new Exception("API0300", $e->getDcpMessage());
-            switch ($e->getDcpCode()) {
+        catch(\Dcp\Exception $exception) {
+            $newException = new Exception("API0300", $exception->getDcpMessage());
+            switch ($exception->getDcpCode()) {
                 case "VAULT0002":
-                    $ne->setUserMessage(___("Cannot store file because vault size limit is reached", "api"));
+                    $newException->setUserMessage(___("Cannot store file because vault size limit is reached", "api"));
                     break;
 
                 default:
-                    $ne->setUserMessage($e->getDcpMessage());
+                    $newException->setUserMessage($exception->getDcpMessage());
             }
             
-            throw $ne;
+            throw $newException;
         }
         
         $iconFile = getIconMimeFile($info->mime_s);
@@ -122,20 +72,37 @@ class FileCrud extends Crud
             )
         );
     }
+
     /**
      * Get ressource
      * @param string $resourceId Resource identifier
+     * @throws Exception
      * @return mixed
      */
-    public function get($resourceId)
+    public function read($resourceId)
     {
         $e = new Exception("API0002", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
+    /**
+     * Update the ressource
+     * @param string $resourceId Resource identifier
+     * @throws Exception
+     * @return mixed
+     */
+    public function update($resourceId)
+    {
+        $e = new Exception("API0002", __METHOD__);
+        $e->setHttpStatus("501", "Not implemented");
+        throw $e;
+    }
+
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
+     * @throws Exception
      * @return mixed
      */
     public function delete($resourceId)
@@ -143,5 +110,43 @@ class FileCrud extends Crud
         $e = new Exception("API0002", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
+    }
+
+    //endregion CRUD part
+    public static function getUploadLimit()
+    {
+        /**
+         * Converts shorthands like "2M” or "512K” to bytes
+         *
+         * @param $size
+         * @return mixed
+         */
+        $normalize = function ($size) {
+            if (preg_match('/^([\d\.]+)([KMG])$/i', $size, $match)) {
+                $pos = array_search($match[2], array(
+                    "K",
+                    "M",
+                    "G"
+                ));
+                if ($pos !== false) {
+                    $size = $match[1] * pow(1024, $pos + 1);
+                }
+            }
+            return $size;
+        };
+        $max_upload = $normalize(ini_get('upload_max_filesize'));
+
+        $max_post = (ini_get('post_max_size') == 0) ? function () {
+            throw new Exception('Check Your php.ini settings');
+        } : $normalize(ini_get('post_max_size'));
+
+        $memory_limit = (ini_get('memory_limit') == -1) ? $max_post : $normalize(ini_get('memory_limit'));
+
+        if ($memory_limit < $max_post || $memory_limit < $max_upload) return $memory_limit;
+
+        if ($max_post < $max_upload) return $max_post;
+
+        $maxFileSize = min($max_upload, $max_post, $memory_limit);
+        return $maxFileSize;
     }
 }

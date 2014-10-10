@@ -22,9 +22,13 @@ namespace {
          */
         const API0003 = 'Content type "%s" not supported';
         /**
-         * @errorCode in case ao incorrect url
+         * @errorCode in case of incorrect url
          */
         const API0004 = 'No ressource detected';
+        /**
+         * @errorCode in case of accept unknown
+         */
+        const API0005 = 'Unable to return the type %s';
         /**
          * @errorCode Url no use a implemted ressource
          */
@@ -110,6 +114,14 @@ namespace {
          */
         const API0217 = 'Record fail. Json object attributes "%s" (multiple) no contain "value" fields : "%s"';
         /**
+         * @errorCode Document attribute "%s" not known
+         */
+        const API0218 = 'Document attribute "%s" not known';
+        /**
+         * @errorCode Document "%s" deleted
+         */
+        const API0219 = 'Document "%s" deleted';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const API0300 = 'File Record fail.  : "%s"';
@@ -172,6 +184,8 @@ namespace Dcp\HttpApi\V1 {
             return $this->data;
         }
         /**
+         * Add
+         *
          * @param null $data
          */
         public function setData($data)
@@ -179,6 +193,8 @@ namespace Dcp\HttpApi\V1 {
             $this->data = $data;
         }
         /**
+         * Return the http message
+         *
          * @return string
          */
         public function getHttpMessage()
@@ -186,19 +202,23 @@ namespace Dcp\HttpApi\V1 {
             return $this->httpMessage;
         }
         /**
-         * @param int $httpStatus
-         */
-        public function setHttpStatus($httpStatus, $httpMessage)
-        {
-            $this->httpStatus = $httpStatus;
-            $this->httpMessage = $httpMessage;
-        }
-        /**
+         * Return the http status
+         *
          * @return int
          */
         public function getHttpStatus()
         {
             return $this->httpStatus;
+        }
+        /**
+         *
+         * @param int $httpStatus
+         * @param string $httpMessage
+         */
+        public function setHttpStatus($httpStatus, $httpMessage = "")
+        {
+            $this->httpStatus = $httpStatus;
+            $this->httpMessage = $httpMessage;
         }
         /**
          * for beautifier

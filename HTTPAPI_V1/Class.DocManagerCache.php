@@ -28,13 +28,10 @@ class Cache
         if (empty($document->id)) {
             throw new Exception("APIDM0200");
         }
-        //if (($document->doctype != 'C') || (count($document->attributes->attr) > 0)) {
         if (($document->doctype != 'C') || (count($document->attributes->attr) > 0)) {
             if (!self::getLocalCache()->set($document->id, $document)) {
                 throw new Exception("APIDM0201", $document->getTitle() , $document->id);
             }
-            //printf("<b>CACHE </b> %s [#%s] %s <br/>\n",  $document->name,$document->id, $document->title);
-            
         }
         
         return $document;

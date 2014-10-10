@@ -7,7 +7,7 @@
 
 namespace Dcp\HttpApi\V1;
 
-class apiRouterV1
+class ApiRouterV1
 {
     protected static $resource = null;
     protected static $resource_id = null;
@@ -16,45 +16,53 @@ class apiRouterV1
     
     private static function parseAcceptHeader()
     {
-        /* TODO:
-         * - Parse "Accept:" HTTP header to infer prefered output format
-        */
-        if (!isset($_SERVER['HTTP_ACCEPT'])) {
-            return null;
+        $accept = isset($_SERVER['HTTP_ACCEPT']) ? mb_strtolower($_SERVER['HTTP_ACCEPT']) : "application/json";
+        $accept = explode(",", $accept);
+        $accept = array_map(function($header) {
+            return preg_replace("/;.*/", "", $header);
+        }, $accept);
+
+        if (!in_array("application/json", $accept) && !in_array("*/*", $accept)) {
+            throw new Exception("API0005", join(",", $accept));
         }
-        return null;
+        return "application/json";
     }
+
+    /**
+     * Analyze the path to identify the elements of the request
+     *
+     * @throws Exception
+     */
     private static function parseRequest()
     {
         $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
         $pathInfo = ltrim($pathInfo, '/');
         /* Extract extension for format */
-        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $m)) {
-            self::$resource_format = $m['ext'];
-            $pathInfo = $m['path'];
+        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
+            self::$resource_format = $matches['ext'];
+            $pathInfo = $matches['path'];
         }
         if (self::$resource_format === null) {
             self::$resource_format = self::parseAcceptHeader();
         }
         /* Parse path elements */
-        $elmts = preg_split(':/:', $pathInfo);
-        self::$resource = array_shift($elmts);
+        $elements = preg_split(':/:', $pathInfo);
+        self::$resource = array_shift($elements);
         if (self::$resource === null) {
             throw new Exception("API0100");
         }
         
         switch (self::$resource) {
             case 'documents':
-                self::$resource_id = array_shift($elmts);
+                self::$resource_id = array_shift($elements);
                 break;
-
             case 'enums':
-                self::$subresource = array_shift($elmts);
-                self::$resource_id = array_shift($elmts);
+                self::$subresource = array_shift($elements);
+                self::$resource_id = array_shift($elements);
                 break;
             case 'families':
-                self::$resource_id = array_shift($elmts);
-                self::$subresource = array_shift($elmts);
+                self::$resource_id = array_shift($elements);
+                self::$subresource = array_shift($elements);
                 break;
         }
         if (self::$resource_id !== null) {
@@ -62,6 +70,8 @@ class apiRouterV1
         }
     }
     /**
+     * Execute the request
+     *
      * @param array $messages
      * @return mixed
      * @throws Exception
@@ -75,7 +85,6 @@ class apiRouterV1
         switch (self::$resource) {
             case "documents":
                 $crud = new DocumentCrud();
-                
                 break;
 
             case "families":

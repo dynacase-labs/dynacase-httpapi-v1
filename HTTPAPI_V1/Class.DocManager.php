@@ -15,6 +15,7 @@ class DocManager
      * @var DocManager\MemoryCache $localCache
      */
     static protected $localCache = null;
+
     /**
      * Get document object identified by its identifier
      * @param int|string $documentIdentifier
@@ -32,7 +33,6 @@ class DocManager
             if ($useCache && self::cache()->isDocumentIdInCache($id)) {
                 $cacheDocument = self::cache()->getDocumentFromCache($id);
                 if ($cacheDocument && $cacheDocument->id == $id) {
-                    //if (self::$trace) printf("GET %s %s <br/>\n", $cacheDocument->name, $cacheDocument->title);
                     return $cacheDocument;
                 }
             }
@@ -50,7 +50,6 @@ class DocManager
                 $doc = new $classname(self::getDbAccess() , $id);
                 
                 if (self::$trace) {
-                    //printf("%d,<b>SET $useCache</b> %s [#%s] %s <br/>\n", $c++, $doc->name,$id, $doc->title);
                     self::logTrace($doc->id);
                 }
                 return $doc;
@@ -68,9 +67,10 @@ class DocManager
     
     private static function logTrace($docid, $newTraceFile = '')
     {
+        $tempDir = sys_get_temp_dir();
         static $traceIds = array();
         static $traceLog = array();
-        static $traceFile = "/tmp/docManager.log";
+        $traceFile = $tempDir."/docManager.log";
         if ($newTraceFile != '') {
             $traceFile = $newTraceFile;
         }
