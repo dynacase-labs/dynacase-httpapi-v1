@@ -26,7 +26,7 @@ JSON;
 
 $app_const = array(
     "INIT" => "yes",
-    "VERSION" => "@VERSION@-@RELEASE@",
+    "VERSION" => "1.0.0-0",
     "SYSTEM_CRUD_CLASS" => array(
         "val" => $json_system_crud,
         "descr" => N_("rest:default crud class"),
