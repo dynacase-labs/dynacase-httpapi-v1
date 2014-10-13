@@ -5,9 +5,13 @@
  * @package Dcp\Pu
 */
 
-namespace Dcp\Pu\Api;
+namespace Dcp\Pu\HttpApi\V1\Test;
 
-require_once 'APITEST/PU_TestCaseApi.php';
+use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocumentCrud;
+use Dcp\HttpApi\V1\Exception;
+
+require_once 'HTTPAPI_V1_TEST/PU_TestCaseApi.php';
 
 class TestDocumentCrud extends TestCaseApi
 {
@@ -31,14 +35,14 @@ class TestDocumentCrud extends TestCaseApi
      */
     public function testGetDocument($name, $fields, array $expectedValues)
     {
-        $doc = \Dcp\HttpApi\V1\DocManager::getDocument($name);
+        $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         
-        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        $dc = new DocumentCrud();
         if ($fields !== null) {
             $dc->setDefaultFields($fields);
         }
-        $data = $dc->get($name);
+        $data = $dc->read($name);
         
         $this->verifyData($data, $expectedValues, $doc);
     }
@@ -109,7 +113,7 @@ class TestDocumentCrud extends TestCaseApi
             ) ,
             array(
                 "TST_APIB1",
-                "document.property.name,document.property.title",
+                "document.properties.name,document.properties.title",
                 array(
                     "document.properties.title" => "Un élément",
                     "document.properties.name" => "TST_APIB1",
@@ -177,11 +181,11 @@ class TestDocumentCrud extends TestCaseApi
      */
     public function testSetDocument($name, array $setValues, array $expectedValues)
     {
-        $doc = \Dcp\HttpApi\V1\DocManager::getDocument($name);
+        $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         
         $this->simulatePostRecord($setValues, "POST");
-        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        $dc = new DocumentCrud();
         
         $data = $dc->update($name);
         
@@ -258,12 +262,12 @@ class TestDocumentCrud extends TestCaseApi
     $famName, array $setValues)
     {
         $this->simulatePostRecord($setValues, "POST");
-        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        $dc = new DocumentCrud();
         try {
             $dc->create();
             $this->assertFalse(true, "An exception must occur");
         }
-        catch(\Dcp\HttpApi\V1\Exception $e) {
+        catch(Exception $e) {
             $this->assertEquals(501, $e->getHttpStatus());
         }
     }
@@ -288,21 +292,21 @@ class TestDocumentCrud extends TestCaseApi
     public function testdeleteDocument($name, array $expectedValues)
     {
         self::resetDocumentCache();
-        $doc = \Dcp\HttpApi\V1\DocManager::getDocument($name);
+        $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
         $this->assertTrue($doc->isAlive() , "Document $name is already deleted");
         
-        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        $dc = new DocumentCrud();
         
         $data = $dc->delete($name);
         $this->verifyData($data, $expectedValues, $doc);
         
-        $dc = new \Dcp\HttpApi\V1\DocumentCrud();
+        $dc = new DocumentCrud();
         try {
-            $dc->get($name);
+            $dc->read($name);
             $this->assertFalse(true, "An exception must occur");
         }
-        catch(\Dcp\HttpApi\V1\Exception $e) {
+        catch(Exception $e) {
             $this->assertEquals(404, $e->getHttpStatus());
         }
     }

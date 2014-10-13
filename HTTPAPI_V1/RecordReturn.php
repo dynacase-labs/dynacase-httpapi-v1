@@ -29,6 +29,10 @@ class RecordReturn
      */
     public $exceptionMessage = '';
     /**
+     * http headers
+     */
+    public $headers = array();
+    /**
      * Set the http status code
      *
      * @param int $code HTTP status code like (200, 404, ...)
@@ -59,6 +63,17 @@ class RecordReturn
     }
 
     /**
+     * Add http headers
+     *
+     * @param array $headers
+     * @internal param mixed $data
+     */
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
+    /**
      * Send the message
      */
     public function send()
@@ -68,6 +83,9 @@ class RecordReturn
             "\r"
         ) , "", $this->httpMessage)));
         header('Content-Type: application/json');
+        foreach($this->headers as $key => $currentHeader) {
+            header(sprintf("%s : %s", $key, $currentHeader));
+        }
         
         print json_encode($this);
     }

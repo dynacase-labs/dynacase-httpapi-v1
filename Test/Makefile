@@ -3,5 +3,5 @@
 #
 # ============================================
 
-SUBDIR= control input examples
+SUBDIR= HTTPAPI_V1_TEST
 include $(utildir)/PubRule

@@ -7,6 +7,8 @@
 
 namespace Dcp\HttpApi\V1;
 
+use Dcp\VaultManager;
+
 class FileCrud extends Crud
 {
     //region CRUD part
@@ -25,8 +27,8 @@ class FileCrud extends Crud
         $file = current($_FILES);
         include_once ('FDL/Lib.Vault.php');
         try {
-            $vaultid = \Dcp\VaultManager::storeTemporaryFile($file["tmp_name"], $file["name"]);
-            $info = \Dcp\VaultManager::getFileInfo($vaultid);
+            $vaultid = VaultManager::storeTemporaryFile($file["tmp_name"], $file["name"]);
+            $info = VaultManager::getFileInfo($vaultid);
             if ($info === null) {
                 $exception = new Exception("API0301", $file["name"]);
                 throw $exception;

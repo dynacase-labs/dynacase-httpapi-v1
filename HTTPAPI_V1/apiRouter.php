@@ -9,6 +9,7 @@ chdir('..'); // need to be in root directory to be authenticated
 require_once ('WHAT/autoload.php');
 require_once ('WHAT/Lib.Main.php');
 
+//region initErrorHandling
 ini_set("display_error", "off");
 function jsonFatalShutdown()
 {
@@ -20,7 +21,7 @@ function jsonFatalShutdown()
             $return = new Dcp\HttpApi\V1\RecordReturn();
             $return->setHttpStatusCode(500, "Dynacase Fatal Error");
             $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-            $message->contentText = $error["type"]." ".$error["message"];
+            $message->contentText = join(" ", $error);
             $message->type = $message::ERROR;
             $return->addMessage($message);
             $return->success=false;
@@ -30,7 +31,9 @@ function jsonFatalShutdown()
 }
 
 register_shutdown_function('jsonFatalShutdown');
+//endregion initErrorHandling
 
+//region Authentification
 if (file_exists('maintenance.lock')) {
     
     $return = new Dcp\HttpApi\V1\RecordReturn();
@@ -96,18 +99,23 @@ if (empty($_SERVER['PHP_AUTH_USER'])) {
     $return->send();
     exit();
 }
+//endregion Authentification
+//Initialize return object
+$return = new Dcp\HttpApi\V1\RecordReturn();
 try {
     global $action;
     WhatInitialisation(AuthenticatorManager::$session);
     $action->name = "HTTPAPI_V1";
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
+    //Routing
     $data = Dcp\HttpApi\V1\apiRouterV1::execute($messages);
-    $return = new Dcp\HttpApi\V1\RecordReturn();
+
     $return->setData($data);
     foreach ($messages as $message) {
         $return->addMessage($message);
     }
+    // Handle DCP warning message
     $warnings = $action->parent->getWarningMsg();
     foreach ($warnings as $warning) {
         $message = new Dcp\HttpApi\V1\RecordReturnMessage();
@@ -116,6 +124,7 @@ try {
         $return->addMessage($message);
     }
     $action->parent->clearWarningMsg();
+    // Handle DCP log message
     $warnings = $action->parent->getLogMsg();
     foreach ($warnings as $warning) {
         $message = new Dcp\HttpApi\V1\RecordReturnMessage();
@@ -124,18 +133,15 @@ try {
         $return->addMessage($message);
     }
     $action->parent->clearLogMsg();
-    
-    $return->send();
 }
+//region ErrorCatching
 catch(\Dcp\HttpApi\V1\Exception $exception) {
-    
-    $return = new Dcp\HttpApi\V1\RecordReturn();
-    
+
     $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
     $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-    
+    $message->contentText = $exception->getDcpMessage();
     $message->contentText = $exception->getUserMessage();
     if (!$message->contentText) {
         $message->contentText = $exception->getDcpMessage();
@@ -143,8 +149,10 @@ catch(\Dcp\HttpApi\V1\Exception $exception) {
     $message->type = $message::ERROR;
     $message->code = $exception->getDcpCode();
     $message->data = $exception->getData();
+    $message->uri = $exception->getURI();
+    $return->setHeaders($exception->getHeaders());
+
     $return->addMessage($message);
-    $return->send();
 }
 catch(\Dcp\Exception $exception) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
@@ -155,7 +163,6 @@ catch(\Dcp\Exception $exception) {
     $message->type = $message::ERROR;
     $message->code = $exception->getDcpCode();
     $return->addMessage($message);
-    $return->send();
 }
 catch(\Exception $exception) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
@@ -166,6 +173,8 @@ catch(\Exception $exception) {
     $message->type = $message::ERROR;
     $message->code = "API0001";
     $return->addMessage($message);
-    $return->send();
 }
+//endregion ErrorCatching
+//Send the HTTP return
+$return->send();
 

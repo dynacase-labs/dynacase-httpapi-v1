@@ -7,7 +7,36 @@
 
 global $app_const;
 
+$json_system_logger = <<<'JSON'
+[
+    "\\Dcp\\Logger\\HTTPAPI_V1\\Dcp"
+]
+JSON;
+
+$json_system_crud = <<<'JSON'
+[
+    { "order" : 100, "class" : "\\Dcp\\HttpApi\\V1\\DocumentCrud", "regExp" : "/^\\/documents\\/?(?P<identifier>[^\\/]*)$/"},
+    { "order" : 100, "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud", "regExp" : "/^\\/enums\\/(?P<familyId>[^\\/]*)\\/?(?P<identifier>[^\\/]*)$/"},
+    { "order" : 100, "class" : "\\Dcp\\HttpApi\\V1\\FamilyCrud", "regExp" : "/^\\/families\\/(?P<identifier>[^\\/]*)\\/?$/"},
+    { "order" : 200, "class" : "\\Dcp\\HttpApi\\V1\\FamilyDocumentCrud", "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)$/"},
+    { "order" : 100, "class" : "\\Dcp\\HttpApi\\V1\\Trash", "regExp" : "/^\\/trash\\/?(?P<identifier>[^\\/]*)$/"},
+    { "order" : 100, "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud", "regExp" : "/^\\/enums\\/(?P<familyId>[^\\/]*)\\/(?P<identifier>[^\\/]*)$/"}
+]
+JSON;
+
 $app_const = array(
     "INIT" => "yes",
-    "VERSION" => "@VERSION@-@RELEASE@"
+    "VERSION" => "@VERSION@-@RELEASE@",
+    "SYSTEM_CRUD_CLASS" => array(
+        "val" => $json_system_crud,
+        "descr" => N_("rest:default crud class"),
+        "kind" => "static"
+    ),
+    "CUSTOM_CRUD_CLASS" => "[]",
+    "SYSTEM_LOGGER" => array(
+        "val" => $json_system_logger,
+        "descr" => N_("rest:default logger class"),
+        "kind" => "static"
+    ),
+    "CUSTOM_LOGGER" => "[]"
 );

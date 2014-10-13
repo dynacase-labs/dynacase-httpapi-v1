@@ -5,17 +5,19 @@
  * @package FDL
 */
 
-namespace Dcp\Pu\Api;
+namespace Dcp\Pu\HttpApi\V1\Test;
+
+use Dcp\HttpApi\V1\DocManager;
 
 require_once 'DCPTEST/PU_testcase_dcp_commonfamily.php';
 
 class TestCaseApi extends \Dcp\Pu\TestCaseDcpCommonFamily
 {
     
-    protected static $testDirectory = "APITEST";
+    protected static $testDirectory = "HTTPAPI_V1_TEST";
 
     protected function resetDocumentCache() {
         parent::resetDocumentCache();
-        \Dcp\HttpApi\V1\DocManager::cache()->clear();
+        DocManager::cache()->clear();
     }
 }

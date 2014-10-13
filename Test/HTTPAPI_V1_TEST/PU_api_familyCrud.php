@@ -5,14 +5,13 @@
  * @package FDL
 */
 
-namespace Dcp\Pu\Api;
-/**
- * @author Anakeen
- * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
- * @package Dcp\Pu
- */
+namespace Dcp\Pu\HttpApi\V1\Test;
 
-require_once 'APITEST/PU_TestCaseApi.php';
+use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\Exception;
+use Dcp\HttpApi\V1\FamilyCrud;
+
+require_once 'HTTPAPI_V1_TEST/PU_TestCaseApi.php';
 
 class TestFamilyCrud extends TestCaseApi
 {
@@ -36,14 +35,14 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testgetFamily($name, $fields, array $expectedValues)
     {
-        $doc = \Dcp\HttpApi\V1\DocManager::getFamily($name);
+        $doc = DocManager::getFamily($name);
         $this->assertTrue($doc !== null, "Family $name not found");
         
-        $dc = new \Dcp\HttpApi\V1\FamilyCrud();
+        $dc = new FamilyCrud();
         if ($fields !== null) {
             $dc->setDefaultFields($fields);
         }
-        $data = $dc->get($name);
+        $data = $dc->read($name);
         
         foreach ($expectedValues as $dkey => $expectValue) {
             $keys = explode(".", $dkey);
@@ -110,12 +109,12 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testUpdateFamily($name)
     {
-        $dc = new \Dcp\HttpApi\V1\FamilyCrud();
+        $dc = new FamilyCrud();
         try {
             $dc->update($name);
             $this->assertFalse(true, "An exception must occur");
         }
-        catch(\Dcp\HttpApi\V1\Exception $e) {
+        catch(Exception $e) {
             $this->assertEquals(501, $e->getHttpStatus());
         }
     }
@@ -133,12 +132,12 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testDeleteFamily($name)
     {
-        $dc = new \Dcp\HttpApi\V1\FamilyCrud();
+        $dc = new FamilyCrud();
         try {
             $dc->update($name);
             $this->assertFalse(true, "An exception must occur");
         }
-        catch(\Dcp\HttpApi\V1\Exception $e) {
+        catch(Exception $e) {
             $this->assertEquals(501, $e->getHttpStatus());
         }
     }
@@ -158,7 +157,7 @@ class TestFamilyCrud extends TestCaseApi
     public function testCreateDocument($famName, array $setValues)
     {
         $this->simulatePostRecord($setValues, "POST", $famName);
-        $dc = new \Dcp\HttpApi\V1\FamilyCrud();
+        $dc = new FamilyCrud();
         
         $data = $dc->create();
         

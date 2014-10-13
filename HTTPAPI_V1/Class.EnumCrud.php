@@ -18,25 +18,18 @@ class EnumCrud extends Crud
      * @var \DocFam
      */
     protected $family = null;
-    protected $enumid = null;
     protected $keywordFilter = '';
     protected $operatorFilter = self::containsOperator;
+    protected $enumid = null;
 
     /**
-     * @param string|int $familyId
+     *
      * @throws Exception
      */
-    public function __construct($familyId)
+    public function __construct()
     {
         parent::__construct();
-        $this->family = DocManager::getFamily($familyId);
-        if (!$this->family) {
-            $exception = new Exception("API0200", $familyId);
-            $exception->setHttpStatus("404", "Family not found");
-            throw $exception;
-        }
-        $this->enumid = $this->getRessourceIdentifier();
-        $this->parseParameters();
+
     }
     //region CRUD part
     /**
@@ -61,10 +54,14 @@ class EnumCrud extends Crud
     {
         $attribute = $this->family->getAttribute($resourceId);
         if (!$attribute) {
-            throw new Exception("API0400", $resourceId, $this->family->name);
+            $exception = new Exception("API0400", $resourceId, $this->family->name);
+            $exception->setHttpStatus("404", "Attribute $resourceId not found");
+            throw $exception;
         }
         if ($attribute->type !== "enum") {
-            throw new Exception("API0401", $resourceId, $attribute->type, $this->family->name);
+            $exception = new Exception("API0401", $resourceId, $attribute->type, $this->family->name);
+            $exception->setHttpStatus("403", "Attribute $resourceId is not an enum");
+            throw $exception;
         }
         /**
          * @var \NormalAttribute $attribute
@@ -140,6 +137,7 @@ class EnumCrud extends Crud
         throw $e;
     }
     //endregion CRUD part
+
     /**
      * Analyze the parameters of the request
      *
@@ -200,6 +198,19 @@ class EnumCrud extends Crud
     protected function getFilterKeyword()
     {
         return $this->keywordFilter;
+    }
+
+    public function setParameters(Array $array) {
+        parent::setParameters($array);
+        $familyId = isset($this->parameters["familyId"]) ? $this->parameters["familyId"] : false;
+        $this->family = DocManager::getFamily($this->parameters["familyId"]);
+        if (!$this->family) {
+            $exception = new Exception("API0200", $familyId);
+            $exception->setHttpStatus("404", "Family not found");
+            throw $exception;
+        }
+        $this->enumid = $this->parameters["identifier"];
+        $this->parseParameters();
     }
 
 }
