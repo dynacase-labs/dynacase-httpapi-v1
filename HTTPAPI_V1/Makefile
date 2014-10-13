@@ -6,6 +6,8 @@ include $(utildir)/PubRule
 
 DISTFILES = Makefile  $(appname).app $(appname)_init.php.in 
 
+SUBDIR= Images
+
 .PHONY: publish
 
 $(pubdir)/api:
