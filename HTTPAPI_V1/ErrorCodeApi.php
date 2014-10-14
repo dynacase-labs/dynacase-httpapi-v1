@@ -42,6 +42,10 @@ namespace {
          */
         const API0102 = 'Method "%s" not implemented';
         /**
+         * @errorCode The ressource is not avalaible
+         */
+        const API0103 = 'Action "%s" is not usable';
+        /**
          * @errorCode The ressource is not found
          */
         const API0200 = 'Document "%s" not found';
@@ -122,6 +126,10 @@ namespace {
          */
         const API0219 = 'Document "%s" deleted';
         /**
+         * @errorCode Document "%s" deleted
+         */
+        const API0220 = 'Document "%s" is not a document of the family';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const API0300 = 'File Record fail.  : "%s"';
@@ -162,6 +170,8 @@ namespace Dcp\HttpApi\V1 {
         protected $httpMessage = "Dcp Exception";
         protected $data = null;
         protected $userMessage = '';
+        protected $uri = "";
+        protected $headers = array();
         /**
          * @param string $userMessage
          */
@@ -219,6 +229,46 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->httpStatus = $httpStatus;
             $this->httpMessage = $httpMessage;
+        }
+
+        /**
+         * Add an URI indication
+         *
+         * @param $uri
+         */
+        public function setURI($uri)
+        {
+            $this->uri = $uri;
+        }
+
+        /**
+         * Return the URI indication
+         *
+         */
+        public function getURI()
+        {
+            return $this->uri;
+        }
+
+        /**
+         * Add an header
+         *
+         * @param $key
+         * @param $value
+         * @internal param $uri
+         */
+        public function addHeader($key, $value)
+        {
+            $this->headers[$key] = $value;
+        }
+
+        /**
+         * Return the URI indication
+         *
+         */
+        public function getHeaders()
+        {
+            return $this->headers;
         }
         /**
          * for beautifier

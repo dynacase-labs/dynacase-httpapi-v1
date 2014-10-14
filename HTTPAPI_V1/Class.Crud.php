@@ -10,9 +10,21 @@ namespace Dcp\HttpApi\V1;
 abstract class Crud
 {
     /**
+     * Regexp that check if the current path can be processed by the current CRUD
+     *
+     * @var string
+     */
+    /**
      * @var RecordReturnMessage[]
      */
     protected $messages = array();
+    protected $path = null;
+    /**
+     * Request parameters extracted from the URI
+     *
+     * @var array
+     */
+    protected $parameters = array();
 
     public function __construct()
     {
@@ -60,7 +72,7 @@ abstract class Crud
 
         switch ($method) {
             case "PUT":
-                $data = $this->update($this->getRessourceIdentifier());
+                $data = $this->update($this->parameters["identifier"]);
                 break;
 
             case "POST":
@@ -68,11 +80,11 @@ abstract class Crud
                 break;
 
             case "GET":
-                $data = $this->read($this->getRessourceIdentifier());
+                $data = $this->read($this->parameters["identifier"]);
                 break;
 
             case "DELETE":
-                $data = $this->delete($this->getRessourceIdentifier());
+                $data = $this->delete($this->parameters["identifier"]);
                 break;
 
             default:
@@ -113,15 +125,13 @@ abstract class Crud
     }
 
     /**
-     * Get the current id of the ressource
+     * Set context parameters
      *
-     * @return null
+     * @param array $parameters
      */
-    protected function getRessourceIdentifier()
-    {
-        if (isset($_GET["id"])) {
-            return $_GET["id"];
-        }
-        return null;
+    public function setParameters(Array $parameters) {
+        $this->parameters = $parameters;
     }
+
+
 }

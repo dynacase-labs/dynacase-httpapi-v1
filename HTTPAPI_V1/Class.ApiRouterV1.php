@@ -9,16 +9,32 @@ namespace Dcp\HttpApi\V1;
 
 class ApiRouterV1
 {
-    protected static $resource = null;
-    protected static $resource_id = null;
-    protected static $resource_format = null;
-    protected static $subresource = null;
-    
-    private static function parseAcceptHeader()
+    protected static $path = null;
+    protected static $returnType = null;
+
+    protected static function extractExtension()
+    {
+        $extension = false;
+
+        $pathInfo = static::$path;
+        /* Extract extension for format */
+        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
+            $extension = $matches['ext'];
+            static::$path = $matches['path'];
+        }
+        if ($extension === "json" || $extension === false) {
+            $format = "application/json";
+        } else {
+            throw new Exception("API0005", $extension);
+        }
+        return $format;
+    }
+
+    protected static function parseAcceptHeader()
     {
         $accept = isset($_SERVER['HTTP_ACCEPT']) ? mb_strtolower($_SERVER['HTTP_ACCEPT']) : "application/json";
         $accept = explode(",", $accept);
-        $accept = array_map(function($header) {
+        $accept = array_map(function ($header) {
             return preg_replace("/;.*/", "", $header);
         }, $accept);
 
@@ -28,47 +44,46 @@ class ApiRouterV1
         return "application/json";
     }
 
-    /**
-     * Analyze the path to identify the elements of the request
-     *
-     * @throws Exception
-     */
-    private static function parseRequest()
+    protected static function identifyCRUD()
     {
-        $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
-        $pathInfo = ltrim($pathInfo, '/');
-        /* Extract extension for format */
-        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
-            self::$resource_format = $matches['ext'];
-            $pathInfo = $matches['path'];
+        $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_CRUD_CLASS"), true);
+        $customCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CUSTOM_CRUD_CLASS"), true);
+        usort($systemCrud, function ($value1, $value2) {
+            return $value1["order"] < $value2["order"];
+        });
+        usort($customCrud, function ($value1, $value2) {
+            return $value1["order"] < $value2["order"];
+        });
+
+        $customFound = false;
+        foreach ($customCrud as $currentCrud) {
+            $param = array();
+            if (preg_match($currentCrud["regExp"], static::$path, $param) === 1) {
+                $currentCrud["param"] = $param;
+                $customFound = $currentCrud;
+            }
         }
-        if (self::$resource_format === null) {
-            self::$resource_format = self::parseAcceptHeader();
+        $systemFound = false;
+        foreach ($systemCrud as $currentCrud) {
+            $param = array();
+            if (preg_match($currentCrud["regExp"], static::$path, $param) === 1) {
+                $currentCrud["param"] = $param;
+                $customFound = $currentCrud;
+            }
         }
-        /* Parse path elements */
-        $elements = preg_split(':/:', $pathInfo);
-        self::$resource = array_shift($elements);
-        if (self::$resource === null) {
-            throw new Exception("API0100");
+        if ($systemFound === false && $customFound === false) {
+            throw new Exception("API0004");
         }
-        
-        switch (self::$resource) {
-            case 'documents':
-                self::$resource_id = array_shift($elements);
-                break;
-            case 'enums':
-                self::$subresource = array_shift($elements);
-                self::$resource_id = array_shift($elements);
-                break;
-            case 'families':
-                self::$resource_id = array_shift($elements);
-                self::$subresource = array_shift($elements);
-                break;
+        $crudFound = $systemFound;
+        if ($systemFound !== false && $customCrud !== false && $customFound["order"] < $systemFound["order"]) {
+            $crudFound = $customFound;
         }
-        if (self::$resource_id !== null) {
-            $_GET['id'] = self::$resource_id;
+        if ($crudFound === false) {
+            $crudFound = $customFound;
         }
+        return $crudFound;
     }
+
     /**
      * Execute the request
      *
@@ -78,45 +93,17 @@ class ApiRouterV1
      */
     public static function execute(array & $messages = array())
     {
-        self::parseRequest();
-        if (self::$resource === null) {
-            throw new Exception("API0100");
+        $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+        static::$path = $pathInfo;
+        static::$returnType = static::extractExtension();
+        if (static::$returnType === false) {
+            static::$returnType = static::parseAcceptHeader();
         }
-        switch (self::$resource) {
-            case "documents":
-                $crud = new DocumentCrud();
-                break;
-
-            case "families":
-                $familyIdentifier = self::$subresource;
-                if ($familyIdentifier) {
-                    $crud = new FamilyDocumentCrud($familyIdentifier);
-                } else {
-                    $crud = new FamilyCrud();
-                }
-                break;
-
-            case "files":
-                $crud = new FileCrud();
-                break;
-
-            case "enums":
-                $enumIdentifier = self::$subresource;
-                $crud = new EnumCrud($enumIdentifier);
-                break;
-
-            case "trash":
-                $e = new Exception("API0101", self::$resource);
-                $e->setHttpStatus(501, "Not implemented");
-                throw $e;
-                break;
-
-            default:
-                $e = new Exception("API0101", self::$resource);
-                $e->setHttpStatus(501, "Not implemented");
-                throw $e;
-        }
-        $a = $crud->execute($messages);
-        return $a;
+        $identifiedCrud = self::identifyCRUD();
+        $crud = new $identifiedCrud["class"]();
+        /* @var Crud $crud */
+        $crud->setParameters($identifiedCrud["param"]);
+        $return = $crud->execute($messages);
+        return $return;
     }
 }

@@ -18,9 +18,7 @@
     </post-install>
 
     <pre-upgrade>
-        <check type="syscommand" command="xmllint">
-            <label lang="en">Check "xmllint". To check xml files</label>
-        </check>
+
     </pre-upgrade>
 
     <post-upgrade>

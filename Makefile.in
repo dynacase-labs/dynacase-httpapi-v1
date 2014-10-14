@@ -22,10 +22,10 @@ include $(localBuildRule)/localBuildRule
 .PHONY: publish-test webinst-test webinst clean
 
 publish-test:
-	make -C Test publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=APITEST
+	make -C Test publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=HTTPAPI_V1_TEST
 
 webinst-test:
-	make -C Test webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=APITEST
+	make -C Test webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-test VERSION=$(VERSION) appname=HTTPAPI_V1_TEST
 	mv Test/*.webinst .
 
 webinst: webinst-test

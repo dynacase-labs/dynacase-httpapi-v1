@@ -16,6 +16,7 @@ class DocumentCrud extends Crud
     const GET_ATTRIBUTES = "document.attributes";
     const GET_ATTRIBUTE = "document.attributes.";
     const GET_STRUCTURE = "family.structure";
+
     /**
      * @var \Doc document instance
      */
@@ -56,7 +57,6 @@ class DocumentCrud extends Crud
      */
     public function read($resourceId)
     {
-
         $this->setDocument($resourceId);
         $err = $this->_document->control("view");
         if ($err) {
@@ -189,6 +189,7 @@ class DocumentCrud extends Crud
         if ($this->_document->doctype === "Z") {
             $e = new Exception("API0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
+            $e->setURI(sprintf("api/v1/trash/%d.json", $this->_document->id));
             throw $e;
         }
     }
