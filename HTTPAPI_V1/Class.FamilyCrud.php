@@ -47,7 +47,7 @@ class FamilyCrud extends DocumentCrud
 
     protected function setFamily()
     {
-        $familyId = isset($this->parameters["familyId"]) ? $this->parameters["familyId"] : false;
+        $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
 
         $this->_family = DocManager::getFamily($familyId);
         if ($this->_family === null) {

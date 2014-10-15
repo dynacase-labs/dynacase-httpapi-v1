@@ -9,6 +9,10 @@ namespace Dcp\HttpApi\V1;
 
 abstract class Crud
 {
+    const CREATE = "CREATE";
+    const READ = "READ";
+    const UPDATE = "UPDATE";
+    const DELETE = "DELETE";
     /**
      * Regexp that check if the current path can be processed by the current CRUD
      *
@@ -24,7 +28,14 @@ abstract class Crud
      *
      * @var array
      */
-    protected $parameters = array();
+    protected $urlParameters = array();
+
+    /**
+     * Request parameters extracted from the content of the request
+     *
+     * @var array
+     */
+    protected $contentParameters = array();
 
     public function __construct()
     {
@@ -66,25 +77,25 @@ abstract class Crud
      * @return mixed data of process
      * @throws Exception
      */
-    public function execute(array & $messages = array())
+    public function execute($method, array & $messages = array())
     {
-        $method = self::getHttpMethod();
 
         switch ($method) {
-            case "PUT":
-                $data = $this->update($this->parameters["identifier"]);
-                break;
 
-            case "POST":
+            case "CREATE":
                 $data = $this->create();
                 break;
 
-            case "GET":
-                $data = $this->read($this->parameters["identifier"]);
+            case "READ":
+                $data = $this->read($this->urlParameters["identifier"]);
+                break;
+
+            case "UPDATE":
+                $data = $this->update($this->urlParameters["identifier"]);
                 break;
 
             case "DELETE":
-                $data = $this->delete($this->parameters["identifier"]);
+                $data = $this->delete($this->urlParameters["identifier"]);
                 break;
 
             default:
@@ -115,22 +126,20 @@ abstract class Crud
     }
 
     /**
-     * Get the current method
-     *
-     * @return string
-     */
-    protected static function getHttpMethod()
-    {
-        return strtoupper($_SERVER['REQUEST_METHOD']);
-    }
-
-    /**
-     * Set context parameters
+     * Set url context parameters
      *
      * @param array $parameters
      */
-    public function setParameters(Array $parameters) {
-        $this->parameters = $parameters;
+    public function setUrlParameters(Array $parameters) {
+        $this->urlParameters = $parameters;
+    }
+
+    public function setContentParameters(Array $parameters) {
+        $this->contentParameters = $parameters;
+    }
+
+    public function getEtagInfo() {
+        return null;
     }
 
 

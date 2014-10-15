@@ -14,6 +14,7 @@ class Trash extends DocumentCrud {
 
     /**
      * Create new ressource
+     * @throws Exception
      * @return mixed
      */
     public function create() {
@@ -25,6 +26,7 @@ class Trash extends DocumentCrud {
     /**
      * Update the ressource
      * @param string|int $resourceId Resource identifier
+     * @throws Exception
      * @return mixed
      */
     public function update($resourceId) {
@@ -36,6 +38,7 @@ class Trash extends DocumentCrud {
     /**
      * Delete ressource
      * @param string|int $resourceId Resource identifier
+     * @throws Exception
      * @return mixed
      */
     public function delete($resourceId) {

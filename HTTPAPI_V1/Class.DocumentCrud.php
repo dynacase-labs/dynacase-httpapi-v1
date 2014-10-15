@@ -93,7 +93,7 @@ class DocumentCrud extends Crud
             throw $exception;
         }
         
-        $newValues = $this->getHttpAttributeValues();
+        $newValues = $this->contentParameters;
         foreach ($newValues as $aid => $value) {
             $kindex = - 1;
             if ($value === null or $value === '') {
@@ -216,86 +216,6 @@ class DocumentCrud extends Crud
     {
         $this->_document = $document;
         return $this->documentData();
-    }
-
-    /**
-     * Analyze the content type and return the values
-     *
-     * @return Array
-     * @throws Exception
-     */
-    protected function getHttpAttributeValues()
-    {
-        if (preg_match('/(x-www-form-urlencoded|form-data)/', $_SERVER["CONTENT_TYPE"])) {
-            return $this->getFormAttributeValues();
-        } elseif (preg_match('/application\/json/', $_SERVER["CONTENT_TYPE"])) {
-            return $this->getJSONAttributeValues();
-        } else {
-            throw new Exception("API0003", $_SERVER["CONTENT_TYPE"]);
-        }
-    }
-    /**
-     * Analyze the json content of the current request and extract values
-     *
-     * @return array
-     * @throws Exception
-     */
-    protected function getJSONAttributeValues()
-    {
-        $body = file_get_contents("php://input");
-        $dataDocument = json_decode($body, true);
-        if ($dataDocument === null) {
-            throw new Exception("API0208", $body);
-        }
-        if (!isset($dataDocument["document"]["attributes"]) || !is_array($dataDocument["document"]["attributes"])) {
-            
-            throw new Exception("API0209", $body);
-        }
-        $values = $dataDocument["document"]["attributes"];
-        
-        $newValues = array();
-        foreach ($values as $aid => $value) {
-            if (!array_key_exists("value", $value) && is_array($value)) {
-                $multipleValues = array();
-                foreach ($value as $singleValue) {
-                    
-                    if (!array_key_exists("value", $singleValue) && is_array($singleValue)) {
-                        $multipleSecondLevelValues = array();
-                        foreach ($singleValue as $secondVValue) {
-                            $multipleSecondLevelValues[] = $secondVValue["value"];
-                        }
-                        $multipleValues[] = $multipleSecondLevelValues;
-                    } else {
-                        $multipleValues[] = $singleValue["value"];
-                    }
-                }
-                $newValues[$aid] = $multipleValues;
-            } else {
-                if (!array_key_exists("value", $value)) {
-                    throw new Exception("API0210", $body);
-                }
-                $newValues[$aid] = $value["value"];
-            }
-        }
-        return $newValues;
-    }
-
-    /**
-     * Analyze the values from the form data
-     *
-     * @return array
-     */
-    protected function getFormAttributeValues()
-    {
-        $values = $_POST;
-        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-            parse_str(file_get_contents("php://input") , $values);
-        }
-        $newValues = array();
-        foreach ($values as $attrid => $value) {
-            $newValues[strtolower($attrid)] = $value;
-        }
-        return $newValues;
     }
 
     /**
@@ -512,8 +432,8 @@ class DocumentCrud extends Crud
     protected function getFields()
     {
         if ($this->returnFields === null) {
-            if (!empty($_GET["fields"])) {
-                $fields = $_GET["fields"];
+            if (!empty($this->contentParameters["fields"])) {
+                $fields = $this->contentParameters["fields"];
             } else {
                 $fields = $this->defaultFields;
             }
@@ -743,5 +663,9 @@ class DocumentCrud extends Crud
         }
         
         return $info;
+    }
+
+    public function getEtagInfo() {
+
     }
 }

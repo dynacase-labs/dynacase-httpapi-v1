@@ -10,6 +10,7 @@ namespace Dcp\Pu\HttpApi\V1\Test;
 use Dcp\HttpApi\V1\DocManager;
 use Dcp\HttpApi\V1\Exception;
 use Dcp\HttpApi\V1\FamilyCrud;
+use Dcp\HttpApi\V1\FamilyDocumentCrud;
 
 require_once 'HTTPAPI_V1_TEST/PU_TestCaseApi.php';
 
@@ -156,9 +157,9 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testCreateDocument($famName, array $setValues)
     {
-        $this->simulatePostRecord($setValues, "POST", $famName);
-        $dc = new FamilyCrud();
-        
+        $dc = new FamilyDocumentCrud();
+        $dc->setUrlParameters(array("familyId" => $famName));
+        $dc->setContentParameters($setValues);
         $data = $dc->create();
         
         foreach ($setValues as $aid => $value) {
@@ -197,14 +198,5 @@ class TestFamilyCrud extends TestCaseApi
                 )
             )
         );
-    }
-    protected function simulatePostRecord(array $values, $method, $ressourceId)
-    {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $_SERVER["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
-        $_GET["id"] = $ressourceId;
-        foreach ($values as $k => $v) {
-            $_POST[$k] = $v;
-        }
     }
 }

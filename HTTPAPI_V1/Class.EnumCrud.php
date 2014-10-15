@@ -145,11 +145,11 @@ class EnumCrud extends Crud
      */
     protected function parseParameters()
     {
-        if (isset($_GET["keyword"])) {
-            $this->setKeywordFilter($_GET["keyword"]);
+        if (isset($this->contentParameters["keyword"])) {
+            $this->setKeywordFilter($this->contentParameters["keyword"]);
         }
-        if (isset($_GET["operator"])) {
-            $this->setOperatorFilter($_GET["operator"]);
+        if (isset($this->contentParameters["operator"])) {
+            $this->setOperatorFilter($this->contentParameters["operator"]);
         }
     }
     /**
@@ -200,16 +200,16 @@ class EnumCrud extends Crud
         return $this->keywordFilter;
     }
 
-    public function setParameters(Array $array) {
-        parent::setParameters($array);
-        $familyId = isset($this->parameters["familyId"]) ? $this->parameters["familyId"] : false;
-        $this->family = DocManager::getFamily($this->parameters["familyId"]);
+    public function setUrlParameters(Array $array) {
+        parent::setUrlParameters($array);
+        $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
+        $this->family = DocManager::getFamily($this->urlParameters["familyId"]);
         if (!$this->family) {
             $exception = new Exception("API0200", $familyId);
             $exception->setHttpStatus("404", "Family not found");
             throw $exception;
         }
-        $this->enumid = $this->parameters["identifier"];
+        $this->enumid = $this->urlParameters["identifier"];
         $this->parseParameters();
     }
 
