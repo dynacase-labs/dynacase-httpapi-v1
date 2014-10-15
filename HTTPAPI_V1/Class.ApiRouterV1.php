@@ -75,7 +75,7 @@ class ApiRouterV1
             throw new Exception("API0004");
         }
         $crudFound = $systemFound;
-        if ($systemFound !== false && $customCrud !== false && $customFound["order"] < $systemFound["order"]) {
+        if ($systemFound !== false && $customCrud !== false && $customFound["order"] >= $systemFound["order"]) {
             $crudFound = $customFound;
         }
         if ($crudFound === false) {
