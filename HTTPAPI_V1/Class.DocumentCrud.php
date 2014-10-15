@@ -82,7 +82,7 @@ class DocumentCrud extends Crud
         $err = $this->_document->canEdit();
         if ($err) {
             $exception = new Exception("API0201", $resourceId, $err);
-            $exception->setUserMEssage(___("Update forbidden", "api"));
+            $exception->setUserMEssage(___("Update forbidden", "HTTPAPI_V1"));
             $exception->setHttpStatus("403", "Forbidden");
             throw $exception;
         }
@@ -104,7 +104,7 @@ class DocumentCrud extends Crud
             if ($err) {
                 $exception = new Exception("API0211", $this->_document->id, $aid, $err);
                 $exception->setHttpStatus("500", "Unable to modify the document");
-                $exception->setUserMEssage(___("Update failed", "api"));
+                $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
                 $info = array(
                     "id" => $aid,
                     "index" => $kindex,
@@ -122,13 +122,13 @@ class DocumentCrud extends Crud
         if ($err) {
             $exception = new Exception("API0212", $this->_document->id, $err);
             $exception->setHttpStatus("500", "Unable to modify the document");
-            $exception->setUserMEssage(___("Update failed", "api"));
+            $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
             $exception->setData($info);
             throw $exception;
         }
         if ($info->refresh) {
             $message = new RecordReturnMessage();
-            $message->contentText = ___("Document information", "api");
+            $message->contentText = ___("Document information", "HTTPAPI_V1");
             $message->contentHtml = $info->refresh;
             $message->type = $message::MESSAGE;
             $message->code = "refresh";
@@ -141,7 +141,7 @@ class DocumentCrud extends Crud
             $message->code = "store";
             $this->addMessage($message);
         }
-        $this->_document->addHistoryEntry(___("Updated by HTTP API", "httpapi") , \DocHisto::NOTICE);
+        $this->_document->addHistoryEntry(___("Updated by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
         DocManager::cache()->addDocument($this->_document);
         
         return $this->read($this->_document->id);
@@ -168,7 +168,7 @@ class DocumentCrud extends Crud
             $e = new Exception("API0215", $this->_document->getTitle(), $err);
             throw $e;
         }
-        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "httpapi"), \DocHisto::NOTICE);
+        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "HTTPAPI_V1"), \DocHisto::NOTICE);
         return $this->documentData();
     }
     //endregion CRUD part

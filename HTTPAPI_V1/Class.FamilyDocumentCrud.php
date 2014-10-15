@@ -46,7 +46,7 @@ class FamilyDocumentCrud extends DocumentCrud
             $exception->setData($info);
             throw $exception;
         }
-        $this->_document->addHistoryEntry(___("Create by HTTP API", "httpapi"), \DocHisto::NOTICE);
+        $this->_document->addHistoryEntry(___("Create by HTTP API", "HTTPAPI_V1"), \DocHisto::NOTICE);
         DocManager::cache()->addDocument($this->_document);
 
         return $this->read($this->_document->id);
