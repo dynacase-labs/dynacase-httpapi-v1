@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-26 10:43+0200\n"
+"POT-Creation-Date: 2014-10-15 11:20+0200\n"
 "PO-Revision-Date: 2014-08-26 10:50+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
@@ -16,16 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-
-msgid "Access to http api getter"
-msgstr ""
-
-msgid "Access to http api setter"
-msgstr ""
-
 msgctxt "api"
 msgid "Cannot store file because vault size limit is reached"
-msgstr "Enregistrement du fichier impossible car il n'y a plus de place dans les coffres de fichiers"
+msgstr ""
+"Enregistrement du fichier impossible car il n'y a plus de place dans les "
+"coffres de fichiers"
 
 msgctxt "httpapi"
 msgid "Create by HTTP API"
@@ -44,7 +39,31 @@ msgctxt "api"
 msgid "File not recorded, File size transfert limited to %d Mb"
 msgstr "Fichier non enregistré, Taille de transfert limité à %d Mo"
 
-msgid "Http Api"
+msgid "HTTPAPI_V1:Access to http api creation"
+msgstr ""
+
+msgid "HTTPAPI_V1:Access to http api delete"
+msgstr ""
+
+msgid "HTTPAPI_V1:Access to http api read"
+msgstr ""
+
+msgid "HTTPAPI_V1:Access to http api update"
+msgstr ""
+
+msgid "HTTPAPI_V1:DEFAULT_PAGE"
+msgstr ""
+
+msgid "HTTPAPI_V1:Default page title"
+msgstr ""
+
+msgid "HTTPAPI_V1:Http Api"
+msgstr ""
+
+msgid "HTTPAPI_V1:default crud class"
+msgstr ""
+
+msgid "HTTPAPI_V1:default logger class"
 msgstr ""
 
 msgctxt "api"
@@ -52,24 +71,16 @@ msgid "Update failed"
 msgstr "Échec de la mise à jour"
 
 msgctxt "api"
-msgid "Update forbiden"
-msgstr "Mise à jour non autorisée"
+msgid "Update forbidden"
+msgstr ""
 
 msgctxt "httpapi"
 msgid "Updated by HTTP API"
 msgstr "Mis à jour par l'api HTTP"
 
-msgid "User must be authenticate"
-msgstr ""
+#~ msgctxt "api"
+#~ msgid "Update forbiden"
+#~ msgstr "Mise à jour non autorisée"
 
-msgid "User must be authenticated"
-msgstr ""
-
-msgid "api"
-msgstr ""
-
-msgid "maintenance in progress"
-msgstr "Maintenance en cours"
-
-msgid "not authenticated:ERRNO_BUG_639"
-msgstr ""
+#~ msgid "maintenance in progress"
+#~ msgstr "Maintenance en cours"

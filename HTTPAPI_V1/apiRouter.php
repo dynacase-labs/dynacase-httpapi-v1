@@ -71,19 +71,22 @@ try {
     } else {
         throw new \Dcp\HttpApi\V1\Exception("Unable to read custom logger, you should check the custom logger conf.");
     }
+    $defaultPageMessage = function() {
+        $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
+        $defaultURL = $coreURL.\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "DEFAULT_PAGE");
+        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+        $message->contentText = sprintf("You can consult %s to have info on the API", $defaultURL);
+        $message->contentHtml = sprintf('You can consult <a href="%s">the REST page</a> to have info on the API', $defaultURL);
+        return $message;
+    };
 //endRegion initLogger
 
 //region Authentification
     if (file_exists('maintenance.lock')) {
-
-        $return->setHttpStatusCode(503, "Service Unavailable");
-        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-        $message->contentText = _("maintenance in progress");
-        $message->type = $message::ERROR;
-        $return->addMessage($message);
-        $return->send();
-        $writeError("Context is locked : maintenance in progress");
-        exit();
+        $exception = new \Dcp\HttpApi\V1\Exception("Maintenance in progress");
+        $exception->setHttpStatus(503, "Service Unavailable");
+        $exception->setUserMessage("Maintenance in progress");
+        throw $exception;
     }
 
     $authtype = getAuthType();
@@ -92,14 +95,9 @@ try {
         // Apache has already handled the authentication
         global $_SERVER;
         if ($_SERVER['PHP_AUTH_USER'] == "") {
-            $return->setHttpStatusCode(403, "Forbidden");
-            $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-            $message->contentText = _("User must be authenticated");
-            $message->type = $message::ERROR;
-            $return->addMessage($message);
-            $return->send();
-            $writeError("User must be authenticated");
-            exit();
+            $exception = new \Dcp\HttpApi\V1\Exception("User must be authenticated");
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
         }
     } else {
 
@@ -108,43 +106,22 @@ try {
             case 0: // it'good, user is authentified
                 break;
 
-            case -1:
-                $return->setHttpStatusCode(403, "Forbidden");
-                $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-                $message->contentText = _("not authenticated:ERRNO_BUG_639");
-                $message->type = $message::ERROR;
-                $return->addMessage($message);
-                $return->send();
-                $writeError("User not authenticated:ERRNO_BUG_639");
-                exit(0);
-                break;
-
             default:
                 $auth = AuthenticatorManager::$auth;
                 if ($auth === false) {
-                    $return->setHttpStatusCode(500, "Error");
-                    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-                    $message->contentText = _("Could not get authenticator");
-                    $message->type = $message::ERROR;
-                    $return->addMessage($message);
-                    $return->send();
-                    $writeError("Could not get authenticator");
-                    exit(0);
+                    $exception = new \Dcp\HttpApi\V1\Exception("Could not get authenticator");
+                    $exception->setHttpStatus("500", "Could not get authenticator");
+                    $exception->setUserMessage("Could not get authenticator");
+                    throw $exception;
                 }
         }
         $_SERVER['PHP_AUTH_USER'] = AuthenticatorManager::$auth->getAuthUser();
     }
 // First control
     if (empty($_SERVER['PHP_AUTH_USER'])) {
-        $return->setHttpStatusCode(403, "Forbidden");
-        $return->success = false;
-        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
-        $message->contentText = _("User must be authenticated");
-        $message->type = $message::ERROR;
-        $return->addMessage($message);
-        $return->send();
-        $writeError("User must be authenticated");
-        exit();
+        $exception = new \Dcp\HttpApi\V1\Exception("User must be authenticated");
+        $exception->setHttpStatus("403", "Forbidden");
+        throw $exception;
     }
 //endregion Authentification
 //Initialize return object
@@ -199,6 +176,7 @@ catch (\Dcp\HttpApi\V1\Exception $exception) {
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
 
     $return->addMessage($message);
+    $return->addMessage($defaultPageMessage());
 } catch (\Dcp\Exception $exception) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(400, "Dcp Exception");
@@ -209,6 +187,7 @@ catch (\Dcp\HttpApi\V1\Exception $exception) {
     $message->code = $exception->getDcpCode();
     $return->addMessage($message);
     $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString());
+    $return->addMessage($defaultPageMessage());
 } catch (\Exception $exception) {
     $return = new Dcp\HttpApi\V1\RecordReturn();
     $return->setHttpStatusCode(400, "Exception");
@@ -219,6 +198,7 @@ catch (\Dcp\HttpApi\V1\Exception $exception) {
     $message->code = "API0001";
     $return->addMessage($message);
     $writeError("PHP Exception " . $message->contentText, null, $exception->getTraceAsString());
+    $return->addMessage($defaultPageMessage());
 }
 //endregion ErrorCatching
 //Send the HTTP return

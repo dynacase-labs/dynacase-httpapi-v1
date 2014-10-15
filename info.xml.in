@@ -9,7 +9,6 @@
 
     <post-install>
         <process command="programs/record_application HTTPAPI_V1" />
-
         <process command="programs/update_catalog" />
     </post-install>
 

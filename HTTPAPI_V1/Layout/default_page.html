@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="[DYNACASE_FAVICO]"/>
+    <link rel="shortcut icon" href="[DYNACASE_FAVICO]"/>
+    <title>Rest API : default page</title>
+</head>
+<body>
+<header>
+    <h1>REST API</h1>
+
+    <p>
+        The documentation of the rest API is in the <a href="[DOCUMENTATION_URL]">documentation part of anakeen
+        website</a>.
+    </p>
+
+</header>
+<h2>List of ressources :</h2>
+
+<h3>Ressources of the API system part :</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Description</th>
+        <th>URL</th>
+        <th>Order</th>
+    </tr>
+    </thead>
+    [BLOCK SYSTEM_CRUD]
+    <tr>
+        <td>[description]</td>
+        <td><code>[canonicalURL]</code></td>
+        <td>([order])</td>
+    </tr>
+    [ENDBLOCK SYSTEM_CRUD]
+</table>
+
+[IF HAS_CUSTOM_CRUD]
+<h3>Ressources of the API custom part :</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Description</th>
+        <th>URL</th>
+        <th>Order</th>
+    </tr>
+    </thead>
+    [BLOCK CUSTOM_CRUD]
+    <tr>
+        <td>[description]</td>
+        <td><code>[canonicalURL]</code></td>
+        <td>([order])</td>
+    </tr>
+    [ENDBLOCK CUSTOM_CRUD]
+</table>
+[ENDIF HAS_CUSTOM_CRUD]
+<footer>
+
+</footer>
+</body>
+</html>
