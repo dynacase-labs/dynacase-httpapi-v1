@@ -168,7 +168,6 @@ try {
         $message->contentText = $warning;
         $message->type = $message::WARNING;
         $return->addMessage($message);
-        $writeWarning($warning);
     }
     $action->parent->clearWarningMsg();
     // Handle DCP log message
@@ -178,7 +177,6 @@ try {
         $message->contentText = $warning;
         $message->type = $message::NOTICE;
         $return->addMessage($message);
-        $writeMessage($warning);
     }
     $action->parent->clearLogMsg();
 } //region ErrorCatching
