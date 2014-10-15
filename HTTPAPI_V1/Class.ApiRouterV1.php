@@ -190,7 +190,7 @@ class ApiRouterV1
     protected static function getFormAttributeValues()
     {
         $values = $_POST;
-        if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+        if (static::convertActionToCrud() === Crud::UPDATE) {
             parse_str(file_get_contents("php://input"), $values);
         }
         $newValues = array();

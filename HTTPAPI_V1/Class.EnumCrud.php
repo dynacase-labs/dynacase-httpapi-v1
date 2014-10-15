@@ -22,15 +22,6 @@ class EnumCrud extends Crud
     protected $operatorFilter = self::containsOperator;
     protected $enumid = null;
 
-    /**
-     *
-     * @throws Exception
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-    }
     //region CRUD part
     /**
      * Create new ressource
@@ -200,6 +191,12 @@ class EnumCrud extends Crud
         return $this->keywordFilter;
     }
 
+    /**
+     * Initialize the current family
+     *
+     * @param array $array
+     * @throws Exception
+     */
     public function setUrlParameters(Array $array) {
         parent::setUrlParameters($array);
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;

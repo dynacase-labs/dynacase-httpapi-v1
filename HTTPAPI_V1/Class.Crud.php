@@ -126,7 +126,7 @@ abstract class Crud
     }
 
     /**
-     * Set url context parameters
+     * Set the url parameters
      *
      * @param array $parameters
      */
@@ -134,6 +134,11 @@ abstract class Crud
         $this->urlParameters = $parameters;
     }
 
+    /**
+     * Set the content parameters of the current request
+     *
+     * @param array $parameters
+     */
     public function setContentParameters(Array $parameters) {
         $this->contentParameters = $parameters;
     }

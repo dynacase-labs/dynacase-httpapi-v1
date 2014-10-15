@@ -115,6 +115,11 @@ class FileCrud extends Crud
     }
 
     //endregion CRUD part
+    /**
+     * Analyze the current php conf to get the upload limit
+     *
+     * @return string
+     */
     public static function getUploadLimit()
     {
         /**

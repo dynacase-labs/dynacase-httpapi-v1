@@ -54,6 +54,12 @@ class FamilyDocumentCrud extends DocumentCrud
 
     //endregion CRUD part
 
+    /**
+     * Set the family of the current request
+     *
+     * @param array $array
+     * @throws Exception
+     */
     public function setUrlParameters(Array $array)
     {
         parent::setUrlParameters($array);
@@ -66,6 +72,12 @@ class FamilyDocumentCrud extends DocumentCrud
         }
     }
 
+    /**
+     * Set the document of the current request
+     *
+     * @param $resourceId
+     * @throws Exception
+     */
     protected function setDocument($resourceId)
     {
         $this->_document = DocManager::getDocument($resourceId);

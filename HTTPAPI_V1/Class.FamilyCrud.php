@@ -45,6 +45,11 @@ class FamilyCrud extends DocumentCrud
     }
     //endregion CRUD part
 
+    /**
+     * Set the current family
+     *
+     * @throws Exception
+     */
     protected function setFamily()
     {
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
@@ -57,6 +62,12 @@ class FamilyCrud extends DocumentCrud
         }
     }
 
+    /**
+     * Set the current document
+     *
+     * @param $resourceId
+     * @throws Exception
+     */
     protected function setDocument($resourceId)
     {
         $this->_document = DocManager::getDocument($resourceId);

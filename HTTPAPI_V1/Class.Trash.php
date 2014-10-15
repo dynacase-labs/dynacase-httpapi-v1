@@ -11,7 +11,7 @@ namespace Dcp\HttpApi\V1;
 
 class Trash extends DocumentCrud {
 
-
+    //region CRUD part
     /**
      * Create new ressource
      * @throws Exception
@@ -46,7 +46,13 @@ class Trash extends DocumentCrud {
         $exception->setHttpStatus("405");
         throw $exception;
     }
-
+    //endregion CRUD part
+    /**
+     * Set the current document
+     *
+     * @param $resourceId
+     * @throws Exception
+     */
     protected function setDocument($resourceId)
     {
         $this->_document = DocManager::getDocument($resourceId);
