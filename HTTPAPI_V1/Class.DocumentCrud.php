@@ -666,6 +666,15 @@ class DocumentCrud extends Crud
     }
 
     public function getEtagInfo() {
-
+        if (isset($this->urlParameters["identifier"])) {
+            $id = $this->urlParameters["identifier"];
+            if (!is_numeric($id)) {
+                $id = getIdFromName(getDbAccess(), $id);
+            }
+            $sql = sprintf("select id, revdate from docread where id = %d", $id);
+            simpleQuery(getDbAccess(), $sql, $result, false, true);
+            return join("", $result);
+        }
+        return null;
     }
 }

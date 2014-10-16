@@ -8,6 +8,7 @@
 chdir('..'); // need to be in root directory to be authenticated
 require_once('WHAT/autoload.php');
 require_once('WHAT/Lib.Main.php');
+session_cache_limiter("none");
 
 //region initErrorHandling
 ini_set("display_error", "off");
@@ -71,9 +72,9 @@ try {
     } else {
         throw new \Dcp\HttpApi\V1\Exception("Unable to read custom logger, you should check the custom logger conf.");
     }
-    $defaultPageMessage = function() {
+    $defaultPageMessage = function () {
         $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
-        $defaultURL = $coreURL.\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "DEFAULT_PAGE");
+        $defaultURL = $coreURL . \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "DEFAULT_PAGE");
         $message = new Dcp\HttpApi\V1\RecordReturnMessage();
         $message->contentText = sprintf("You can consult %s to have info on the API", $defaultURL);
         $message->contentHtml = sprintf('You can consult <a href="%s">the REST page</a> to have info on the API', $defaultURL);
@@ -102,6 +103,7 @@ try {
     } else {
 
         $status = AuthenticatorManager::checkAccess(null, true);
+
         switch ($status) {
             case 0: // it'good, user is authentified
                 break;
@@ -157,7 +159,10 @@ try {
     }
     $action->parent->clearLogMsg();
 } //region ErrorCatching
-catch (\Dcp\HttpApi\V1\Exception $exception) {
+catch (\Dcp\HttpApi\V1\EtagException $exception) {
+
+    return;
+} catch (\Dcp\HttpApi\V1\Exception $exception) {
 
     $return->setHttpStatusCode($exception->getHttpStatus(), $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();

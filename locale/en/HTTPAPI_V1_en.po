@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-15 11:20+0200\n"
+"POT-Creation-Date: 2014-10-16 14:15+0200\n"
 "PO-Revision-Date: 2013-05-10 11:59+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: English <distrib@anakeen.com>\n"
@@ -12,25 +12,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Cannot store file because vault size limit is reached"
 msgstr ""
 
-msgctxt "httpapi"
+msgctxt "HTTPAPI_V1"
 msgid "Create by HTTP API"
 msgstr ""
 
-msgctxt "httpapi"
+msgctxt "HTTPAPI_V1"
 msgid "Deleted by HTTP API"
 msgstr ""
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Document information"
 msgstr ""
 
 #, php-format
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "File not recorded, File size transfert limited to %d Mb"
+msgstr ""
+
+msgid "HTTPAPI_V1:API default page"
 msgstr ""
 
 msgid "HTTPAPI_V1:Access to http api creation"
@@ -45,13 +48,22 @@ msgstr ""
 msgid "HTTPAPI_V1:Access to http api update"
 msgstr ""
 
+msgid "HTTPAPI_V1:Anakeen documentation URL"
+msgstr ""
+
 msgid "HTTPAPI_V1:DEFAULT_PAGE"
 msgstr ""
 
-msgid "HTTPAPI_V1:Default page title"
+msgid "HTTPAPI_V1:Http Api"
 msgstr ""
 
-msgid "HTTPAPI_V1:Http Api"
+msgid "HTTPAPI_V1:activate the etag cache for the request that handle it"
+msgstr ""
+
+msgid "HTTPAPI_V1:custom crud class"
+msgstr ""
+
+msgid "HTTPAPI_V1:custom logger class"
 msgstr ""
 
 msgid "HTTPAPI_V1:default crud class"
@@ -60,14 +72,14 @@ msgstr ""
 msgid "HTTPAPI_V1:default logger class"
 msgstr ""
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Update failed"
 msgstr ""
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Update forbidden"
 msgstr ""
 
-msgctxt "httpapi"
+msgctxt "HTTPAPI_V1"
 msgid "Updated by HTTP API"
 msgstr ""

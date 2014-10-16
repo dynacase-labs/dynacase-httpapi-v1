@@ -7,11 +7,64 @@
 
 namespace Dcp\HttpApi\V1;
 
+use \ApplicationParameterManager as AppParam;
+
 class ApiRouterV1
 {
     protected static $path = null;
     protected static $returnType = null;
 
+    /**
+     * Execute the request
+     *
+     * @param array $messages
+     * @throws EtagException
+     * @throws Exception
+     * @return mixed
+     */
+    public static function execute(array & $messages = array())
+    {
+        $etagManager = false;
+        $etag = null;
+        $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+        static::$path = $pathInfo;
+        static::$returnType = static::extractExtension();
+        if (static::$returnType === false) {
+            static::$returnType = static::parseAcceptHeader();
+        }
+        $method = static::convertActionToCrud();
+        $identifiedCrud = self::identifyCRUD();
+        $crud = new $identifiedCrud["class"]();
+        /* @var Crud $crud */
+        $crud->setUrlParameters($identifiedCrud["param"]);
+        if ($method === Crud::READ
+            && AppParam::getParameterValue("HTTPAPI_V1", "ACTIVATE_CACHE") === "TRUE") {
+            $etag = $crud->getEtagInfo();
+            if ($etag !== null) {
+                $etag = sha1($etag);
+                $etagManager = new EtagManager();
+                if ($etagManager->verifyCache($etag)) {
+                    $etagManager->generateNotModifiedResponse();
+                    throw new EtagException();
+                }
+            }
+        }
+        $crud->setContentParameters(static::extractContentParameters($method));
+        $return = $crud->execute($method, $messages);
+        if ($etagManager !== false && $etag !== false) {
+            $etagManager->generateResponseHeader($etag);
+        }
+        return $return;
+    }
+
+    /**
+     * Extract the extension of the current request path
+     *
+     * Remove the extension of the path
+     *
+     * @return string
+     * @throws Exception
+     */
     protected static function extractExtension()
     {
         $extension = false;
@@ -30,6 +83,12 @@ class ApiRouterV1
         return $format;
     }
 
+    /**
+     * Check if the accept header is present and extract it
+     *
+     * @return string
+     * @throws Exception
+     */
     protected static function parseAcceptHeader()
     {
         $accept = isset($_SERVER['HTTP_ACCEPT']) ? mb_strtolower($_SERVER['HTTP_ACCEPT']) : "application/json";
@@ -44,6 +103,12 @@ class ApiRouterV1
         return "application/json";
     }
 
+    /**
+     * Identify the CRUD class
+     *
+     * @return Array crud identified and url request
+     * @throws Exception
+     */
     protected static function identifyCRUD()
     {
         $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_CRUD_CLASS"), true);
@@ -84,31 +149,14 @@ class ApiRouterV1
         return $crudFound;
     }
 
+
     /**
-     * Execute the request
+     * Extract the content of the request
      *
-     * @param array $messages
-     * @return mixed
+     * @param $method
+     * @return array
      * @throws Exception
      */
-    public static function execute(array & $messages = array())
-    {
-        $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
-        static::$path = $pathInfo;
-        static::$returnType = static::extractExtension();
-        if (static::$returnType === false) {
-            static::$returnType = static::parseAcceptHeader();
-        }
-        $method = static::convertActionToCrud();
-        $identifiedCrud = self::identifyCRUD();
-        $crud = new $identifiedCrud["class"]();
-        /* @var Crud $crud */
-        $crud->setUrlParameters($identifiedCrud["param"]);
-        $crud->setContentParameters(static::extractContentParameters($method));
-        $return = $crud->execute($method, $messages);
-        return $return;
-    }
-
     public static function extractContentParameters($method)
     {
         if ($method === Crud::READ) {
@@ -203,7 +251,8 @@ class ApiRouterV1
     /**
      * @return string
      */
-    protected static function convertActionToCrud() {
+    protected static function convertActionToCrud()
+    {
         if ($_SERVER["REQUEST_METHOD"] === "GET") {
             return Crud::READ;
         } elseif ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"])) {

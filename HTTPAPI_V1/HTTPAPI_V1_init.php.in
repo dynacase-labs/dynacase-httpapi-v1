@@ -54,20 +54,38 @@ $json_system_crud = <<<'JSON'
 JSON;
 
 $app_const = array(
-    "INIT" => "yes",
     "VERSION" => "@VERSION@-@RELEASE@",
     "SYSTEM_CRUD_CLASS" => array(
         "val" => $json_system_crud,
         "descr" => N_("HTTPAPI_V1:default crud class"),
         "kind" => "static"
     ),
-    "CUSTOM_CRUD_CLASS" => "[]",
+    "CUSTOM_CRUD_CLASS" => array(
+        "val" => "[]",
+        "descr" => N_("HTTPAPI_V1:custom crud class")
+    ),
     "SYSTEM_LOGGER" => array(
         "val" => $json_system_logger,
         "descr" => N_("HTTPAPI_V1:default logger class"),
         "kind" => "static"
     ),
-    "CUSTOM_LOGGER" => "[]",
-    "DOCUMENTATION_URL" => "http://docs.anakeen.com/dynacase/3.2/dynacase-doc-httpapi/",
-    "DEFAULT_PAGE" => "?app=HTTPAPI_V1"
+    "CUSTOM_LOGGER" => array(
+        "val" => "[]",
+        "descr" => N_("HTTPAPI_V1:custom logger class")
+    ),
+    "DOCUMENTATION_URL" => array(
+        "val" => "http://docs.anakeen.com/dynacase/3.2/dynacase-doc-httpapi/",
+        "descr" => N_("HTTPAPI_V1:Anakeen documentation URL"),
+        "kind" => "static"
+    ),
+    "DEFAULT_PAGE" => array(
+        "val" => "?app=HTTPAPI_V1",
+        "descr" => N_("HTTPAPI_V1:API default page"),
+        "kind" => "static"
+    ),
+    "ACTIVATE_CACHE" => array(
+        "val" => "TRUE",
+        "descr" => N_("HTTPAPI_V1:activate the etag cache for the request that handle it"),
+        "kind" => "enum(TRUE|FALSE)"
+    )
 );
