@@ -45,10 +45,53 @@ $json_system_crud = <<<'JSON'
     },
     {
         "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\FileCrud",
+        "regExp" : "/^\\/files\\/$/",
+        "description" : "Temporary files",
+        "canonicalURL" : "files/"
+    },
+    {
+        "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
         "regExp" : "/^\\/enums\\/(?P<familyId>[^\\/]*)\\/(?P<identifier>[^\\/]*)$/",
         "description" : "Enumerate",
         "canonicalURL" : "enums/<familyId>/<attributeIdentifier>/"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/enumerates\\/(?P<identifier>[^\\/]*)$/",
+        "description" : "Enumerate",
+        "canonicalURL" : "families/<familyId>/enumerates/<attributeIdentifier>/"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\HistoryCrud",
+        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]*)\\/history\\/$/",
+        "description" : "History",
+        "canonicalURL" : "documents/<documentId>/history/"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\HistoryCrud",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)\\/history\\/$/",
+        "description" : "History",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/history/"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
+        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]+)$/",
+        "description" : "Revision",
+        "canonicalURL" : "documents/<documentId>/revisions/"
+    },
+
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]+)$/",
+        "description" : "Revision",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/"
     }
 ]
 JSON;

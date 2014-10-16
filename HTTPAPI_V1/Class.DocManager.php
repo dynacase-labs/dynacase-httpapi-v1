@@ -7,7 +7,6 @@
 
 namespace Dcp\HttpApi\V1;
 
-
 class DocManager
 {
     static $trace = false;
@@ -15,7 +14,6 @@ class DocManager
      * @var DocManager\MemoryCache $localCache
      */
     static protected $localCache = null;
-
     /**
      * Get document object identified by its identifier
      * @param int|string $documentIdentifier
@@ -70,7 +68,7 @@ class DocManager
         $tempDir = sys_get_temp_dir();
         static $traceIds = array();
         static $traceLog = array();
-        $traceFile = $tempDir."/docManager.log";
+        $traceFile = $tempDir . "/docManager.log";
         if ($newTraceFile != '') {
             $traceFile = $newTraceFile;
         }
@@ -145,6 +143,28 @@ class DocManager
         return null;
     }
     /**
+     * return  id of document identified by its revision
+     *
+     * @param int $initid document identificator
+     * @param int $revision
+     * @throws DocManager\Exception
+     * @return int|null identifier relative to latest revision
+     */
+    static public function getRevisedDocumentId($initid, $revision)
+    {
+        if (!is_numeric($initid)) {
+            throw new DocManager\Exception("APIDM0100", print_r($initid, true));
+        }
+        $dbaccess = self::getDbAccess();
+        // first more quick if alive
+        simpleQuery($dbaccess, sprintf("select id from docread where initid='%d' and revision = %d", $initid, $revision) , $id, true, true);
+        if ($id > 0) return intval($id);
+        // it is not really on initid
+        simpleQuery($dbaccess, sprintf("select id from docread where initid=(select initid from docread where id=%d) and revision = %d", $initid, $revision) , $id, true, true);
+        if ($id > 0) return intval($id);
+        return null;
+    }
+    /**
      * Initialize document object
      *
      * The document is not yet recorded to database and has no identifier
@@ -187,13 +207,14 @@ class DocManager
         $doc->applyMask();
         return $doc;
     }
-
-    protected static function requireFamilyClass($familyId) {
-        if (! is_numeric($familyId)) {
-            throw new DocManager\Exception("APIDM0102",$familyId);
+    
+    protected static function requireFamilyClass($familyId)
+    {
+        if (!is_numeric($familyId)) {
+            throw new DocManager\Exception("APIDM0102", $familyId);
         }
-        $classFilePath=sprintf("FDLGEN/Class.Doc%d.php", $familyId);
-        require_once($classFilePath);
+        $classFilePath = sprintf("FDLGEN/Class.Doc%d.php", $familyId);
+        require_once ($classFilePath);
     }
     /**
      * Create document object
@@ -385,7 +406,7 @@ class DocManager
             //$sql=sprintf("select avalues->'%s' from docread where id=%d", pg_escape_string($dataIdentifier), $id); // best perfo but cannot distinct null values and id not exists
             $fromid = self::getFromId($id);
             if ($fromid > 0) {
-                $sql = sprintf("select %s from doc%d where id=%d", pg_escape_string($dataIdentifier) , $fromid , $id);
+                $sql = sprintf("select %s from doc%d where id=%d", pg_escape_string($dataIdentifier) , $fromid, $id);
                 simpleQuery(self::getDbAccess() , $sql, $result, true, true);
                 if ($result === null) {
                     $result = '';

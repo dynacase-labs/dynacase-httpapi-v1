@@ -21,8 +21,8 @@ class EnumCrud extends Crud
     protected $keywordFilter = '';
     protected $operatorFilter = self::containsOperator;
     protected $enumid = null;
-
     //region CRUD part
+    
     /**
      * Create new ressource
      * @throws Exception
@@ -102,7 +102,6 @@ class EnumCrud extends Crud
         
         return $info;
     }
-
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -128,14 +127,15 @@ class EnumCrud extends Crud
         throw $e;
     }
     //endregion CRUD part
-
+    
     /**
      * Analyze the parameters of the request
      *
      * @throws Exception
      */
-    protected function parseParameters()
+    public function setContentParameters(array $parameters)
     {
+        parent::setContentParameters($parameters);
         if (isset($this->contentParameters["keyword"])) {
             $this->setKeywordFilter($this->contentParameters["keyword"]);
         }
@@ -190,14 +190,14 @@ class EnumCrud extends Crud
     {
         return $this->keywordFilter;
     }
-
     /**
      * Initialize the current family
      *
      * @param array $array
      * @throws Exception
      */
-    public function setUrlParameters(Array $array) {
+    public function setUrlParameters(Array $array)
+    {
         parent::setUrlParameters($array);
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
         $this->family = DocManager::getFamily($this->urlParameters["familyId"]);
@@ -207,7 +207,5 @@ class EnumCrud extends Crud
             throw $exception;
         }
         $this->enumid = $this->urlParameters["identifier"];
-        $this->parseParameters();
     }
-
 }
