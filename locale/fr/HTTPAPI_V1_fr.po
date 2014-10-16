@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-15 11:20+0200\n"
+"POT-Creation-Date: 2014-10-16 14:15+0200\n"
 "PO-Revision-Date: 2014-08-26 10:50+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
@@ -16,71 +16,76 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Cannot store file because vault size limit is reached"
 msgstr ""
-"Enregistrement du fichier impossible car il n'y a plus de place dans les "
-"coffres de fichiers"
+"Vous ne pouvez pas ajouter un fichier car la taille maximale du coffre est "
+"atteinte"
 
-msgctxt "httpapi"
+msgctxt "HTTPAPI_V1"
 msgid "Create by HTTP API"
-msgstr "Créé par l'api HTTP"
+msgstr "Créé par l'API HTTP"
 
-msgctxt "httpapi"
+msgctxt "HTTPAPI_V1"
 msgid "Deleted by HTTP API"
-msgstr "Supprimé par l'api HTTP"
+msgstr "Supprimé par l'API HTTP"
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Document information"
-msgstr "Information"
+msgstr "Informations sur le document"
 
 #, php-format
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "File not recorded, File size transfert limited to %d Mb"
-msgstr "Fichier non enregistré, Taille de transfert limité à %d Mo"
+msgstr "Fichier non enregistré, La taille maximale de fichier est de %d Mb"
+
+msgid "HTTPAPI_V1:API default page"
+msgstr "URL de la page par défaut de l'API"
 
 msgid "HTTPAPI_V1:Access to http api creation"
-msgstr ""
+msgstr "Créer avec l'API HTTP"
 
 msgid "HTTPAPI_V1:Access to http api delete"
-msgstr ""
+msgstr "Supprimer avec l'API HTTP"
 
 msgid "HTTPAPI_V1:Access to http api read"
-msgstr ""
+msgstr "Lire avec l'API HTTP"
 
 msgid "HTTPAPI_V1:Access to http api update"
-msgstr ""
+msgstr "Mettre à jour avec l'API HTTP"
+
+msgid "HTTPAPI_V1:Anakeen documentation URL"
+msgstr "URL de la documentation de l'API"
 
 msgid "HTTPAPI_V1:DEFAULT_PAGE"
-msgstr ""
-
-msgid "HTTPAPI_V1:Default page title"
-msgstr ""
+msgstr "Page par défaut"
 
 msgid "HTTPAPI_V1:Http Api"
-msgstr ""
+msgstr "API HTTP"
+
+msgid "HTTPAPI_V1:activate the etag cache for the request that handle it"
+msgstr "Activer les etag http pour les requêtes GET"
+
+msgid "HTTPAPI_V1:custom crud class"
+msgstr "Classes de CRUD additionnelles"
+
+msgid "HTTPAPI_V1:custom logger class"
+msgstr "Classes de log additionnelles"
 
 msgid "HTTPAPI_V1:default crud class"
-msgstr ""
+msgstr "Classes de CRUD par défaut"
 
 msgid "HTTPAPI_V1:default logger class"
-msgstr ""
+msgstr "Classes de LOG par défaut"
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Update failed"
-msgstr "Échec de la mise à jour"
+msgstr "Échec de mise à jour"
 
-msgctxt "api"
+msgctxt "HTTPAPI_V1"
 msgid "Update forbidden"
-msgstr ""
+msgstr "Mise à jour interdite"
 
-msgctxt "httpapi"
+msgctxt "HTTPAPI_V1"
 msgid "Updated by HTTP API"
-msgstr "Mis à jour par l'api HTTP"
-
-#~ msgctxt "api"
-#~ msgid "Update forbiden"
-#~ msgstr "Mise à jour non autorisée"
-
-#~ msgid "maintenance in progress"
-#~ msgstr "Maintenance en cours"
+msgstr "Mis à jour par l'API HTTP"
