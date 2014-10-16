@@ -8,7 +8,8 @@
 namespace Dcp\HttpApi\V1\Logger;
 
 
-class Dcp extends Logger{
+class Dcp extends Logger
+{
 
     public function __construct()
     {
@@ -25,7 +26,9 @@ class Dcp extends Logger{
         $this->logger->error($logMessage);
     }
 
-    public function writeMessage($message, $context) {;
+    public function writeMessage($message, $context)
+    {
+        ;
         if ($context === null && \Doc::getUserId()) {
             $context = "User : " . $this->getUserInfo();
         }
@@ -43,7 +46,8 @@ class Dcp extends Logger{
         $this->logger->error($logMessage);
     }
 
-    protected function getUserInfo() {
+    protected function getUserInfo()
+    {
         return \Doc::getUserId() . " " . \Doc::getUserName();
     }
 } 

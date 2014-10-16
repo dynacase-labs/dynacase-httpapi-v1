@@ -183,10 +183,10 @@ class TestDocumentCrud extends TestCaseApi
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
-        
-        $this->simulatePostRecord($setValues, "POST");
+
         $dc = new DocumentCrud();
-        
+
+        $dc->setContentParameters($setValues);
         $data = $dc->update($name);
         
         foreach ($setValues as $aid => $value) {
@@ -261,8 +261,8 @@ class TestDocumentCrud extends TestCaseApi
     /** @noinspection PhpUnusedParameterInspection */
     $famName, array $setValues)
     {
-        $this->simulatePostRecord($setValues, "POST");
         $dc = new DocumentCrud();
+        $dc->setContentParameters($setValues);
         try {
             $dc->create();
             $this->assertFalse(true, "An exception must occur");
@@ -325,13 +325,5 @@ class TestDocumentCrud extends TestCaseApi
                 )
             )
         );
-    }
-    protected function simulatePostRecord(array $values, $method)
-    {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $_SERVER["CONTENT_TYPE"] = "application/x-www-form-urlencoded";
-        foreach ($values as $k => $v) {
-            $_POST[$k] = $v;
-        }
     }
 }

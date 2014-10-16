@@ -31,5 +31,5 @@ webinst-test:
 webinst: webinst-test
 
 clean:
-	/bin/rm -f *.*~ config.* Makefile configure $(appname)_init.php info.xml $(PACKAGE)-*.webinst
+	/bin/rm -f *.*~ config.* Makefile configure $(appname)/$(appname)_init.php info.xml $(PACKAGE)-*.webinst
 	/bin/rm -fr autom4te.cache

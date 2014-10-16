@@ -32,7 +32,7 @@ class FamilyDocumentCrud extends DocumentCrud
             }
         }
 
-        $newValues = $this->getHttpAttributeValues();
+        $newValues = $this->contentParameters;
         foreach ($newValues as $attrid => $value) {
             $err = $this->_document->setValue($attrid, $value);
             if ($err) {
@@ -46,7 +46,7 @@ class FamilyDocumentCrud extends DocumentCrud
             $exception->setData($info);
             throw $exception;
         }
-        $this->_document->addHistoryEntry(___("Create by HTTP API", "httpapi"), \DocHisto::NOTICE);
+        $this->_document->addHistoryEntry(___("Create by HTTP API", "HTTPAPI_V1"), \DocHisto::NOTICE);
         DocManager::cache()->addDocument($this->_document);
 
         return $this->read($this->_document->id);
@@ -54,10 +54,16 @@ class FamilyDocumentCrud extends DocumentCrud
 
     //endregion CRUD part
 
-    public function setParameters(Array $array)
+    /**
+     * Set the family of the current request
+     *
+     * @param array $array
+     * @throws Exception
+     */
+    public function setUrlParameters(Array $array)
     {
-        parent::setParameters($array);
-        $familyId = isset($this->parameters["familyId"]) ? $this->parameters["familyId"] : false;
+        parent::setUrlParameters($array);
+        $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
         $this->_family = DocManager::getFamily($familyId);
         if (!$this->_family) {
             $exception = new Exception("API0200", $familyId);
@@ -66,6 +72,12 @@ class FamilyDocumentCrud extends DocumentCrud
         }
     }
 
+    /**
+     * Set the document of the current request
+     *
+     * @param $resourceId
+     * @throws Exception
+     */
     protected function setDocument($resourceId)
     {
         $this->_document = DocManager::getDocument($resourceId);

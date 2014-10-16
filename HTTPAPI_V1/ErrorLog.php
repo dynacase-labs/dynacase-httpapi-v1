@@ -1,10 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: charles
- * Date: 13/10/14
- * Time: 17:23
- */
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+*/
 
 namespace Dcp\HttpApi\V1\Logger;
 

@@ -21,7 +21,7 @@ class FileCrud extends Crud
     {
         if (count($_FILES) === 0) {
             $exception = new Exception("API0302", "");
-            $exception->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "api") , $this->getUploadLimit()/1024/1024));
+            $exception->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "HTTPAPI_V1") , $this->getUploadLimit()/1024/1024));
             throw $exception;
         }
         $file = current($_FILES);
@@ -38,7 +38,7 @@ class FileCrud extends Crud
             $newException = new Exception("API0300", $exception->getDcpMessage());
             switch ($exception->getDcpCode()) {
                 case "VAULT0002":
-                    $newException->setUserMessage(___("Cannot store file because vault size limit is reached", "api"));
+                    $newException->setUserMessage(___("Cannot store file because vault size limit is reached", "HTTPAPI_V1"));
                     break;
 
                 default:
@@ -115,6 +115,11 @@ class FileCrud extends Crud
     }
 
     //endregion CRUD part
+    /**
+     * Analyze the current php conf to get the upload limit
+     *
+     * @return string
+     */
     public static function getUploadLimit()
     {
         /**
