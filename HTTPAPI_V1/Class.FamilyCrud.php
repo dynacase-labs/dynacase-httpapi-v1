@@ -7,24 +7,17 @@
 
 namespace Dcp\HttpApi\V1;
 
+use Dcp\HttpApi\V1\DocManager;
+
 class FamilyCrud extends DocumentCrud
 {
     /**
      * @var \DocFam
      */
     protected $_family = null;
-    
-    protected function setFamily()
-    {
-        $familyId = $this->getRessourceIdentifier();
-        
-        $this->_family = \Dcp\DocManager::getFamily($familyId);
-        if ($this->_family === null) {
-            $e = new Exception("API0203", $familyId);
-            $e->setHttpStatus(404, "Family not found");
-            throw $e;
-        }
-    }
+
+    //region CRUD part
+
     /**
      * Update a family
      * @param string $resourceId Resource identifier
@@ -37,6 +30,7 @@ class FamilyCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Delete family
      * @param string $resourceId Resource identifier
@@ -49,40 +43,49 @@ class FamilyCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
-    
-    public function create()
+    //endregion CRUD part
+
+    /**
+     * Set the current family
+     *
+     * @throws Exception
+     */
+    protected function setFamily()
     {
-        $this->setFamily();
-        try {
-            $this->_document = \Dcp\DocManager::createDocument($this->_family->id);
+        $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
+
+        $this->_family = DocManager::getFamily($familyId);
+        if ($this->_family === null) {
+            $exception = new Exception("API0203", $familyId);
+            $exception->setHttpStatus(404, "Family not found");
+            throw $exception;
         }
-        catch(\Dcp\DocManager\Exception $e) {
-            if ($e->getDcpCode() === "DMG0003") {
-                $e = new Exception("API0204", $this->_family->name);
-                $e->setHttpStatus(403, "Forbidden");
-                throw $e;
-            } else {
-                throw $e;
-            }
-        }
-        
-        $newValues = $this->getHttpAttributeValues();
-        foreach ($newValues as $aid => $value) {
-            $err = $this->_document->setValue($aid, $value);
-            if ($err) {
-                throw new Exception("API0205", $this->_family->name, $aid, $err);
-            }
-        }
-        
-        $err = $this->_document->store($info);
-        if ($err) {
-            $e = new Exception("API0206", $this->_family->name, $err);
-            $e->setData($info);
+    }
+
+    /**
+     * Set the current document
+     *
+     * @param $resourceId
+     * @throws Exception
+     */
+    protected function setDocument($resourceId)
+    {
+        $this->_document = DocManager::getDocument($resourceId);
+        if (!$this->_document) {
+            $e = new Exception("API0203", $resourceId);
+            $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
-        $this->_document->addHistoryEntry(___("Create by HTTP API", "httpapi") , \DocHisto::NOTICE);
-        \Dcp\DocManager::cache()->addDocument($this->_document);
-        
-        return $this->get($this->_document->id);
+        if ($this->_document->doctype !== "C") {
+            $e = new Exception("API0203", $resourceId);
+            $e->setHttpStatus("404", "Document is not a family");
+            throw $e;
+        }
+        if ($this->_document->doctype === "Z") {
+            $e = new Exception("API0219", $resourceId);
+            $e->setHttpStatus("404", "Document deleted");
+            throw $e;
+        }
+
     }
 }

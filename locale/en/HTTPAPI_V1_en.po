@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-26 10:43+0200\n"
+"POT-Creation-Date: 2014-10-15 11:20+0200\n"
 "PO-Revision-Date: 2013-05-10 11:59+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: English <distrib@anakeen.com>\n"
@@ -11,12 +11,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-msgid "Access to http api getter"
-msgstr ""
-
-msgid "Access to http api setter"
-msgstr ""
 
 msgctxt "api"
 msgid "Cannot store file because vault size limit is reached"
@@ -39,7 +33,31 @@ msgctxt "api"
 msgid "File not recorded, File size transfert limited to %d Mb"
 msgstr ""
 
-msgid "Http Api"
+msgid "HTTPAPI_V1:Access to http api creation"
+msgstr ""
+
+msgid "HTTPAPI_V1:Access to http api delete"
+msgstr ""
+
+msgid "HTTPAPI_V1:Access to http api read"
+msgstr ""
+
+msgid "HTTPAPI_V1:Access to http api update"
+msgstr ""
+
+msgid "HTTPAPI_V1:DEFAULT_PAGE"
+msgstr ""
+
+msgid "HTTPAPI_V1:Default page title"
+msgstr ""
+
+msgid "HTTPAPI_V1:Http Api"
+msgstr ""
+
+msgid "HTTPAPI_V1:default crud class"
+msgstr ""
+
+msgid "HTTPAPI_V1:default logger class"
 msgstr ""
 
 msgctxt "api"
@@ -47,24 +65,9 @@ msgid "Update failed"
 msgstr ""
 
 msgctxt "api"
-msgid "Update forbiden"
+msgid "Update forbidden"
 msgstr ""
 
 msgctxt "httpapi"
 msgid "Updated by HTTP API"
-msgstr ""
-
-msgid "User must be authenticate"
-msgstr ""
-
-msgid "User must be authenticated"
-msgstr ""
-
-msgid "api"
-msgstr ""
-
-msgid "maintenance in progress"
-msgstr ""
-
-msgid "not authenticated:ERRNO_BUG_639"
 msgstr ""

@@ -9,83 +9,93 @@ namespace Dcp\HttpApi\V1;
 
 abstract class Crud
 {
+    const CREATE = "CREATE";
+    const READ = "READ";
+    const UPDATE = "UPDATE";
+    const DELETE = "DELETE";
+    /**
+     * Regexp that check if the current path can be processed by the current CRUD
+     *
+     * @var string
+     */
     /**
      * @var RecordReturnMessage[]
      */
     protected $messages = array();
+    protected $path = null;
     /**
-     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
+     * Request parameters extracted from the URI
+     *
+     * @var array
      */
-    public function addMessage(RecordReturnMessage $message)
-    {
-        $this->messages[] = $message;
-    }
+    protected $urlParameters = array();
+
     /**
-     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
+     * Request parameters extracted from the content of the request
+     *
+     * @var array
      */
-    public function getMessages()
+    protected $contentParameters = array();
+
+    public function __construct()
     {
-        return $this->messages;
+
     }
-    protected static function getHttpMethod()
-    {
-        return strtoupper($_SERVER['REQUEST_METHOD']);
-    }
-    
-    protected function getRessourceIdentifier()
-    {
-        if (isset($_GET["id"])) {
-            return $_GET["id"];
-        }
-        return null;
-    }
-    /**
-     * Update the ressource
-     * @param string $resourceId Resource identifier
-     * @return mixed
-     */
-    abstract public function update($resourceId);
+    //region CRUD part
     /**
      * Create new ressource
      * @return mixed
      */
     abstract public function create();
+
     /**
-     * Get ressource
-     * @param string $resourceId Resource identifier
+     * Read a ressource
+     * @param string|int $resourceId Resource identifier
      * @return mixed
      */
-    abstract public function get($resourceId);
+    abstract public function read($resourceId);
+
+    /**
+     * Update the ressource
+     * @param string|int $resourceId Resource identifier
+     * @return mixed
+     */
+    abstract public function update($resourceId);
+
     /**
      * Delete ressource
-     * @param string $resourceId Resource identifier
+     * @param string|int $resourceId Resource identifier
      * @return mixed
      */
     abstract public function delete($resourceId);
+    //endregion
     /**
+     * Execute the request
+     * Find the CRUD action to execute and execute it
+     *
      * @param array $messages list of messages to send
      * @return mixed data of process
      * @throws Exception
      */
-    public function execute(array & $messages = array())
+    public function execute($method, array & $messages = array())
     {
-        $method = self::getHttpMethod();
-        
-        switch ($method) {
-            case "PUT":
-                $data = $this->update($this->getRessourceIdentifier());
-                break;
 
-            case "POST":
+        switch ($method) {
+
+            case "CREATE":
                 $data = $this->create();
                 break;
 
-            case "GET":
-                $data = $this->get($this->getRessourceIdentifier());
+            case "READ":
+                $data = $this->read($this->urlParameters["identifier"]);
+                break;
+
+            case "UPDATE":
+                $data = $this->update($this->urlParameters["identifier"]);
                 break;
 
             case "DELETE":
-                $data = $this->delete($this->getRessourceIdentifier());
+                $data = $this->delete($this->urlParameters["identifier"]);
                 break;
 
             default:
@@ -94,4 +104,48 @@ abstract class Crud
         $messages = $this->getMessages();
         return $data;
     }
+
+    /**
+     * Add a message to be sended with the response
+     *
+     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
+     */
+    public function addMessage(RecordReturnMessage $message)
+    {
+        $this->messages[] = $message;
+    }
+
+    /**
+     * Get all the added messages
+     *
+     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * Set the url parameters
+     *
+     * @param array $parameters
+     */
+    public function setUrlParameters(Array $parameters) {
+        $this->urlParameters = $parameters;
+    }
+
+    /**
+     * Set the content parameters of the current request
+     *
+     * @param array $parameters
+     */
+    public function setContentParameters(Array $parameters) {
+        $this->contentParameters = $parameters;
+    }
+
+    public function getEtagInfo() {
+        return null;
+    }
+
+
 }

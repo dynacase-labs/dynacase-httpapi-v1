@@ -22,9 +22,13 @@ namespace {
          */
         const API0003 = 'Content type "%s" not supported';
         /**
-         * @errorCode in case ao incorrect url
+         * @errorCode in case of incorrect url
          */
         const API0004 = 'No ressource detected';
+        /**
+         * @errorCode in case of accept unknown
+         */
+        const API0005 = 'Unable to return the type %s';
         /**
          * @errorCode Url no use a implemted ressource
          */
@@ -37,6 +41,10 @@ namespace {
          * @errorCode The ressource is not implemented
          */
         const API0102 = 'Method "%s" not implemented';
+        /**
+         * @errorCode The ressource is not avalaible
+         */
+        const API0103 = 'Action "%s" is not usable';
         /**
          * @errorCode The ressource is not found
          */
@@ -110,6 +118,18 @@ namespace {
          */
         const API0217 = 'Record fail. Json object attributes "%s" (multiple) no contain "value" fields : "%s"';
         /**
+         * @errorCode Document attribute "%s" not known
+         */
+        const API0218 = 'Document attribute "%s" not known';
+        /**
+         * @errorCode Document "%s" deleted
+         */
+        const API0219 = 'Document "%s" deleted';
+        /**
+         * @errorCode Document "%s" deleted
+         */
+        const API0220 = 'Document "%s" is not a document of the family';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const API0300 = 'File Record fail.  : "%s"';
@@ -150,6 +170,8 @@ namespace Dcp\HttpApi\V1 {
         protected $httpMessage = "Dcp Exception";
         protected $data = null;
         protected $userMessage = '';
+        protected $uri = "";
+        protected $headers = array();
         /**
          * @param string $userMessage
          */
@@ -172,6 +194,8 @@ namespace Dcp\HttpApi\V1 {
             return $this->data;
         }
         /**
+         * Add
+         *
          * @param null $data
          */
         public function setData($data)
@@ -179,6 +203,8 @@ namespace Dcp\HttpApi\V1 {
             $this->data = $data;
         }
         /**
+         * Return the http message
+         *
          * @return string
          */
         public function getHttpMessage()
@@ -186,19 +212,63 @@ namespace Dcp\HttpApi\V1 {
             return $this->httpMessage;
         }
         /**
-         * @param int $httpStatus
-         */
-        public function setHttpStatus($httpStatus, $httpMessage)
-        {
-            $this->httpStatus = $httpStatus;
-            $this->httpMessage = $httpMessage;
-        }
-        /**
+         * Return the http status
+         *
          * @return int
          */
         public function getHttpStatus()
         {
             return $this->httpStatus;
+        }
+        /**
+         *
+         * @param int $httpStatus
+         * @param string $httpMessage
+         */
+        public function setHttpStatus($httpStatus, $httpMessage = "")
+        {
+            $this->httpStatus = $httpStatus;
+            $this->httpMessage = $httpMessage;
+        }
+
+        /**
+         * Add an URI indication
+         *
+         * @param $uri
+         */
+        public function setURI($uri)
+        {
+            $this->uri = $uri;
+        }
+
+        /**
+         * Return the URI indication
+         *
+         */
+        public function getURI()
+        {
+            return $this->uri;
+        }
+
+        /**
+         * Add an header
+         *
+         * @param $key
+         * @param $value
+         * @internal param $uri
+         */
+        public function addHeader($key, $value)
+        {
+            $this->headers[$key] = $value;
+        }
+
+        /**
+         * Return the URI indication
+         *
+         */
+        public function getHeaders()
+        {
+            return $this->headers;
         }
         /**
          * for beautifier

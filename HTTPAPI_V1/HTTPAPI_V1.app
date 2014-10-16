@@ -9,7 +9,7 @@ global $app_desc, $action_desc;
 
 $app_desc = array(
     "name" => "HTTPAPI_V1", //Name
-    "short_name" => N_("Http Api"), //Short name
+    "short_name" => N_("HTTPAPI_V1:Http Api"), //Short name
     "description" => "HTTP Api (version 1)", //long description
     "icon" => "httpapi.png", //Icon
     "displayable" => "N", //Should be displayed on an app list (Y,N)
@@ -19,41 +19,35 @@ $app_desc = array(
 $app_acl = array(
     array(
         "name" => "GET",
-        "description" => N_("Access to http api getter") ,
+        "description" => N_("HTTPAPI_V1:Access to http api read"),
         "group_default" => "Y"
     ),
     array(
         "name" => "POST",
-        "description" => N_("Access to http api setter") ,
+        "description" => N_("HTTPAPI_V1:Access to http api creation"),
         "group_default" => "Y"
     ),
     array(
         "name" => "PUT",
-        "description" => N_("Access to http api setter") ,
+        "description" => N_("HTTPAPI_V1:Access to http api update"),
         "group_default" => "Y"
     ),
     array(
         "name" => "DELETE",
-        "description" => N_("Access to http api setter") ,
+        "description" => N_("HTTPAPI_V1:Access to http api delete"),
         "group_default" => "Y"
     )
 );
 
 $action_desc = array(
     array(
-        "name" => "CREATEDOCUMENT",
-        "short_name" => "Create new document",
-        "acl" => "POST"
-    ),
-    array(
-        "name" => "MODIFYDOCUMENT",
-        "short_name" => "Modify document",
-        "acl" => "POST"
-    ),
-    array(
-        "name" => "RECORDFILE",
-        "short_name" => "Record file document",
-        "acl" => "POST"
+        "name" => "DEFAULT_PAGE",
+        "short_name" => N_("HTTPAPI_V1:DEFAULT_PAGE"),
+        "layout" => "default_page.html",
+        "script" => "action.default_page.php",
+        "function" => "default_page",
+        "root" => "Y",
+        "acl" => "GET"
     )
 
 );

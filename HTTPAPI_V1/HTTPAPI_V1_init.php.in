@@ -7,7 +7,67 @@
 
 global $app_const;
 
+$json_system_logger = <<<'JSON'
+[
+    "\\Dcp\\HttpApi\\V1\\Logger\\Dcp"
+]
+JSON;
+
+$json_system_crud = <<<'JSON'
+[
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\DocumentCrud",
+        "regExp" : "/^\\/documents\\/?(?P<identifier>[^\\/]*)$/",
+        "description" : "Documents",
+        "canonicalURL" : "documents/<documentId>"
+    },
+    {
+        "order" : 100,
+         "class" : "\\Dcp\\HttpApi\\V1\\FamilyCrud",
+         "regExp" : "/^\\/families\\/(?P<identifier>[^\\/]*)\\/?$/",
+         "description" : "Families",
+         "canonicalURL" : "families/<familyId>"
+     },
+    {
+        "order" : 200,
+        "class" : "\\Dcp\\HttpApi\\V1\\FamilyDocumentCrud",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)$/",
+        "description" : "Documents of the family <familyId>",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\Trash",
+        "regExp" : "/^\\/trash\\/?(?P<identifier>[^\\/]*)$/",
+        "description" : "Deleted documents",
+        "canonicalURL" : "trash/<documentId>"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
+        "regExp" : "/^\\/enums\\/(?P<familyId>[^\\/]*)\\/(?P<identifier>[^\\/]*)$/",
+        "description" : "Enumerate",
+        "canonicalURL" : "enums/<familyId>/<attributeIdentifier>/"
+    }
+]
+JSON;
+
 $app_const = array(
     "INIT" => "yes",
-    "VERSION" => "@VERSION@-@RELEASE@"
+    "VERSION" => "@VERSION@-@RELEASE@",
+    "SYSTEM_CRUD_CLASS" => array(
+        "val" => $json_system_crud,
+        "descr" => N_("HTTPAPI_V1:default crud class"),
+        "kind" => "static"
+    ),
+    "CUSTOM_CRUD_CLASS" => "[]",
+    "SYSTEM_LOGGER" => array(
+        "val" => $json_system_logger,
+        "descr" => N_("HTTPAPI_V1:default logger class"),
+        "kind" => "static"
+    ),
+    "CUSTOM_LOGGER" => "[]",
+    "DOCUMENTATION_URL" => "http://docs.anakeen.com/dynacase/3.2/dynacase-doc-httpapi/",
+    "DEFAULT_PAGE" => "?app=HTTPAPI_V1"
 );
