@@ -671,9 +671,7 @@ class DocumentCrud extends Crud
     {
         if (isset($this->urlParameters["identifier"])) {
             $id = $this->urlParameters["identifier"];
-            if (!is_numeric($id)) {
-                $id = DocManager::getIdFromName($id);
-            }
+            $id = DocManager::getIdentifier($id, true);
             $sql = sprintf("select id, revdate, views from docread where id = %d", $id);
             simpleQuery(getDbAccess() , $sql, $result, false, true);
             $u = getCurrentUser();
@@ -681,7 +679,7 @@ class DocumentCrud extends Crud
             $result[] = $u->memberof;
             // Necessary only when use family.structure
             $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
-            return join("", $result);
+            return join(" ", $result);
         }
         return null;
     }

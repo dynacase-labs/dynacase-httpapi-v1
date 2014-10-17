@@ -44,7 +44,7 @@ class ApiRouterV1
                 $etag = sha1($etag);
                 $etagManager = new EtagManager();
                 if ($etagManager->verifyCache($etag)) {
-                    $etagManager->generateNotModifiedResponse();
+                    $etagManager->generateNotModifiedResponse($etag);
                     throw new EtagException();
                 }
             }
@@ -75,7 +75,7 @@ class ApiRouterV1
             $extension = $matches['ext'];
             static::$path = $matches['path'];
         }
-        if ($extension === "json" || $extension === false) {
+        if ($extension === "json" || $extension === false || $extension === "") {
             $format = "application/json";
         } else {
             throw new Exception("API0005", $extension);

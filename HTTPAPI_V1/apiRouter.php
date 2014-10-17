@@ -8,7 +8,6 @@
 chdir('..'); // need to be in root directory to be authenticated
 require_once('WHAT/autoload.php');
 require_once('WHAT/Lib.Main.php');
-session_cache_limiter("none");
 
 //region initErrorHandling
 ini_set("display_error", "off");
@@ -160,7 +159,7 @@ try {
     $action->parent->clearLogMsg();
 } //region ErrorCatching
 catch (\Dcp\HttpApi\V1\EtagException $exception) {
-
+    header("Cache-Control: private, no-cache, must-revalidate", true);
     return;
 } catch (\Dcp\HttpApi\V1\Exception $exception) {
 
@@ -207,5 +206,13 @@ catch (\Dcp\HttpApi\V1\EtagException $exception) {
 }
 //endregion ErrorCatching
 //Send the HTTP return
+$headers = headers_list();
+foreach($headers as $currentHeader) {
+    if (mb_strpos($currentHeader, "ETag") === 0) {
+        header("Cache-Control: private, no-cache, must-revalidate", true);
+        header_remove("Pragma");
+        header_remove("Expires");
+    }
+}
 $return->send();
 
