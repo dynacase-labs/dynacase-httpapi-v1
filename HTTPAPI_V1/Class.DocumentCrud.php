@@ -10,13 +10,12 @@ use Dcp\HttpApi\V1\DocManager;
 
 class DocumentCrud extends Crud
 {
-
+    
     const GET_PROPERTIES = "document.properties";
     const GET_PROPERTY = "document.properties.";
     const GET_ATTRIBUTES = "document.attributes";
     const GET_ATTRIBUTE = "document.attributes.";
     const GET_STRUCTURE = "family.structure";
-
     /**
      * @var \Doc document instance
      */
@@ -31,13 +30,14 @@ class DocumentCrud extends Crud
      * @var int document icon width in px
      */
     public $iconSize = 32;
-
-    public function __construct() {
+    
+    public function __construct()
+    {
         parent::__construct();
-        $this->defaultFields = self::GET_PROPERTIES.",".self::GET_ATTRIBUTES;
+        $this->defaultFields = self::GET_PROPERTIES . "," . self::GET_ATTRIBUTES;
     }
-
     //region CRUD part
+    
     /**
      * Create new ressource
      * @throws Exception
@@ -155,23 +155,24 @@ class DocumentCrud extends Crud
     public function delete($resourceId)
     {
         $this->setDocument($resourceId);
-
+        
         $err = $this->_document->control("delete");
         if ($err) {
             $e = new Exception("API0216", $resourceId, $err);
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
         }
-
+        
         $err = $this->_document->delete();
         if ($err) {
-            $e = new Exception("API0215", $this->_document->getTitle(), $err);
+            $e = new Exception("API0215", $this->_document->getTitle() , $err);
             throw $e;
         }
-        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "HTTPAPI_V1"), \DocHisto::NOTICE);
+        $this->_document->addHistoryEntry(___("Deleted by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
         return $this->documentData();
     }
     //endregion CRUD part
+    
     /**
      * Find the current document and set it in the internal options
      *
@@ -189,7 +190,7 @@ class DocumentCrud extends Crud
         if ($this->_document->doctype === "Z") {
             $e = new Exception("API0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
-            $e->setURI(sprintf("api/v1/trash/%d.json", $this->_document->id));
+            $e->setURI(sprintf("api/v1/trash/%d.json", $this->_document->initid));
             throw $e;
         }
     }
@@ -205,9 +206,9 @@ class DocumentCrud extends Crud
         $this->defaultFields = $fields;
         return $this;
     }
-     /**
+    /**
      * Get data from document object
-      * No access control are done
+     * No access control are done
      * @param \Doc $document Document
      * @throws Exception
      * @return mixed
@@ -217,7 +218,6 @@ class DocumentCrud extends Crud
         $this->_document = $document;
         return $this->documentData();
     }
-
     /**
      * Get the list of the properties required
      *
@@ -362,7 +362,7 @@ class DocumentCrud extends Crud
      */
     protected function _getAttributes()
     {
-
+        
         if ($this->_document->doctype === "C") {
             return array();
         }
@@ -414,9 +414,9 @@ class DocumentCrud extends Crud
                 return sprintf("api/v1/families/%s.json", strtolower($this->_document->name));
             } else {
                 if ($this->_document->doctype === "Z") {
-                    return sprintf("api/v1/trash/%d.json", $this->_document->id);
+                    return sprintf("api/v1/trash/%s.json", $this->_document->name ? $this->_document->name : $this->_document->initid);
                 } else {
-                    return sprintf("api/v1/documents/%d.json", $this->_document->id);
+                    return sprintf("api/v1/documents/%s.json", $this->_document->name ? $this->_document->name : $this->_document->initid);
                 }
             }
         }
@@ -445,7 +445,6 @@ class DocumentCrud extends Crud
         }
         return $this->returnFields;
     }
-
     /**
      * Check if the current restrict field exist
      *
@@ -470,32 +469,35 @@ class DocumentCrud extends Crud
         
         return false;
     }
-
     /**
      * Get the restricted attributes
      *
      * @throws Exception
      * @return array
      */
-    protected function getAttributeFields() {
+    protected function getAttributeFields()
+    {
         $prefix = self::GET_ATTRIBUTE;
         $currentDoc = $this->_document;
         $fields = $this->getFields();
         $falseAttribute = array();
-        $attributes = array_filter($fields, function($currentField) use ($prefix){
+        $attributes = array_filter($fields, function ($currentField) use ($prefix)
+        {
             return mb_stripos($currentField, $prefix) === 0 && $currentField !== $prefix;
         });
         $attributes = array_unique($attributes);
-        $attributes = array_map(function($currentField) use ($prefix, &$currentDoc, &$falseAttribute) {
-            $attributeId =  str_replace($prefix, "", $currentField);
+        $attributes = array_map(function ($currentField) use ($prefix, &$currentDoc, &$falseAttribute)
+        {
+            $attributeId = str_replace($prefix, "", $currentField);
             /* @var \Doc $currentDoc */
             if ($currentDoc->getAttribute($attributeId) === false) {
                 $falseAttribute[] = $attributeId;
             }
             return $attributeId;
-        }, $attributes);
+        }
+        , $attributes);
         if (!empty($falseAttribute)) {
-            throw new Exception("API0218",join(" and attribute ", $falseAttribute));
+            throw new Exception("API0218", join(" and attribute ", $falseAttribute));
         }
         return $attributes;
     }
@@ -664,15 +666,21 @@ class DocumentCrud extends Crud
         
         return $info;
     }
-
-    public function getEtagInfo() {
+    
+    public function getEtagInfo()
+    {
         if (isset($this->urlParameters["identifier"])) {
             $id = $this->urlParameters["identifier"];
             if (!is_numeric($id)) {
-                $id = getIdFromName(getDbAccess(), $id);
+                $id = DocManager::getIdFromName($id);
             }
-            $sql = sprintf("select id, revdate from docread where id = %d", $id);
-            simpleQuery(getDbAccess(), $sql, $result, false, true);
+            $sql = sprintf("select id, revdate, views from docread where id = %d", $id);
+            simpleQuery(getDbAccess() , $sql, $result, false, true);
+            $u = getCurrentUser();
+            $result[] = $u->id;
+            $result[] = $u->memberof;
+            // Necessary only when use family.structure
+            $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
             return join("", $result);
         }
         return null;

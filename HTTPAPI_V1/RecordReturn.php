@@ -61,7 +61,6 @@ class RecordReturn
     {
         $this->data = $data;
     }
-
     /**
      * Add http headers
      *
@@ -72,18 +71,17 @@ class RecordReturn
     {
         $this->headers = $headers;
     }
-
     /**
      * Send the message
      */
     public function send()
     {
-        header(sprintf('HTTP/1.0 %d %s', $this->httpStatus, str_replace(array(
+        header(sprintf('HTTP/1.1 %d %s', $this->httpStatus, str_replace(array(
             "\n",
             "\r"
         ) , "", $this->httpMessage)));
         header('Content-Type: application/json');
-        foreach($this->headers as $key => $currentHeader) {
+        foreach ($this->headers as $key => $currentHeader) {
             header(sprintf("%s : %s", $key, $currentHeader));
         }
         

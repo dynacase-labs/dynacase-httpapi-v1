@@ -128,7 +128,7 @@ namespace {
         /**
          * @errorCode Document "%s" deleted
          */
-        const API0220 = 'Document "%s" is not a document of the family';
+        const API0220 = 'Document "%s" is not a document of the family "%s"';
         /**
          * @errorCode The file cannot be saved to vaulft
          */
@@ -230,7 +230,6 @@ namespace Dcp\HttpApi\V1 {
             $this->httpStatus = $httpStatus;
             $this->httpMessage = $httpMessage;
         }
-
         /**
          * Add an URI indication
          *
@@ -240,7 +239,6 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->uri = $uri;
         }
-
         /**
          * Return the URI indication
          *
@@ -249,7 +247,6 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->uri;
         }
-
         /**
          * Add an header
          *
@@ -261,7 +258,6 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->headers[$key] = $value;
         }
-
         /**
          * Return the URI indication
          *
