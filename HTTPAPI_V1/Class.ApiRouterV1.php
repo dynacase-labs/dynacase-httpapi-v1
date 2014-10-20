@@ -38,7 +38,10 @@ class ApiRouterV1
         /* @var Crud $crud */
         $crud->setUrlParameters($identifiedCrud["param"]);
         $crud->setContentParameters(static::extractContentParameters($method));
-        if ($method === Crud::READ
+        $cacheControl = isset($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : false;
+        if (
+            $cacheControl !== "no-cache"
+            && $method === Crud::READ
             && AppParam::getParameterValue("HTTPAPI_V1", "ACTIVATE_CACHE") === "TRUE") {
             $etag = $crud->getEtagInfo();
             if ($etag !== null) {
