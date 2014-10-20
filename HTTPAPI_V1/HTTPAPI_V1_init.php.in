@@ -74,17 +74,23 @@ $json_system_crud = <<<'JSON'
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]+)$/",
+        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]*)$/",
         "description" : "Revision",
-        "canonicalURL" : "documents/<documentId>/revisions/"
+        "canonicalURL" : "documents/<documentId>/revisions/<revisionId>"
     },
-
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]+)$/",
-        "description" : "Revision",
-        "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/"
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]*)$/",
+        "description" : "Revision of a document of <familyId>",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/<revisionId>"
+    },
+    {
+        "order" : 100,
+        "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
+        "regExp" : "/^\\/trash\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]*)$/",
+        "description" : "Revision of deleted documents",
+        "canonicalURL" : "trash/<documentId>/revisions/<revisionId>"
     }
 ]
 JSON;
