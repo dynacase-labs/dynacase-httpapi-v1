@@ -130,6 +130,10 @@ namespace {
          */
         const API0220 = 'Document "%s" is not a document of the family "%s"';
         /**
+         * @errorCode The ressource is not found
+         */
+        const API0221 = 'The revision "%d" of document "%s" is not found';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const API0300 = 'File Record fail.  : "%s"';
