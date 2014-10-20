@@ -145,10 +145,20 @@ class RevisionCrud extends DocumentCrud
                 throw $exception;
             }
         }
-        
+
         if (!empty($this->urlParameters["revision"])) {
-            
             $this->revisionIdentifier = intval($this->urlParameters["revision"]);
         }
     }
+
+    public function getEtagInfo()
+    {
+        if (isset($this->urlParameters["revision"]) && isset($this->urlParameters["identifier"])) {
+            $id = DocManager::getRevisedDocumentId($this->urlParameters["identifier"], $this->urlParameters["revision"]);
+            return $this->extractEtagDataFromId($id);
+        }else {
+            return parent::getEtagInfo();
+        }
+    }
+
 }

@@ -235,14 +235,12 @@ class HistoryCrud extends Crud
     {
         if (isset($this->urlParameters["identifier"])) {
             $id = $this->urlParameters["identifier"];
-            if (!is_numeric($id)) {
-                $id = getIdFromName(getDbAccess() , $id);
-            }
+            $id = DocManager::getIdentifier($id, true);
             $sql = sprintf("select id, date, comment from dochisto where id = %d order by date desc limit 1", $id);
             simpleQuery(getDbAccess() , $sql, $result, false, true);
-            $u = getCurrentUser();
-            $result[] = $u->id;
-            $result[] = $u->memberof;
+            $user = getCurrentUser();
+            $result[] = $user->id;
+            $result[] = $user->memberof;
             // Necessary for localized state label
             $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
             return join("", $result);

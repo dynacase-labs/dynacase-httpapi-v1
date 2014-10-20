@@ -672,15 +672,29 @@ class DocumentCrud extends Crud
         if (isset($this->urlParameters["identifier"])) {
             $id = $this->urlParameters["identifier"];
             $id = DocManager::getIdentifier($id, true);
-            $sql = sprintf("select id, revdate, views from docread where id = %d", $id);
-            simpleQuery(getDbAccess() , $sql, $result, false, true);
-            $u = getCurrentUser();
-            $result[] = $u->id;
-            $result[] = $u->memberof;
-            // Necessary only when use family.structure
-            $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
-            return join(" ", $result);
+            return $this->extractEtagDataFromId($id);
         }
         return null;
+    }
+
+    /**
+     * Compute etag from an id
+     *
+     * @param $id
+     *
+     * @return string
+     * @throws \Dcp\Db\Exception
+     */
+    protected function extractEtagDataFromId($id)
+    {
+        $result = array();
+        $sql = sprintf("select id, revdate, views from docread where id = %d", $id);
+        simpleQuery(getDbAccess(), $sql, $result, false, true);
+        $user = getCurrentUser();
+        $result[] = $user->id;
+        $result[] = $user->memberof;
+        // Necessary only when use family.structure
+        $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
+        return join(" ", $result);
     }
 }
