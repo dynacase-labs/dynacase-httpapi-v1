@@ -131,7 +131,8 @@ abstract class Crud
      *
      * @param array $parameters
      */
-    public function setUrlParameters(Array $parameters) {
+    public function setUrlParameters(Array $parameters)
+    {
         $this->urlParameters = $parameters;
     }
 
@@ -140,12 +141,19 @@ abstract class Crud
      *
      * @param array $parameters
      */
-    public function setContentParameters(Array $parameters) {
+    public function setContentParameters(Array $parameters)
+    {
         $this->contentParameters = $parameters;
     }
 
-    public function getEtagInfo() {
+    public function getEtagInfo()
+    {
         return null;
+    }
+
+    public function generateURL($path)
+    {
+        return AnalyzeURL::getBaseURL().$path;
     }
 
 

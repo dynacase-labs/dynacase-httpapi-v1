@@ -15,14 +15,14 @@ class RevisionCrud extends DocumentCrud
      * @var \DocFam
      */
     protected $_family = null;
-    
-    protected $slice = - 1;
-    
+
+    protected $slice = -1;
+
     protected $offset = 0;
-    
-    protected $revisionIdentifier = - 1;
+
+    protected $revisionIdentifier = -1;
     //region CRUD part
-    
+
     /**
      * Create new ressource
      * @throws Exception
@@ -34,6 +34,7 @@ class RevisionCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Get ressource
      *
@@ -44,11 +45,11 @@ class RevisionCrud extends DocumentCrud
     public function read($resourceId)
     {
         $info = parent::read($resourceId);
-        
         $info["revision"] = $info["document"];
         unset($info["document"]);
         return $info;
     }
+
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -61,6 +62,7 @@ class RevisionCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -73,8 +75,15 @@ class RevisionCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     //endregion CRUD part
-    
+
+    public function execute($method, &$messages)
+    {
+        $this->initCrudParam();
+        return parent::execute($method, $messages);
+    }
+
     /**
      * Generate the default URI of the current ressource
      *
@@ -83,7 +92,7 @@ class RevisionCrud extends DocumentCrud
     protected function getUri()
     {
         if ($this->_document) {
-            
+
             if ($this->_document->doctype === "Z") {
                 return sprintf("api/v1/trash/s/revisions/%d", $this->_document->name ? $this->_document->name : $this->_document->initid, $this->revisionIdentifier);
             } else {
@@ -92,6 +101,7 @@ class RevisionCrud extends DocumentCrud
         }
         return null;
     }
+
     /**
      * Find the current document and set it in the internal options
      *
@@ -100,26 +110,26 @@ class RevisionCrud extends DocumentCrud
      */
     protected function setDocument($resourceId)
     {
-        
+
         $this->_document = DocManager::getDocument($resourceId);
-        
+
         if ($this->_document->revision != $this->revisionIdentifier) {
             $revisedId = DocManager::getRevisedDocumentId($this->_document->initid, $this->revisionIdentifier);
             $this->_document = DocManager::getDocument($revisedId, false);
         }
-        
+
         if (!$this->_document) {
             $e = new Exception("API0200", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
-        
+
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
             $e = new Exception("API0220", $resourceId, $this->_family->name);
             $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $e;
         }
-        
+
         if ($this->_document->doctype === "Z") {
             $e = new Exception("API0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
@@ -127,15 +137,9 @@ class RevisionCrud extends DocumentCrud
             throw $e;
         }
     }
-    /**
-     * Set the family of the current request
-     *
-     * @param array $array
-     * @throws Exception
-     */
-    public function setUrlParameters(Array $array)
+
+    protected function initCrudParam()
     {
-        parent::setUrlParameters($array);
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
         if ($familyId !== false) {
             $this->_family = DocManager::getFamily($familyId);

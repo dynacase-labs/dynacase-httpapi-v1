@@ -16,7 +16,7 @@ JSON;
 $json_system_crud = <<<'JSON'
 [
     {
-        "order" : 100,
+        "order" : 300,
         "class" : "\\Dcp\\HttpApi\\V1\\DocumentCrud",
         "regExp" : "/^\\/documents\\/?(?P<identifier>[^\\/]*)$/",
         "description" : "Documents",
@@ -44,21 +44,14 @@ $json_system_crud = <<<'JSON'
         "canonicalURL" : "trash/<documentId>"
     },
     {
-        "order" : 100,
+        "order" : 300,
         "class" : "\\Dcp\\HttpApi\\V1\\FileCrud",
         "regExp" : "/^\\/files\\/$/",
         "description" : "Temporary files",
         "canonicalURL" : "files/"
     },
     {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
-        "regExp" : "/^\\/enums\\/(?P<familyId>[^\\/]*)\\/(?P<identifier>[^\\/]*)$/",
-        "description" : "Enumerate",
-        "canonicalURL" : "enums/<familyId>/<attributeIdentifier>/"
-    },
-    {
-        "order" : 100,
+        "order" : 400,
         "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
         "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/enumerates\\/(?P<identifier>[^\\/]*)$/",
         "description" : "Enumerate",
@@ -120,6 +113,10 @@ $app_const = array(
         "val" => "http://docs.anakeen.com/dynacase/3.2/dynacase-doc-httpapi/",
         "descr" => N_("HTTPAPI_V1:Anakeen documentation URL"),
         "kind" => "static"
+    ),
+    "REST_BASE_URL" => array(
+        "val" => "api/v1/",
+        "descr" => N_("HTTPAPI_V1:Base URL used to generate canonic URL response (uri)")
     ),
     "DEFAULT_PAGE" => array(
         "val" => "?app=HTTPAPI_V1",

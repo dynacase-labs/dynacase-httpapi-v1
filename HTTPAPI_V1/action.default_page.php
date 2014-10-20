@@ -13,6 +13,8 @@ function default_page(Action &$action) {
     $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_CRUD_CLASS"), true);
     $customCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CUSTOM_CRUD_CLASS"), true);
 
+    $baseURL = \Dcp\HttpApi\V1\AnalyzeURL::getBaseURL();
+
     usort($systemCrud, function ($value1, $value2) {
         return $value1["order"] < $value2["order"];
     });
@@ -20,8 +22,9 @@ function default_page(Action &$action) {
         return $value1["order"] < $value2["order"];
     });
 
-    $defaultValues = function($value) {
+    $defaultValues = function($value) use ($baseURL) {
         $value["canonicalURL"] = isset($value["canonicalURL"]) ? $value["canonicalURL"] : $value["regExp"];
+        $value["canonicalURL"] = $baseURL. $value["canonicalURL"];
         $value["description"] = isset($value["description"]) ? $value["description"] : $value["class"];
         return $value;
     };
