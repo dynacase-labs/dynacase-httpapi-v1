@@ -15,14 +15,14 @@ class RevisionCrud extends DocumentCrud
      * @var \DocFam
      */
     protected $_family = null;
-    
-    protected $slice = - 1;
-    
+
+    protected $slice = -1;
+
     protected $offset = 0;
-    
-    protected $revisionIdentifier = - 1;
+
+    protected $revisionIdentifier = null;
     //region CRUD part
-    
+
     /**
      * Create new ressource
      * @throws Exception
@@ -34,6 +34,7 @@ class RevisionCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Get ressource
      *
@@ -43,12 +44,30 @@ class RevisionCrud extends DocumentCrud
      */
     public function read($resourceId)
     {
-        $info = parent::read($resourceId);
-        
-        $info["revision"] = $info["document"];
-        unset($info["document"]);
+        parent::setDocument($resourceId);
+        $info = array();
+        if ($this->revisionIdentifier === null) {
+            $search = new \SearchDoc();
+            $search->setObjectReturn(true);
+            $search->addFilter("initid = %d", $this->_document->initid);
+            $search->setOrder("revision desc");
+            $search->latest = false;
+            foreach ($search->getDocumentList() as $currentRevision) {
+                $info[] = array(
+                    "title" => $currentRevision->getTitle(),
+                    "documentId" => intval($currentRevision->id),
+                    "uri" => $this->generateURL($this->getUri($currentRevision, $currentRevision->revision))
+                );
+            }
+
+        } else {
+            $info = parent::read($resourceId);
+            $info["revision"] = $info["document"];
+            unset($info["document"]);
+        }
         return $info;
     }
+
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -61,6 +80,7 @@ class RevisionCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -73,25 +93,42 @@ class RevisionCrud extends DocumentCrud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     //endregion CRUD part
-    
+
+    public function execute($method, array & $messages = array())
+    {
+        $this->initCrudParam();
+        return parent::execute($method, $messages);
+    }
+
     /**
      * Generate the default URI of the current ressource
      *
+     * @param null $document
+     * @param null $revisionIdentifier identifier of the revision
+     *
      * @return null|string
      */
-    protected function getUri()
+    protected function getUri($document = null, $revisionIdentifier = null)
     {
-        if ($this->_document) {
-            
-            if ($this->_document->doctype === "Z") {
-                return sprintf("api/v1/trash/s/revisions/%d", $this->_document->name ? $this->_document->name : $this->_document->initid, $this->revisionIdentifier);
+        if ($document === null) {
+            $document = $this->_document;
+        }
+        if ($revisionIdentifier === null) {
+            $revisionIdentifier = $this->revisionIdentifier;
+        }
+        $id = $document->name ? $document->name : $document->initid;
+        if ($document) {
+            if ($document->doctype === "Z") {
+                return $this->generateURL(sprintf("trash/%s/revisions/%d.json", $id, $revisionIdentifier));
             } else {
-                return sprintf("api/v1/documents/%s/revisions/%d", $this->_document->name ? $this->_document->name : $this->_document->initid, $this->revisionIdentifier);
+                return $this->generateURL(sprintf("documents/%s/revisions/%d.json", $id, $revisionIdentifier));
             }
         }
         return null;
     }
+
     /**
      * Find the current document and set it in the internal options
      *
@@ -100,42 +137,39 @@ class RevisionCrud extends DocumentCrud
      */
     protected function setDocument($resourceId)
     {
-        
-        $this->_document = DocManager::getDocument($resourceId);
-        
-        if ($this->_document->revision != $this->revisionIdentifier) {
+
+        if ($this->_document->revision !== "" && $this->_document->revision != $this->revisionIdentifier) {
             $revisedId = DocManager::getRevisedDocumentId($this->_document->initid, $this->revisionIdentifier);
             $this->_document = DocManager::getDocument($revisedId, false);
         }
-        
+
         if (!$this->_document) {
-            $e = new Exception("API0200", $resourceId);
+            $e = new Exception("API0221", $this->revisionIdentifier, $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
-        
+
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
             $e = new Exception("API0220", $resourceId, $this->_family->name);
             $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $e;
         }
-        
+
         if ($this->_document->doctype === "Z") {
             $e = new Exception("API0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
-            $e->setURI(sprintf("api/v1/trash/%d.json", $this->_document->id));
+            $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
             throw $e;
         }
     }
+
     /**
-     * Set the family of the current request
+     * Init some internal params with extracted params
      *
-     * @param array $array
      * @throws Exception
      */
-    public function setUrlParameters(Array $array)
+    protected function initCrudParam()
     {
-        parent::setUrlParameters($array);
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
         if ($familyId !== false) {
             $this->_family = DocManager::getFamily($familyId);
@@ -145,10 +179,35 @@ class RevisionCrud extends DocumentCrud
                 throw $exception;
             }
         }
-        
-        if (!empty($this->urlParameters["revision"])) {
-            
+
+        if ($this->urlParameters["revision"] !== "") {
             $this->revisionIdentifier = intval($this->urlParameters["revision"]);
         }
     }
+
+    /**
+     * Generate Etag for the current revision
+     *
+     * @return null|string
+     * @throws DocManager\Exception
+     */
+    public function getEtagInfo()
+    {
+        if (isset($this->urlParameters["revision"])
+            && isset($this->urlParameters["identifier"])
+            && $this->urlParameters["revision"] !== ""
+            && $this->urlParameters["identifier"] !== ""
+        ) {
+            $id = $this->urlParameters["identifier"];
+            if (!is_numeric($id)) {
+                $id = DocManager::getIdFromName($this->urlParameters["identifier"]);
+                $this->urlParameters["identifier"] = $id;
+            }
+            $id = DocManager::getRevisedDocumentId($id, $this->urlParameters["revision"]);
+            return $this->extractEtagDataFromId($id);
+        } else {
+            return parent::getEtagInfo();
+        }
+    }
+
 }

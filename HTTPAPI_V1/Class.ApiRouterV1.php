@@ -37,19 +37,22 @@ class ApiRouterV1
         $crud = new $identifiedCrud["class"]();
         /* @var Crud $crud */
         $crud->setUrlParameters($identifiedCrud["param"]);
-        if ($method === Crud::READ
+        $crud->setContentParameters(static::extractContentParameters($method));
+        $cacheControl = isset($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : false;
+        if (
+            $cacheControl !== "no-cache"
+            && $method === Crud::READ
             && AppParam::getParameterValue("HTTPAPI_V1", "ACTIVATE_CACHE") === "TRUE") {
             $etag = $crud->getEtagInfo();
             if ($etag !== null) {
                 $etag = sha1($etag);
                 $etagManager = new EtagManager();
                 if ($etagManager->verifyCache($etag)) {
-                    $etagManager->generateNotModifiedResponse();
+                    $etagManager->generateNotModifiedResponse($etag);
                     throw new EtagException();
                 }
             }
         }
-        $crud->setContentParameters(static::extractContentParameters($method));
         $return = $crud->execute($method, $messages);
         if ($etagManager !== false && $etag !== false) {
             $etagManager->generateResponseHeader($etag);
@@ -75,7 +78,7 @@ class ApiRouterV1
             $extension = $matches['ext'];
             static::$path = $matches['path'];
         }
-        if ($extension === "json" || $extension === false) {
+        if ($extension === "json" || $extension === false || $extension === "") {
             $format = "application/json";
         } else {
             throw new Exception("API0005", $extension);

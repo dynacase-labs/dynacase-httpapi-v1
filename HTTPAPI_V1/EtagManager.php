@@ -19,7 +19,7 @@ class EtagManager {
     public function verifyCache($etag)
     {
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            return trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag;
+            return trim($_SERVER['HTTP_IF_NONE_MATCH']) === "\"$etag\"";
         } else {
             return false;
         }
@@ -32,19 +32,18 @@ class EtagManager {
      */
     function generateResponseHeader($etag)
     {
-        header("Cache-Control: private;");
-        header("Content-Disposition: inline;");
-        header("ETag: $etag");
+        header("Cache-Control: private");
+        header("ETag: \"$etag\"");
     }
 
     /**
      * Generate the header for the static response
      */
-    function generateNotModifiedResponse()
+    function generateNotModifiedResponse($etag)
     {
         header('Not Modified', true, 304);
+        header("ETag: \"$etag\"");
         header('Connection: close');
-        exit(0);
     }
 
 

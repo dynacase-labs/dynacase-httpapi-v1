@@ -425,7 +425,7 @@ class DocManager
      * @param bool $latest if true search latest id
      * @return int
      */
-    static protected function getIdentifier($documentIdentifier, $latest)
+    static public function getIdentifier($documentIdentifier, $latest)
     {
         if (empty($documentIdentifier)) {
             return 0;

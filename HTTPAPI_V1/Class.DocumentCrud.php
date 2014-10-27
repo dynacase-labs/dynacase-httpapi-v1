@@ -190,7 +190,7 @@ class DocumentCrud extends Crud
         if ($this->_document->doctype === "Z") {
             $e = new Exception("API0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
-            $e->setURI(sprintf("api/v1/trash/%d.json", $this->_document->initid));
+            $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->initid)));
             throw $e;
         }
     }
@@ -411,12 +411,12 @@ class DocumentCrud extends Crud
     {
         if ($this->_document) {
             if ($this->_document->defDoctype === "C") {
-                return sprintf("api/v1/families/%s.json", strtolower($this->_document->name));
+                return $this->generateURL(sprintf("families/%s.json", $this->_document->name));
             } else {
                 if ($this->_document->doctype === "Z") {
-                    return sprintf("api/v1/trash/%s.json", $this->_document->name ? $this->_document->name : $this->_document->initid);
+                    return $this->generateURL(sprintf("trash/%s.json", $this->_document->name ? $this->_document->name : $this->_document->initid));
                 } else {
-                    return sprintf("api/v1/documents/%s.json", $this->_document->name ? $this->_document->name : $this->_document->initid);
+                    return $this->generateURL(sprintf("documents/%s.json", $this->_document->name ? $this->_document->name : $this->_document->initid));
                 }
             }
         }
@@ -661,7 +661,7 @@ class DocumentCrud extends Crud
                 }
                 $info["enumItems"] = $enumItems;
             }
-            $info["enumUri"] = sprintf("api/v1/enums/%s/%s", $this->_document->fromname, $attribute->id);
+            $info["enumUri"] = $this->generateURL(sprintf("families/%s/enumerates/%s", $this->_document->fromname, $attribute->id));
         }
         
         return $info;
@@ -671,18 +671,30 @@ class DocumentCrud extends Crud
     {
         if (isset($this->urlParameters["identifier"])) {
             $id = $this->urlParameters["identifier"];
-            if (!is_numeric($id)) {
-                $id = DocManager::getIdFromName($id);
-            }
-            $sql = sprintf("select id, revdate, views from docread where id = %d", $id);
-            simpleQuery(getDbAccess() , $sql, $result, false, true);
-            $u = getCurrentUser();
-            $result[] = $u->id;
-            $result[] = $u->memberof;
-            // Necessary only when use family.structure
-            $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
-            return join("", $result);
+            $id = DocManager::getIdentifier($id, true);
+            return $this->extractEtagDataFromId($id);
         }
         return null;
+    }
+
+    /**
+     * Compute etag from an id
+     *
+     * @param $id
+     *
+     * @return string
+     * @throws \Dcp\Db\Exception
+     */
+    protected function extractEtagDataFromId($id)
+    {
+        $result = array();
+        $sql = sprintf("select id, revdate, views from docread where id = %d", $id);
+        simpleQuery(getDbAccess(), $sql, $result, false, true);
+        $user = getCurrentUser();
+        $result[] = $user->id;
+        $result[] = $user->memberof;
+        // Necessary only when use family.structure
+        $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
+        return join(" ", $result);
     }
 }

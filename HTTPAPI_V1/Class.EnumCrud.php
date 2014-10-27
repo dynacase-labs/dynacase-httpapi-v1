@@ -11,7 +11,7 @@ use Dcp\HttpApi\V1\DocManager;
 
 class EnumCrud extends Crud
 {
-    
+
     const startsOperator = "startswith";
     const containsOperator = "contains";
     /**
@@ -22,7 +22,7 @@ class EnumCrud extends Crud
     protected $operatorFilter = self::containsOperator;
     protected $enumid = null;
     //region CRUD part
-    
+
     /**
      * Create new ressource
      * @throws Exception
@@ -34,6 +34,7 @@ class EnumCrud extends Crud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Get ressource
      *
@@ -43,6 +44,20 @@ class EnumCrud extends Crud
      */
     public function read($resourceId)
     {
+        if ($resourceId === "") {
+            $result = array(
+                "uri" => $this->generateEnumUrl($this->family->name),
+                "enumerates" => array(),
+            );
+            $attributes = $this->family->getNormalAttributes();
+            $enums = array_filter($attributes, function ($currentAttribute) {
+                return $currentAttribute->type === "enum";
+            });
+            foreach ($enums as $currentEnum) {
+                $result["enumerates"][] = array("uri" => $this->generateEnumUrl($this->family->name, $currentEnum->id));
+            }
+            return $result;
+        }
         $attribute = $this->family->getAttribute($resourceId);
         if (!$attribute) {
             $exception = new Exception("API0400", $resourceId, $this->family->name);
@@ -59,10 +74,10 @@ class EnumCrud extends Crud
          */
         $enums = $attribute->getEnumLabel();
         $info = array(
-            "uri" => sprintf("enums/%s/%s", $this->family->name, $resourceId) ,
+            "uri" => $this->generateEnumUrl($this->family->name, $resourceId),
             "label" => $attribute->getLabel()
         );
-        
+
         $filterKeyword = $this->getFilterKeyword();
         $filterOperator = $this->getOperatorFilter();
         $pattern = '';
@@ -77,7 +92,7 @@ class EnumCrud extends Crud
                     break;
             }
         }
-        
+
         $enumItems = array();
         foreach ($enums as $key => $label) {
             $good = true;
@@ -86,7 +101,7 @@ class EnumCrud extends Crud
                     $good = false;
                 }
             }
-            
+
             if ($good && $key !== '' && $key !== ' ' && $key !== null) {
                 $enumItems[] = array(
                     "key" => (string)$key,
@@ -99,9 +114,10 @@ class EnumCrud extends Crud
             "keyword" => $filterKeyword
         );
         $info["enumItems"] = $enumItems;
-        
+
         return $info;
     }
+
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -114,6 +130,7 @@ class EnumCrud extends Crud
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
+
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -127,10 +144,11 @@ class EnumCrud extends Crud
         throw $e;
     }
     //endregion CRUD part
-    
+
     /**
      * Analyze the parameters of the request
      *
+     * @param array $parameters
      * @throws Exception
      */
     public function setContentParameters(array $parameters)
@@ -143,6 +161,7 @@ class EnumCrud extends Crud
             $this->setOperatorFilter($this->contentParameters["operator"]);
         }
     }
+
     /**
      * Register the keyword
      *
@@ -155,6 +174,7 @@ class EnumCrud extends Crud
         }
         $this->keywordFilter = $word;
     }
+
     /**
      * Return the operator filter
      *
@@ -164,6 +184,7 @@ class EnumCrud extends Crud
     {
         return $this->operatorFilter;
     }
+
     /**
      * Set the operator filter
      *
@@ -181,6 +202,7 @@ class EnumCrud extends Crud
         }
         $this->operatorFilter = $operatorFilter;
     }
+
     /**
      * Return the filter keyword
      *
@@ -190,6 +212,7 @@ class EnumCrud extends Crud
     {
         return $this->keywordFilter;
     }
+
     /**
      * Initialize the current family
      *
@@ -206,6 +229,14 @@ class EnumCrud extends Crud
             $exception->setHttpStatus("404", "Family not found");
             throw $exception;
         }
-        $this->enumid = $this->urlParameters["identifier"];
+        $this->enumid = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : "";
+    }
+
+    protected function generateEnumUrl($famId, $enumId = "")
+    {
+        if ($enumId !== "") {
+            $enumId .= ".json";
+        }
+        return $this->generateURL("families/$famId/enumerates/$enumId");
     }
 }
