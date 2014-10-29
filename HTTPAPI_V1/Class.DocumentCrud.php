@@ -226,25 +226,23 @@ class DocumentCrud extends Crud
     protected function _getPropertiesId()
     {
         $defaultProperties = array(
-            "title",
-            "state",
-            "name",
-            "icon",
+            "cvid",
+            "doctype",
+            "fromid",
             "fromname",
             "fromtitle",
+            "icon",
             "id",
             "initid",
-            "postitid",
-            "initid",
             "locked",
-            "doctype",
-            "revision",
-            "wid",
-            "cvid",
-            "profid",
-            "fromid",
+            "name",
             "owner",
-            "domainid"
+            "postitid",
+            "profid",
+            "revision",
+            "state",
+            "title",
+            "wid",
         );
         if ($this->hasFields(self::GET_PROPERTIES)) {
             return $defaultProperties;
@@ -696,5 +694,41 @@ class DocumentCrud extends Crud
         // Necessary only when use family.structure
         $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
         return join(" ", $result);
+    }
+
+    public function analyseJSON($jsonString) {
+        $dataDocument = json_decode($jsonString, true);
+        if ($dataDocument === null) {
+            throw new Exception("API0208", $jsonString);
+        }
+        if (!isset($dataDocument["document"]["attributes"]) || !is_array($dataDocument["document"]["attributes"])) {
+            throw new Exception("API0209", $jsonString);
+        }
+        $values = $dataDocument["document"]["attributes"];
+
+        $newValues = array();
+        foreach ($values as $aid => $value) {
+            if (is_array($value) && !array_key_exists("value", $value)) {
+                $multipleValues = array();
+                foreach ($value as $singleValue) {
+                    if (is_array($singleValue) && !array_key_exists("value", $singleValue)) {
+                        $multipleSecondLevelValues = array();
+                        foreach ($singleValue as $secondVValue) {
+                            $multipleSecondLevelValues[] = $secondVValue["value"];
+                        }
+                        $multipleValues[] = $multipleSecondLevelValues;
+                    } else {
+                        $multipleValues[] = $singleValue["value"];
+                    }
+                }
+                $newValues[$aid] = $multipleValues;
+            } else {
+                if (!is_array($value) || !array_key_exists("value", $value)) {
+                    throw new Exception("API0210", $jsonString);
+                }
+                $newValues[$aid] = $value["value"];
+            }
+        }
+        return $newValues;
     }
 }

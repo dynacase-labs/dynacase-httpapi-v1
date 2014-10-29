@@ -156,5 +156,10 @@ abstract class Crud
         return AnalyzeURL::getBaseURL().$path;
     }
 
+    public function analyseJSON($jsonString)
+    {
+        return array();
+    }
+
 
 }
