@@ -7,7 +7,7 @@
 
 namespace Dcp\HttpApi\V1;
 
-class RecordReturn
+class RecordReturn implements \JsonSerializable
 {
     
     protected $httpStatus = 200;
@@ -87,9 +87,22 @@ class RecordReturn
         
         print json_encode($this);
     }
+
+    public function jsonSerialize()
+    {
+        $values = array(
+            "success" => $this->success,
+            "messages" => $this->messages,
+            "data" => $this->data
+        );
+        if (!empty($this->exceptionMessage)) {
+            $values["exceptionMessage"] = $this->exceptionMessage;
+        }
+        return $values;
+    }
 }
 
-class RecordReturnMessage
+class RecordReturnMessage implements \JsonSerializable
 {
     const ERROR = "error";
     const MESSAGE = "message";
@@ -103,5 +116,31 @@ class RecordReturnMessage
     public $code = '';
     public $uri = '';
     public $data = null;
+
+    public function jsonSerialize()
+    {
+        $values = array(
+            "type" => $this->type
+        );
+        if (!empty($this->contentText)) {
+            $values["contentText"] = $this->contentText;
+        }
+        if (!empty($this->code)) {
+            $values["code"] = $this->code;
+        }
+        if (!empty($this->contentHtml)) {
+            $values["contentHtml"] = $this->contentHtml;
+        }
+        if (!empty($this->contentHtml)) {
+            $values["contentHtml"] = $this->contentHtml;
+        }
+        if (!empty($this->uri)) {
+            $values["uri"] = $this->uri;
+        }
+        if (!empty($this->data)) {
+            $values["data"] = $this->data;
+        }
+        return $values;
+    }
 }
 
