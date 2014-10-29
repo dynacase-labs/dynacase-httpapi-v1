@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test API</title>
+    <link rel="stylesheet" href="HTTPAPI_V1_TEST/Layout/deps/codemirror.css"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_TEST/Layout/deps/lint.css"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_TEST/Layout/deps/foldgutter.css"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_TEST/Layout/deps/fullscreen.css"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_TEST/Layout/test.css"/>
+</head>
+<body>
+
+<form action="#" id="request_form">
+    <div>
+        <label for="request_url">Url of the request</label>
+        <input type="text" name="request_url" id="request_url" class="text__input"/>
+    </div>
+    <div>
+        <label for="request_method">Method of the request</label>
+        <select name="request_method" id="request_method" class="text__input">
+            <option value="POST">POST (Create)</option>
+            <option value="GET" selected>GET (Read)</option>
+            <option value="PUT">PUT (Update)</option>
+            <option value="DELETE">DELETE (Delete)</option>
+        </select>
+    </div>
+    <div id="contentZone">
+        <label for="request_content">Content of the request (JSON)
+            <small>Press F11 when cursor is in the editor to toggle full screen
+                editing. Esc can also be used to exit full screen editing.
+            </small></label>
+        <textarea name="request_content" id="request_content" class="text__input"></textarea>
+    </div>
+    <input type="submit" value="Envoyer la requête" class="text__input"/>
+</form>
+<div>
+    <label for="request_result">Request result <small>Press F11 when cursor is in the editor to toggle full screen
+        editing. Esc can also be used to exit full screen editing.</small> </label>
+    <textarea name="request_result" id="request_result" class="text__input result__input">
+
+    </textarea>
+</div>
+Some Info on the API :
+<iframe src="[HELP_PAGE]" frameborder="0" class="text__input"></iframe>
+
+<script type="text/javascript">
+ window.defaultValues = window.defaultValues || [DEFAULT_VALUES];
+</script>
+<script type="text/javascript" src="lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/codemirror.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/javascript.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/jsonlint.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/lint.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/json-lint.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/closebrackets.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/matchbrackets.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/foldcode.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/foldgutter.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/brace-fold.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/deps/fullscreen.js"></script>
+<script type="text/javascript" src="HTTPAPI_V1_TEST/Layout/test_api.js"></script>
+</body>
+</html>
