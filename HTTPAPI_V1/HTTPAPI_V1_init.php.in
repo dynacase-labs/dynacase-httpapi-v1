@@ -18,28 +18,28 @@ $json_system_crud = <<<'JSON'
     {
         "order" : 300,
         "class" : "\\Dcp\\HttpApi\\V1\\DocumentCrud",
-        "regExp" : "/^\\/documents\\/?(?P<identifier>[^\\/]*)$/",
+        "regExp" : "/^\\/documents\\/?(?P<identifier>[^\\/]+)$/",
         "description" : "Documents",
         "canonicalURL" : "documents/<documentId>"
     },
     {
         "order" : 100,
          "class" : "\\Dcp\\HttpApi\\V1\\FamilyCrud",
-         "regExp" : "/^\\/families\\/(?P<identifier>[^\\/]*)\\/?$/",
+         "regExp" : "/^\\/families\\/(?P<identifier>[^\\/]+)\\/?$/",
          "description" : "Families",
          "canonicalURL" : "families/<familyId>"
      },
     {
         "order" : 200,
         "class" : "\\Dcp\\HttpApi\\V1\\FamilyDocumentCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)$/",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)$/",
         "description" : "Documents of the family <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>"
     },
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\Trash",
-        "regExp" : "/^\\/trash\\/?(?P<identifier>[^\\/]*)$/",
+        "regExp" : "/^\\/trash\\/?(?P<identifier>[^\\/]+)$/",
         "description" : "Deleted documents",
         "canonicalURL" : "trash/<documentId>"
     },
@@ -53,42 +53,42 @@ $json_system_crud = <<<'JSON'
     {
         "order" : 400,
         "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/enumerates\\/(?P<identifier>[^\\/]*)$/",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/enumerates\\/(?P<identifier>[^\\/]*)$/",
         "description" : "Enumerate",
         "canonicalURL" : "families/<familyId>/enumerates/<attributeIdentifier>/"
     },
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\HistoryCrud",
-        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]*)\\/history\\/$/",
+        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
         "description" : "History",
         "canonicalURL" : "documents/<documentId>/history/"
     },
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\HistoryCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)\\/history\\/$/",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
         "description" : "History",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/history/"
     },
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]*)$/",
+        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]*)$/",
         "description" : "Revision",
         "canonicalURL" : "documents/<documentId>/revisions/<revisionId>"
     },
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]*)\\/documents\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]*)$/",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]*)$/",
         "description" : "Revision of a document of <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/<revisionId>"
     },
     {
         "order" : 100,
         "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/trash\\/(?P<identifier>[^\\/]*)\\/revisions\\/(?P<revision>[0-9]*)$/",
+        "regExp" : "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]*)$/",
         "description" : "Revision of deleted documents",
         "canonicalURL" : "trash/<documentId>/revisions/<revisionId>"
     }
