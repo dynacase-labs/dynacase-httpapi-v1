@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<module name="@PACKAGE@" disabled="no" version="@VERSION@" release="@RELEASE@"
+        basecomponent="no">
+
+    <description>Dynacase HTTP API : outil de développement</description>
+
+    <requires>
+        <module comp="ge" name="dynacase-core" version="3.2"/>
+    </requires>
+
+    <post-install>
+        <process command="programs/record_application HTTPAPI_V1_DEV"/>
+        <process command="programs/update_catalog"/>
+    </post-install>
+
+    <post-upgrade>
+        <process command="programs/pre_migration HTTPAPI_V1_DEV"/>
+        <process command="programs/record_application HTTPAPI_V1_DEV"/>
+        <process command="programs/post_migration HTTPAPI_V1_DEV"/>
+        <process command="programs/update_catalog"/>
+    </post-upgrade>
+</module>

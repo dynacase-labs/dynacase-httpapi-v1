@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
-<module name="@PACKAGE@-test" disabled="no" version="@VERSION@" release="@RELEASE@"
+<module name="@PACKAGE@" disabled="no" version="@VERSION@" release="@RELEASE@"
         basecomponent="no">
     <description>Test case for dynacase-httpapi-v1.</description>
-
 
     <requires>
         <module name="@PACKAGE@"/>
