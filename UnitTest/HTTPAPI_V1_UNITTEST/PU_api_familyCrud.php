@@ -12,7 +12,7 @@ use Dcp\HttpApi\V1\Exception;
 use Dcp\HttpApi\V1\FamilyCrud;
 use Dcp\HttpApi\V1\FamilyDocumentCrud;
 
-require_once 'HTTPAPI_V1_TEST/PU_TestCaseApi.php';
+require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
 class TestFamilyCrud extends TestCaseApi
 {

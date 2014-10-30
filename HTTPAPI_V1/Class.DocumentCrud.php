@@ -367,10 +367,7 @@ class DocumentCrud extends Crud
         if ($this->valueRender) {
             return $this->valueRender[0]["attributes"];
         }
-        $documentList = new \DocumentList();
-        $documentList->addDocumentIdentifiers(array(
-            $this->_document->id
-        ) , false);
+
         
         $formatCollection = $this->getFormatCollection();
         $normalAttributes = $this->_document->getNormalAttributes();

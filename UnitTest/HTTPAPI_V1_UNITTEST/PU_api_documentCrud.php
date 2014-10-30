@@ -11,7 +11,7 @@ use Dcp\HttpApi\V1\DocManager;
 use Dcp\HttpApi\V1\DocumentCrud;
 use Dcp\HttpApi\V1\Exception;
 
-require_once 'HTTPAPI_V1_TEST/PU_TestCaseApi.php';
+require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
 class TestDocumentCrud extends TestCaseApi
 {

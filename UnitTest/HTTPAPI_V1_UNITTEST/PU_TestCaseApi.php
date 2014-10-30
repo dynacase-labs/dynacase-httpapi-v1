@@ -14,7 +14,7 @@ require_once 'DCPTEST/PU_testcase_dcp_commonfamily.php';
 class TestCaseApi extends \Dcp\Pu\TestCaseDcpCommonFamily
 {
     
-    protected static $testDirectory = "HTTPAPI_V1_TEST";
+    protected static $testDirectory = "HTTPAPI_V1_UNITTEST";
 
     protected function resetDocumentCache() {
         parent::resetDocumentCache();
