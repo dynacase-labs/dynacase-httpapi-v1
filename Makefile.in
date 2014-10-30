@@ -28,9 +28,18 @@ webinst-unit-test:
 	make -C UnitTest webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-unit-test VERSION=$(VERSION) appname=HTTPAPI_V1_TEST
 	mv UnitTest/*.webinst .
 
-webinst: webinst-unit-test
+publish-dev:
+	make -C Dev publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-dev VERSION=$(VERSION)
+
+webinst-dev:
+	make -C Dev webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-dev VERSION=$(VERSION)
+	mv Dev/*.webinst .
+
+webinst: webinst-unit-test webinst-dev
 
 clean:
 	/bin/rm -f *.*~ config.* Makefile configure $(appname)/$(appname)_init.php info.xml $(PACKAGE)-*.webinst
 	/bin/rm UnitTest/info.xml
+	/bin/rm Dev/info.xml
+	/bin/rm Dev/HTTPAPI_V1_DEV/HTTPAPI_V1_DEV_init.php
 	/bin/rm -fr autom4te.cache
