@@ -54,7 +54,11 @@ class EnumCrud extends Crud
                 return $currentAttribute->type === "enum";
             });
             foreach ($enums as $currentEnum) {
-                $result["enumerates"][] = array("uri" => $this->generateEnumUrl($this->family->name, $currentEnum->id));
+                $result["enumerates"][] = array(
+                    "attributeId" => $currentEnum->id,
+                    "label" => $currentEnum->getLabel(),
+                    "uri" => $this->generateEnumUrl($this->family->name, $currentEnum->id)
+                );
             }
             return $result;
         }

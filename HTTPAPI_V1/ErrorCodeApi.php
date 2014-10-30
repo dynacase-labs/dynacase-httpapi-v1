@@ -24,7 +24,7 @@ namespace {
         /**
          * @errorCode in case of incorrect url
          */
-        const API0004 = 'No ressource detected';
+        const API0004 = 'The URL %s is not compatible with the ressources of the API';
         /**
          * @errorCode in case of accept unknown
          */
@@ -80,15 +80,15 @@ namespace {
         /**
          * @errorCode Content-type said json and content is not a json
          */
-        const API0208 = 'Record fail. Content page is not a json : "%s"';
+        const API0208 = 'Record fail. Content page is not a json : "%s" //  example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
         /**
          * @errorCode Content-type said json and content must be contains {document:{attributes:[]}
          */
-        const API0209 = 'Record fail. Json object not contains attributes : "%s"';
+        const API0209 = 'Record fail. Json object not contains attributes : "%s" // example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
         /**
          * @errorCode Content-type said json and content must be contains {document:{attributes:[["x":{value:"a"}]}
          */
-        const API0210 = 'Record fail. Json object attributes no contain "value" fields : "%s"';
+        const API0210 = 'Record fail. Json object attributes no contain "value" fields : "%s" // example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
         /**
          * @errorCode An attribute cannot be set
          */
