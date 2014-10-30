@@ -3,5 +3,5 @@
 #
 # ============================================
 
-SUBDIR= HTTPAPI_V1_TEST
+SUBDIR= HTTPAPI_V1_UNITTEST
 include $(utildir)/PubRule
