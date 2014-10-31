@@ -32,7 +32,7 @@ $json_system_crud = <<<'JSON'
     {
         "order" : 200,
         "class" : "\\Dcp\\HttpApi\\V1\\FamilyDocumentCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)$/",
+        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]*)$/",
         "description" : "Documents of the family <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>"
     },
