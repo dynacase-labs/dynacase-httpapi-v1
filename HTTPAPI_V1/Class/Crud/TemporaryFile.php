@@ -5,11 +5,11 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\VaultManager;
 
-class FileCrud extends Crud
+class TemporaryFile extends Crud
 {
     //region CRUD part
     /**

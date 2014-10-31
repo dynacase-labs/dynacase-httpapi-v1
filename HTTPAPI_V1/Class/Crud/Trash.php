@@ -1,15 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: charles
- * Date: 10/10/14
- * Time: 18:31
- */
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+*/
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
+use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
-class Trash extends DocumentCrud {
+class Trash extends Document {
 
     //region CRUD part
     /**

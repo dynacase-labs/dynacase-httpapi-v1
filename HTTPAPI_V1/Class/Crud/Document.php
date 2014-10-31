@@ -4,11 +4,12 @@
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FDL
 */
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
-use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
+use Dcp\HttpApi\V1\Api\RecordReturnMessage as RecordReturnMessage;
 
-class DocumentCrud extends Crud
+class Document extends Crud
 {
     
     const GET_PROPERTIES = "document.properties";

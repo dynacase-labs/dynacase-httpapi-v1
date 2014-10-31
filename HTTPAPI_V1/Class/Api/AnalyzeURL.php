@@ -5,8 +5,7 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
-
+namespace Dcp\HttpApi\V1\Api;
 
 class AnalyzeURL {
 

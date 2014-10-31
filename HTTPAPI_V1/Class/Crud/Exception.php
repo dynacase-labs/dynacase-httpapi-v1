@@ -5,38 +5,11 @@
  * @package FDL
 */
 
+
 namespace {
-    
-    class ErrorCodeApi
+
+    class CrudCodeApi
     {
-        /**
-         * @errorCode When an system exception occurs
-         */
-        const API0001 = 'System exception';
-        /**
-         * @errorCode A method for a resource is not implemented
-         */
-        const API0002 = 'Method "%s" not implemented';
-        /**
-         * @errorCode Content type must be application/x-www-form-urlencoded or application/json
-         */
-        const API0003 = 'Content type "%s" not supported';
-        /**
-         * @errorCode in case of incorrect url
-         */
-        const API0004 = 'The URL %s is not compatible with the ressources of the API';
-        /**
-         * @errorCode in case of accept unknown
-         */
-        const API0005 = 'Unable to return the type %s';
-        /**
-         * @errorCode Url no use a implemted ressource
-         */
-        const API0100 = 'Undefined Resource';
-        /**
-         * @errorCode The ressource is not implemented
-         */
-        const API0101 = 'Resource "%s" not implemented';
         /**
          * @errorCode The ressource is not implemented
          */
@@ -157,25 +130,21 @@ namespace {
          * @errorCode Only operators startsWith and contains are allowed
          */
         const API0402 = 'Filter operateur "%s" not available. Availables are "%s"';
-        /**
-         * for beautifier
-         */
-        private function _bo()
-        {
-            if (true) return;
-        }
+
     }
 }
-namespace Dcp\HttpApi\V1 {
+
+namespace Dcp\HttpApi\V1\Crud {
     class Exception extends \Dcp\Exception
     {
-        
+
         protected $httpStatus = 400;
         protected $httpMessage = "Dcp Exception";
         protected $data = null;
         protected $userMessage = '';
         protected $uri = "";
         protected $headers = array();
+
         /**
          * @param string $userMessage
          */
@@ -183,6 +152,7 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->userMessage = $userMessage;
         }
+
         /**
          * @return string
          */
@@ -190,6 +160,7 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->userMessage;
         }
+
         /**
          * @return null
          */
@@ -197,6 +168,7 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->data;
         }
+
         /**
          * Add
          *
@@ -206,6 +178,7 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->data = $data;
         }
+
         /**
          * Return the http message
          *
@@ -215,6 +188,7 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->httpMessage;
         }
+
         /**
          * Return the http status
          *
@@ -224,6 +198,7 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->httpStatus;
         }
+
         /**
          *
          * @param int $httpStatus
@@ -234,6 +209,7 @@ namespace Dcp\HttpApi\V1 {
             $this->httpStatus = $httpStatus;
             $this->httpMessage = $httpMessage;
         }
+
         /**
          * Add an URI indication
          *
@@ -243,6 +219,7 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->uri = $uri;
         }
+
         /**
          * Return the URI indication
          *
@@ -251,6 +228,7 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->uri;
         }
+
         /**
          * Add an header
          *
@@ -262,6 +240,7 @@ namespace Dcp\HttpApi\V1 {
         {
             $this->headers[$key] = $value;
         }
+
         /**
          * Return the URI indication
          *
@@ -270,12 +249,6 @@ namespace Dcp\HttpApi\V1 {
         {
             return $this->headers;
         }
-        /**
-         * for beautifier
-         */
-        private function _bo()
-        {
-            if (true) return;
-        }
+
     }
 }

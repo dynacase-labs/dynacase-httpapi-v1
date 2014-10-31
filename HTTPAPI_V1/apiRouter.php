@@ -17,9 +17,9 @@ $jsonFatalShutdown = function () use (&$loggers) {
     if ($error !== NULL) {
         if ($error["type"] == E_ERROR) {
             ob_clean();
-            $return = new Dcp\HttpApi\V1\RecordReturn();
+            $return = new \Dcp\HttpApi\V1\Api\RecordReturn();
             $return->setHttpStatusCode(500, "Dynacase Fatal Error");
-            $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+            $message = new \Dcp\HttpApi\V1\Api\RecordReturnMessage();
             $message->contentText = join(" ", $error);
             $message->type = $message::ERROR;
             $return->addMessage($message);
@@ -35,7 +35,7 @@ $jsonFatalShutdown = function () use (&$loggers) {
 
 register_shutdown_function($jsonFatalShutdown);
 //endregion initErrorHandling
-$return = new Dcp\HttpApi\V1\RecordReturn();
+$return = new Dcp\HttpApi\V1\Api\RecordReturn();
 //region initLogger
 try {
     $loggerList = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_LOGGER"), true);
@@ -69,12 +69,12 @@ try {
             }
         }
     } else {
-        throw new \Dcp\HttpApi\V1\Exception("Unable to read custom logger, you should check the custom logger conf.");
+        throw new Dcp\HttpApi\V1\Api\Exception("Unable to read custom logger, you should check the custom logger conf.");
     }
     $defaultPageMessage = function () {
         $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
         $defaultURL = $coreURL . \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "DEFAULT_PAGE");
-        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+        $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
         $message->contentText = sprintf("You can consult %s to have info on the API", $defaultURL);
         $message->contentHtml = sprintf('You can consult <a href="%s">the REST page</a> to have info on the API', $defaultURL);
         return $message;
@@ -83,7 +83,7 @@ try {
 
 //region Authentification
     if (file_exists('maintenance.lock')) {
-        $exception = new \Dcp\HttpApi\V1\Exception("Maintenance in progress");
+        $exception = new Dcp\HttpApi\V1\Api\Exception("Maintenance in progress");
         $exception->setHttpStatus(503, "Service Unavailable");
         $exception->setUserMessage("Maintenance in progress");
         throw $exception;
@@ -95,7 +95,7 @@ try {
         // Apache has already handled the authentication
         global $_SERVER;
         if ($_SERVER['PHP_AUTH_USER'] == "") {
-            $exception = new \Dcp\HttpApi\V1\Exception("User must be authenticated");
+            $exception = new Dcp\HttpApi\V1\Api\Exception("User must be authenticated");
             $exception->setHttpStatus("403", "Forbidden");
             throw $exception;
         }
@@ -110,7 +110,7 @@ try {
             default:
                 $auth = AuthenticatorManager::$auth;
                 if ($auth === false) {
-                    $exception = new \Dcp\HttpApi\V1\Exception("Could not get authenticator");
+                    $exception = new Dcp\HttpApi\V1\Api\Exception("Could not get authenticator");
                     $exception->setHttpStatus("500", "Could not get authenticator");
                     $exception->setUserMessage("Could not get authenticator");
                     throw $exception;
@@ -120,7 +120,7 @@ try {
     }
 // First control
     if (empty($_SERVER['PHP_AUTH_USER'])) {
-        $exception = new \Dcp\HttpApi\V1\Exception("User must be authenticated");
+        $exception = new Dcp\HttpApi\V1\Api\Exception("User must be authenticated");
         $exception->setHttpStatus("403", "Forbidden");
         throw $exception;
     }
@@ -133,7 +133,7 @@ try {
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
     //Routing
-    $data = Dcp\HttpApi\V1\apiRouterV1::execute($messages);
+    $data = Dcp\HttpApi\V1\Api\Router::execute($messages);
 
     $return->setData($data);
     foreach ($messages as $message) {
@@ -142,7 +142,7 @@ try {
     // Handle DCP warning message
     $warnings = $action->parent->getWarningMsg();
     foreach ($warnings as $warning) {
-        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+        $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
         $message->contentText = $warning;
         $message->type = $message::WARNING;
         $return->addMessage($message);
@@ -151,22 +151,22 @@ try {
     // Handle DCP log message
     $warnings = $action->parent->getLogMsg();
     foreach ($warnings as $warning) {
-        $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+        $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
         $message->contentText = $warning;
         $message->type = $message::NOTICE;
         $return->addMessage($message);
     }
     $action->parent->clearLogMsg();
 } //region ErrorCatching
-catch (\Dcp\HttpApi\V1\EtagException $exception) {
+catch (Dcp\HttpApi\V1\Etag\Exception $exception) {
     header("Cache-Control: private, no-cache, must-revalidate", true);
     return;
-} catch (\Dcp\HttpApi\V1\Exception $exception) {
+} catch (Dcp\HttpApi\V1\Api\Exception $exception) {
 
     $return->setHttpStatusCode($exception->getHttpStatus(), $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
-    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
     $message->contentText = $exception->getDcpMessage();
     $message->contentText = $exception->getUserMessage();
     if (!$message->contentText) {
@@ -178,14 +178,13 @@ catch (\Dcp\HttpApi\V1\EtagException $exception) {
     $message->uri = $exception->getURI();
     $return->setHeaders($exception->getHeaders());
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
-
     $return->addMessage($message);
     $return->addMessage($defaultPageMessage());
 } catch (\Dcp\Exception $exception) {
-    $return = new Dcp\HttpApi\V1\RecordReturn();
+    $return = new Dcp\HttpApi\V1\Api\RecordReturn();
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
-    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
     $message->contentText = $exception->getDcpMessage();
     $message->type = $message::ERROR;
     $message->code = $exception->getDcpCode();
@@ -193,10 +192,10 @@ catch (\Dcp\HttpApi\V1\EtagException $exception) {
     $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($defaultPageMessage());
 } catch (\Exception $exception) {
-    $return = new Dcp\HttpApi\V1\RecordReturn();
+    $return = new Dcp\HttpApi\V1\Api\RecordReturn();
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
-    $message = new Dcp\HttpApi\V1\RecordReturnMessage();
+    $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
     $message->contentText = $exception->getMessage();
     $message->type = $message::ERROR;
     $message->code = "API0001";

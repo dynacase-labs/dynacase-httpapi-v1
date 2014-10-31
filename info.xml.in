@@ -9,11 +9,15 @@
 
     <post-install>
         <process command="programs/record_application HTTPAPI_V1" />
+        <process command="wsh.php --app=HTTPAPI_V1 --action=INIT_RULES"/>
         <process command="programs/update_catalog" />
     </post-install>
 
     <post-upgrade>
-        <process command="programs/record_application HTTPAPI_V1" />
+        <process command="programs/pre_migration HTTPAPI_V1"/>
+        <process command="programs/record_application HTTPAPI_V1"/>
+        <process command="wsh.php --app=HTTPAPI_V1 --action=INIT_RULES"/>
+        <process command="programs/post_migration HTTPAPI_V1"/>
         <process command="programs/update_catalog" />
     </post-upgrade>
 

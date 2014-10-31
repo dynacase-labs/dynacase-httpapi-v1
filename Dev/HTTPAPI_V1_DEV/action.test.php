@@ -12,7 +12,7 @@ function test(Action &$action)
     $helpPage = $coreURL . \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "DEFAULT_PAGE");
 
     $defaultValues = array(
-        "baseURL" => \Dcp\HttpApi\V1\AnalyzeURL::getBaseURL(),
+        "baseURL" => \Dcp\HttpApi\V1\Api\AnalyzeURL::getBaseURL(),
         "helpPage" => $helpPage
     );
 

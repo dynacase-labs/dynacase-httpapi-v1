@@ -5,12 +5,12 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
-use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 use \Dcp\HttpApi\V1\DocManager\Exception as DocManagerException;
 
-class FamilyDocumentCrud extends DocumentCrud
+class FamilyDocument extends Document
 {
     /**
      * @var \DocFam

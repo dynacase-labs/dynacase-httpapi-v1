@@ -5,11 +5,11 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
-use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
-class EnumCrud extends Crud
+class Enumerates extends Crud
 {
 
     const startsOperator = "startswith";

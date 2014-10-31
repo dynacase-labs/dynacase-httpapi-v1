@@ -5,11 +5,14 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Api;
 
 use \ApplicationParameterManager as AppParam;
+use Dcp\HttpApi\V1\Crud\Crud as Crud;
+use Dcp\HttpApi\V1\Etag\Manager as EtagManager;
+use Dcp\HttpApi\V1\Etag\Exception as EtagException;
 
-class ApiRouterV1
+class Router
 {
     protected static $path = null;
     protected static $returnType = null;
@@ -18,7 +21,7 @@ class ApiRouterV1
      * Execute the request
      *
      * @param array $messages
-     * @throws EtagException
+     * @throws \Dcp\HttpApi\V1\Etag\Exception
      * @throws Exception
      * @return mixed
      */
@@ -114,40 +117,21 @@ class ApiRouterV1
      */
     protected static function identifyCRUD()
     {
-        $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_CRUD_CLASS"), true);
-        $customCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CUSTOM_CRUD_CLASS"), true);
+        $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CRUD_CLASS"), true);
         usort($systemCrud, function ($value1, $value2) {
             return $value1["order"] < $value2["order"];
         });
-        usort($customCrud, function ($value1, $value2) {
-            return $value1["order"] < $value2["order"];
-        });
 
-        $customFound = false;
-        foreach ($customCrud as $currentCrud) {
-            $param = array();
-            if (preg_match($currentCrud["regExp"], static::$path, $param) === 1) {
-                $currentCrud["param"] = $param;
-                $customFound = $currentCrud;
-            }
-        }
-        $systemFound = false;
+        $crudFound = false;
         foreach ($systemCrud as $currentCrud) {
             $param = array();
             if (preg_match($currentCrud["regExp"], static::$path, $param) === 1) {
                 $currentCrud["param"] = $param;
-                $customFound = $currentCrud;
+                $crudFound = $currentCrud;
             }
         }
-        if ($systemFound === false && $customFound === false) {
-            throw new Exception("API0004", static::$path);
-        }
-        $crudFound = $systemFound;
-        if ($systemFound !== false && $customCrud !== false && $customFound["order"] >= $systemFound["order"]) {
-            $crudFound = $customFound;
-        }
         if ($crudFound === false) {
-            $crudFound = $customFound;
+            throw new Exception("API0004", static::$path);
         }
         return $crudFound;
     }

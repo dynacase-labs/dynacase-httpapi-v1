@@ -36,6 +36,10 @@ $app_acl = array(
         "name" => "DELETE",
         "description" => N_("HTTPAPI_V1:Access to http api delete"),
         "group_default" => "Y"
+    ),
+    array(
+        "name" => "ADMIN",
+        "description" => N_("HTTPAPI_V1:Admin right")
     )
 );
 
@@ -48,6 +52,13 @@ $action_desc = array(
         "function" => "default_page",
         "root" => "Y",
         "acl" => "GET"
+    ),
+    array(
+        "name" => "INIT_RULES",
+        "short_name" => N_("HTTPAPI_V1:INIT_RULES"),
+        "script" => "action.init_rules.php",
+        "function" => "init_rules",
+        "acl" => "ADMIN"
     )
 
 );

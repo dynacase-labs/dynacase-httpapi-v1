@@ -5,7 +5,10 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
+
+use Dcp\HttpApi\V1\Api\RecordReturnMessage as RecordReturnMessage;
+use Dcp\HttpApi\V1\Api\AnalyzeURL as AnalyzeURL;
 
 abstract class Crud
 {
@@ -13,14 +16,7 @@ abstract class Crud
     const READ = "READ";
     const UPDATE = "UPDATE";
     const DELETE = "DELETE";
-    /**
-     * Regexp that check if the current path can be processed by the current CRUD
-     *
-     * @var string
-     */
-    /**
-     * @var RecordReturnMessage[]
-     */
+
     protected $messages = array();
     protected $path = null;
     /**
@@ -109,7 +105,7 @@ abstract class Crud
     /**
      * Add a message to be sended with the response
      *
-     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
+     * @param RecordReturnMessage $message
      */
     public function addMessage(RecordReturnMessage $message)
     {
@@ -119,7 +115,7 @@ abstract class Crud
     /**
      * Get all the added messages
      *
-     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
+     * @return RecordReturnMessage[]
      */
     public function getMessages()
     {

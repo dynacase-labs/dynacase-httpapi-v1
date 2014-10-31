@@ -16,7 +16,7 @@
                 autoCloseBrackets : true,
                 lineWrapping :      true,
                 foldGutter :        true,
-                extraKeys : {
+                extraKeys :         {
                     "F11" : function (cm) {
                         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                     },
@@ -32,8 +32,8 @@
                 lint :          true,
                 lineWrapping :  true,
                 foldGutter :    true,
-                gutters : ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                extraKeys : {
+                gutters :       ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                extraKeys :     {
                     "F11" : function (cm) {
                         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                     },
@@ -41,7 +41,15 @@
                         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                     }
                 }
-            }), writeResult = function (content) {
+            }), clone = function (source) {
+                var clone = {}, prop;
+                for (prop in source) {
+                    if (source.hasOwnProperty(prop)) {
+                        clone[prop] = source[prop];
+                    }
+                }
+                return clone;
+            }, writeResult = function (content) {
                 result.setValue(content + "\n" + result.getValue());
             }, computeBaseURL = function () {
                 return window.defaultValues.baseURL;
@@ -75,10 +83,10 @@
         }
         displayContentZone();
         $currentMethod.on("change", displayContentZone);
-        $("#examplesForm").on("submit", function(event) {
+        $("#examplesForm").on("submit", function (event) {
             event.preventDefault();
-            currentRequest = window.examples[$listOfOptions.val()].params;
-            currentRequest.url = computeBaseURL()+ currentRequest.url;
+            currentRequest = clone(window.examples[$listOfOptions.val()].params);
+            currentRequest.url = computeBaseURL() + currentRequest.url;
             setRequest(currentRequest);
             $("#request_form").trigger("submit");
         });
@@ -120,7 +128,7 @@
                 setRequest();
             }
         });
-        $("#showDocumentation").on("click", function() {
+        $("#showDocumentation").on("click", function () {
             window.open(window.defaultValues.helpPage);
         })
     });
