@@ -6,6 +6,7 @@
         var $currentURL = $("#request_url"),
             $currentMethod = $("#request_method"),
             $contentZone = $("#contentZone"),
+            $listOfOptions = $("#listOfOptions"),
             content = CodeMirror.fromTextArea(document.getElementById("request_content"), {
                 lineNumbers :       true,
                 mode :              "application/json",
@@ -44,9 +45,9 @@
                 result.setValue(content + "\n" + result.getValue());
             }, computeBaseURL = function () {
                 return window.defaultValues.baseURL;
-            }, currentRequest, setHashRequest = function () {
+            }, currentRequest, setRequest = function (currentRequest) {
                 try {
-                    currentRequest = JSON.parse(decodeURIComponent(window.location.hash.slice(1)));
+                    currentRequest = currentRequest || JSON.parse(decodeURIComponent(window.location.hash.slice(1)));
                     if (currentRequest.url) {
                         $currentURL.val(currentRequest.url);
                     }
@@ -70,10 +71,17 @@
             };
         $currentURL.val(computeBaseURL());
         if (window.location.hash) {
-            setHashRequest();
+            setRequest();
         }
         displayContentZone();
         $currentMethod.on("change", displayContentZone);
+        $("#examplesForm").on("submit", function(event) {
+            event.preventDefault();
+            currentRequest = window.examples[$listOfOptions.val()].params;
+            currentRequest.url = computeBaseURL()+ currentRequest.url;
+            setRequest(currentRequest);
+            $("#request_form").trigger("submit");
+        });
         $("#request_form").on("submit", function (event) {
             event.preventDefault();
             writeResult("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤");
@@ -109,8 +117,11 @@
         $(window).on("hashchange", function () {
             var hash = window.location.hash.slice(1);
             if (JSON.stringify(currentRequest) !== hash) {
-                setHashRequest();
+                setRequest();
             }
         });
+        $("#showDocumentation").on("click", function() {
+            window.open(window.defaultValues.helpPage);
+        })
     });
 }(jQuery);

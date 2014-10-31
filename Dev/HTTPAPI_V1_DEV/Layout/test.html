@@ -3,62 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Test API</title>
-    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/codemirror.css"/>
-    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/lint.css"/>
-    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/foldgutter.css"/>
-    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/fullscreen.css"/>
-    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/test.css"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/mini-bootstrap.min.css?wv=[WVERSION]"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/codemirror.css?wv=[WVERSION]"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/lint.css?wv=[WVERSION]"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/foldgutter.css?wv=[WVERSION]"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/deps/fullscreen.css?wv=[WVERSION]"/>
+    <link rel="stylesheet" href="HTTPAPI_V1_DEV/Layout/test.css?wv=[WVERSION]"/>
 </head>
 <body>
 
-<form action="#" id="request_form">
-    <div>
-        <label for="request_url">Url of the request</label>
-        <input type="text" name="request_url" id="request_url" class="text__input"/>
+<div class="content">
+    <div class="clearfix content-zone toolbox">
+        <div class="pull-left">
+            <form class="form-inline" role="form" id="examplesForm">
+                <div class="form-group">
+                    <label class="sr-only">Examples</label>
+
+                    <p class="form-control-static example-label">Examples</p>
+                </div>
+                <div class="form-group">
+                    <label for="listOfOptions" class="sr-only">Examples</label>
+                    <select name="listOfOptions" id="listOfOptions" class="form-control">
+                        [BLOCK EXAMPLES]
+                        <option value="[id]">[title]</option>
+                        [ENDBLOCK EXAMPLES]
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">Apply example</button>
+            </form>
+        </div>
+        <div class="pull-right">
+            <button id="showDocumentation" type="button" class="btn btn-info">Show the documentation</button>
+        </div>
     </div>
-    <div>
-        <label for="request_method">Method of the request</label>
-        <select name="request_method" id="request_method" class="text__input">
-            <option value="POST">POST (Create)</option>
-            <option value="GET" selected>GET (Read)</option>
-            <option value="PUT">PUT (Update)</option>
-            <option value="DELETE">DELETE (Delete)</option>
-        </select>
-    </div>
-    <div id="contentZone">
-        <label for="request_content">Content of the request (JSON)
+    <form action="#" id="request_form" class="content-zone request-zone">
+        <div class="form-group">
+            <label for="request_url">Url of the request</label>
+            <input type="text" name="request_url" id="request_url" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="request_method">Method of the request</label>
+            <select name="request_method" id="request_method" class="form-control">
+                <option value="POST">POST (Create)</option>
+                <option value="GET" selected>GET (Read)</option>
+                <option value="PUT">PUT (Update)</option>
+                <option value="DELETE">DELETE (Delete)</option>
+            </select>
+        </div>
+        <div id="contentZone">
+            <label for="request_content">Content of the request (JSON)
+                <small>Press F11 when cursor is in the editor to toggle full screen
+                    editing. Esc can also be used to exit full screen editing.
+                </small>
+            </label>
+            <textarea name="request_content" id="request_content" class="text__input"></textarea>
+        </div>
+        <input type="submit" value="Envoyer la requête" class="btn btn-primary btn-block send_button"/>
+    </form>
+    <div class="content-zone result-zone">
+        <label for="request_result">Request result
             <small>Press F11 when cursor is in the editor to toggle full screen
                 editing. Esc can also be used to exit full screen editing.
-            </small></label>
-        <textarea name="request_content" id="request_content" class="text__input"></textarea>
-    </div>
-    <input type="submit" value="Envoyer la requête" class="text__input"/>
-</form>
-<div>
-    <label for="request_result">Request result <small>Press F11 when cursor is in the editor to toggle full screen
-        editing. Esc can also be used to exit full screen editing.</small> </label>
-    <textarea name="request_result" id="request_result" class="text__input result__input">
+            </small>
+        </label>
+        <textarea name="request_result" id="request_result" class="text__input result__input">
 
-    </textarea>
+        </textarea>
+    </div>
 </div>
-Some Info on the API :
-<iframe src="[HELP_PAGE]" frameborder="0" class="text__input"></iframe>
+
 
 <script type="text/javascript">
- window.defaultValues = window.defaultValues || [DEFAULT_VALUES];
+    window.defaultValues = window.defaultValues || [DEFAULT_VALUES];
+    window.examples = window.examples || [EXAMPLES];
 </script>
-<script type="text/javascript" src="lib/jquery/jquery.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/codemirror.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/javascript.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/jsonlint.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/lint.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/json-lint.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/closebrackets.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/matchbrackets.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/foldcode.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/foldgutter.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/brace-fold.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/fullscreen.js"></script>
-<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/test_api.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/codemirror.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/javascript.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/jsonlint.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/lint.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/json-lint.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/closebrackets.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/matchbrackets.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/foldcode.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/foldgutter.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/brace-fold.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/deps/fullscreen.js?wv=[WVERSION]"></script>
+<script type="text/javascript" src="HTTPAPI_V1_DEV/Layout/test_api.js?wv=[WVERSION]"></script>
 </body>
 </html>
