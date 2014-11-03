@@ -71,31 +71,12 @@ class FamilyDocument extends Document
         }
     }
     /**
-     * Set the document of the current request
+     * Return the canonical URL or display a message
      *
-     * @param $resourceId
+     * @param $identifier
+     * @return bool
      * @throws Exception
      */
-    protected function setDocument($resourceId)
-    {
-        $this->_document = DocManager::getDocument($resourceId);
-        if (!$this->_document) {
-            $e = new Exception("CRUD0200", $resourceId);
-            $e->setHttpStatus("404", "Document not found");
-            throw $e;
-        }
-        if (!is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
-            $e = new Exception("CRUD0220", $resourceId, $this->_family->name);
-            $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
-            throw $e;
-        }
-        if ($this->_document->doctype === "Z") {
-            $e = new Exception("CRUD0219", $resourceId);
-            $e->setHttpStatus("404", "Document deleted");
-            throw $e;
-        }
-    }
-
     public function checkId($identifier)
     {
         $initid = $identifier;
@@ -103,6 +84,22 @@ class FamilyDocument extends Document
             $initid = DocManager::getInitIdFromIdOrName($identifier);
         }
         if ($initid !== 0) {
+            $document = DocManager::getDocument($initid);
+            if (!$document) {
+                $exception = new Exception("CRUD0200", $initid);
+                $exception->setHttpStatus("404", "Document not found");
+                throw $exception;
+            }
+            if (!is_a($document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
+                $exception = new Exception("CRUD0220", $initid, $this->_family->name);
+                $exception->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
+                throw $exception;
+            }
+            if ($document->doctype === "Z") {
+                $exception = new Exception("CRUD0219", $initid);
+                $exception->setHttpStatus("404", "Document deleted");
+                throw $exception;
+            }
             $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
             $query = parse_url($pathInfo, PHP_URL_QUERY);
             $exception = new Exception("CRUD0222");

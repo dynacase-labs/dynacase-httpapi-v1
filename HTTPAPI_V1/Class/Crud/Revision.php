@@ -30,9 +30,9 @@ class Revision extends Document
      */
     public function create()
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot create a new revision with the API");
+        throw $exception;
     }
 
     /**
@@ -76,9 +76,9 @@ class Revision extends Document
      */
     public function update($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot change a revision");
+        throw $exception;
     }
 
     /**
@@ -89,9 +89,9 @@ class Revision extends Document
      */
     public function delete($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot delete a revision");
+        throw $exception;
     }
 
     //endregion CRUD part
@@ -144,22 +144,22 @@ class Revision extends Document
         }
 
         if (!$this->_document) {
-            $e = new Exception("CRUD0221", $this->revisionIdentifier, $resourceId);
-            $e->setHttpStatus("404", "Document not found");
-            throw $e;
+            $exception = new Exception("CRUD0221", $this->revisionIdentifier, $resourceId);
+            $exception->setHttpStatus("404", "Document not found");
+            throw $exception;
         }
 
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
-            $e = new Exception("CRUD0220", $resourceId, $this->_family->name);
-            $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
-            throw $e;
+            $exception = new Exception("CRUD0220", $resourceId, $this->_family->name);
+            $exception->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
+            throw $exception;
         }
 
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("CRUD0219", $resourceId);
-            $e->setHttpStatus("404", "Document deleted");
-            $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
-            throw $e;
+            $exception = new Exception("CRUD0219", $resourceId);
+            $exception->setHttpStatus("404", "Document deleted");
+            $exception->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
+            throw $exception;
         }
     }
 

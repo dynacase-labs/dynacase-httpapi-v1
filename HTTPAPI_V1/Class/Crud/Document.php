@@ -46,9 +46,9 @@ class Document extends Crud
      */
     public function create()
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot create a document with an ID");
+        throw $exception;
     }
     /**
      * Get ressource
@@ -61,14 +61,14 @@ class Document extends Crud
         $this->setDocument($resourceId);
         $err = $this->_document->control("view");
         if ($err) {
-            $e = new Exception("CRUD0201", $resourceId, $err);
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
+            $exception = new Exception("CRUD0201", $resourceId, $err);
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
         }
         if ($this->_document->mid == 0) {
             $this->_document->applyMask(\Doc::USEMASKCVVIEW);
         }
-        return $this->documentData();
+        return $this->getDocumentData();
     }
     /**
      * Update the ressource
@@ -159,18 +159,18 @@ class Document extends Crud
         
         $err = $this->_document->control("delete");
         if ($err) {
-            $e = new Exception("CRUD0216", $resourceId, $err);
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
+            $exception = new Exception("CRUD0216", $resourceId, $err);
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
         }
         
         $err = $this->_document->delete();
         if ($err) {
-            $e = new Exception("CRUD0215", $this->_document->getTitle() , $err);
-            throw $e;
+            $exception = new Exception("CRUD0215", $this->_document->getTitle() , $err);
+            throw $exception;
         }
         $this->_document->addHistoryEntry(___("Deleted by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
-        return $this->documentData();
+        return $this->getDocumentData();
     }
     //endregion CRUD part
     public function execute($method, array & $messages = array()) {
@@ -221,7 +221,7 @@ class Document extends Crud
     public function getInternal(\Doc $document)
     {
         $this->_document = $document;
-        return $this->documentData();
+        return $this->getDocumentData();
     }
     /**
      * Get the list of the properties required
@@ -506,7 +506,7 @@ class Document extends Crud
      * @throws Exception
      * @return string
      */
-    protected function documentData()
+    protected function getDocumentData()
     {
         $conf = array(
             "document" => array(
@@ -745,6 +745,13 @@ class Document extends Crud
         return $newValues;
     }
 
+    /**
+     * Check is the ID is canonical and redirect if not
+     *
+     * @param $identifier
+     * @return bool
+     * @throws Exception
+     */
     public function checkId($identifier) {
         $initid = $identifier;
         if (is_numeric($identifier)) {

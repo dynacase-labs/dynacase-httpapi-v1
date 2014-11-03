@@ -83,9 +83,9 @@ class TemporaryFile extends Crud
      */
     public function read($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot read a temporary file");
+        throw $exception;
     }
 
     /**
@@ -96,9 +96,9 @@ class TemporaryFile extends Crud
      */
     public function update($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot update a temporary file");
+        throw $exception;
     }
 
     /**
@@ -109,9 +109,9 @@ class TemporaryFile extends Crud
      */
     public function delete($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("501", "Not yet implemented");
+        throw $exception;
     }
 
     //endregion CRUD part

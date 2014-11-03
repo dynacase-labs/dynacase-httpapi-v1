@@ -13,6 +13,10 @@ namespace {
         /**
          * @errorCode The ressource is not implemented
          */
+        const CRUD0101 = 'Method "%s" not implemented';
+        /**
+         * @errorCode The ressource is not implemented
+         */
         const CRUD0102 = 'Method "%s" not implemented';
         /**
          * @errorCode The ressource is not avalaible

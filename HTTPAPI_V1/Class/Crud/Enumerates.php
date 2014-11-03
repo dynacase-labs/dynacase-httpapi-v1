@@ -30,9 +30,9 @@ class Enumerates extends Crud
      */
     public function create()
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("500", "No yet implemented");
+        throw $exception;
     }
 
     /**
@@ -130,9 +130,9 @@ class Enumerates extends Crud
      */
     public function update($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("500", "No yet implemented");
+        throw $exception;
     }
 
     /**
@@ -143,9 +143,9 @@ class Enumerates extends Crud
      */
     public function delete($resourceId)
     {
-        $e = new Exception("CRUD0103", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("500", "No yet implemented");
+        throw $exception;
     }
     //endregion CRUD part
 

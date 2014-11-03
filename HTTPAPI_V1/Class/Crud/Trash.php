@@ -19,7 +19,7 @@ class Trash extends Document {
      */
     public function create() {
         $exception = new Exception("CRUD0103", "create");
-        $exception->setHttpStatus("405");
+        $exception->setHttpStatus("405", "You cannot create a document in the trash");
         throw $exception;
     }
 
@@ -31,7 +31,7 @@ class Trash extends Document {
      */
     public function update($resourceId) {
         $exception = new Exception("CRUD0103", "update");
-        $exception->setHttpStatus("405");
+        $exception->setHttpStatus("405", "You cannot update a document in the trash");
         throw $exception;
     }
 
@@ -43,7 +43,7 @@ class Trash extends Document {
      */
     public function delete($resourceId) {
         $exception = new Exception("CRUD0103", "delete");
-        $exception->setHttpStatus("405");
+        $exception->setHttpStatus("500", "Not yet implemented");
         throw $exception;
     }
     //endregion CRUD part
