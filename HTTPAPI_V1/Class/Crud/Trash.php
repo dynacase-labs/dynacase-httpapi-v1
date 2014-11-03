@@ -66,6 +66,23 @@ class Trash extends Document {
             $e->setHttpStatus("404", "Document not in the trash");
             throw $e;
         }
+    }
 
+    public function checkId($identifier)
+    {
+        $initid = $identifier;
+        if (is_numeric($identifier)) {
+            $initid = DocManager::getInitIdFromIdOrName($identifier);
+        }
+        if ($initid !== 0 && $initid != $identifier) {
+            $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $query = parse_url($pathInfo, PHP_URL_QUERY);
+            $exception = new Exception("CRUD0222");
+            $exception->setHttpStatus("307", "This is a revision");
+            $exception->addHeader("Location", $this->generateURL(sprintf("trash/%d.json", $initid), $query));
+            $exception->setURI($this->generateURL(sprintf("trash/%d.json", $initid)));
+            throw $exception;
+        }
+        return true;
     }
 } 

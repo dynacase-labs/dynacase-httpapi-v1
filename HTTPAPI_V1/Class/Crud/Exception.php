@@ -115,6 +115,10 @@ namespace {
          */
         const CRUD0221 = 'The revision "%d" of document "%s" is not found';
         /**
+         * @errorCode Redirect : the canonical URL is not here
+         */
+        const CRUD0222 = 'Redirect : the canonical URL is not here';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const CRUD0300 = 'File Record fail.  : "%s"';

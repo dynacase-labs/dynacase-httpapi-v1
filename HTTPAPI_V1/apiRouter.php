@@ -161,7 +161,28 @@ try {
 catch (Dcp\HttpApi\V1\Etag\Exception $exception) {
     header("Cache-Control: private, no-cache, must-revalidate", true);
     return;
-} catch (Dcp\HttpApi\V1\Api\Exception $exception) {
+} catch (Dcp\HttpApi\V1\Crud\Exception $exception) {
+
+    $return->setHttpStatusCode($exception->getHttpStatus(), $exception->getHttpMessage());
+    $return->exceptionMessage = $exception->getDcpMessage();
+    $return->success = false;
+    $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
+    $message->contentText = $exception->getDcpMessage();
+    $message->contentText = $exception->getUserMessage();
+    if (!$message->contentText) {
+        $message->contentText = $exception->getDcpMessage();
+    }
+    $message->type = $message::ERROR;
+    $message->code = $exception->getDcpCode();
+    $message->data = $exception->getData();
+    $message->uri = $exception->getURI();
+    $return->setHeaders($exception->getHeaders());
+    $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
+    $return->addMessage($message);
+    $return->addMessage($defaultPageMessage());
+}
+
+catch (Dcp\HttpApi\V1\Api\Exception $exception) {
 
     $return->setHttpStatusCode($exception->getHttpStatus(), $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();

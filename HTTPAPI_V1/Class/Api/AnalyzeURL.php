@@ -10,7 +10,7 @@ namespace Dcp\HttpApi\V1\Api;
 class AnalyzeURL {
 
     static public function getBaseURL() {
-        $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
+        $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_EXTERNURL");
         $components = parse_url($coreURL);
         if ($components["path"]) {
             $components["path"] = dirname($components["path"]);
@@ -22,6 +22,9 @@ class AnalyzeURL {
             unset($components["fragment"]);
         }
         $coreURL = static::unparseURL($components);
+        if ($coreURL === "") {
+            $coreURL = "/";
+        }
         $baseURL = \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "REST_BASE_URL");
         return $coreURL.$baseURL;
     }

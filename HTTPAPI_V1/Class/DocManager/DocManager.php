@@ -142,6 +142,28 @@ class DocManager
         if ($id > 0) return intval($id);
         return null;
     }
+
+    /**
+     * return latest id of document from its initid or other id
+     *
+     * @param string $name document identificator
+     *
+     * @throws Exception
+     * @return int|null identifier relative to latest revision
+     */
+    static public function getInitIdFromIdOrName($name)
+    {
+        $id = $name;
+        if (!is_numeric($name)) {
+            $id = static::getIdFromName($name);
+        }
+        $dbaccess = self::getDbAccess();
+        simpleQuery($dbaccess, sprintf("select initid from docread where id='%d' limit 1;", $id), $initid, true, true);
+        if ($id > 0) {
+            return intval($initid);
+        }
+        return null;
+    }
     /**
      * return  id of document identified by its revision
      *

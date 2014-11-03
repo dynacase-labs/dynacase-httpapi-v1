@@ -95,4 +95,22 @@ class FamilyDocument extends Document
             throw $e;
         }
     }
+
+    public function checkId($identifier)
+    {
+        $initid = $identifier;
+        if (is_numeric($identifier)) {
+            $initid = DocManager::getInitIdFromIdOrName($identifier);
+        }
+        if ($initid !== 0) {
+            $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $query = parse_url($pathInfo, PHP_URL_QUERY);
+            $exception = new Exception("CRUD0222");
+            $exception->setHttpStatus("307", "This is a revision");
+            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d.json", $initid), $query));
+            $exception->setURI($this->generateURL(sprintf("documents/%d.json", $initid)));
+            throw $exception;
+        }
+        return true;
+    }
 }

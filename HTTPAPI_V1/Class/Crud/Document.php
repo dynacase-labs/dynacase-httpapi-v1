@@ -21,7 +21,7 @@ class Document extends Crud
      * @var \Doc document instance
      */
     protected $_document = null;
-    
+
     protected $defaultFields = null;
     protected $returnFields = null;
     protected $valueRender = array();
@@ -145,7 +145,7 @@ class Document extends Crud
         $this->_document->addHistoryEntry(___("Updated by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
         DocManager::cache()->addDocument($this->_document);
         
-        return $this->read($this->_document->id);
+        return $this->read($this->_document->initid);
     }
     /**
      * Delete ressource
@@ -173,26 +173,30 @@ class Document extends Crud
         return $this->documentData();
     }
     //endregion CRUD part
-    
+    public function execute($method, array & $messages = array()) {
+        $identifier = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : null;
+        $this->checkId($identifier);
+        return parent::execute($method, $messages);
+    }
     /**
      * Find the current document and set it in the internal options
      *
-     * @param $resourceId
+     * @param $ressourceId string|int identifier of the document
      * @throws Exception
      */
-    protected function setDocument($resourceId)
+    protected function setDocument($ressourceId)
     {
-        $this->_document = DocManager::getDocument($resourceId);
+        $this->_document = DocManager::getDocument($ressourceId);
         if (!$this->_document) {
-            $e = new Exception("CRUD0200", $resourceId);
-            $e->setHttpStatus("404", "Document not found");
-            throw $e;
+            $exception = new Exception("CRUD0200", $ressourceId);
+            $exception->setHttpStatus("404", "Document not found");
+            throw $exception;
         }
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("CRUD0219", $resourceId);
-            $e->setHttpStatus("404", "Document deleted");
-            $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->initid)));
-            throw $e;
+            $exception = new Exception("CRUD0219", $ressourceId);
+            $exception->setHttpStatus("404", "Document deleted");
+            $exception->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->initid)));
+            throw $exception;
         }
     }
     /**
@@ -369,7 +373,6 @@ class Document extends Crud
             return $this->valueRender[0]["attributes"];
         }
 
-        
         $formatCollection = $this->getFormatCollection();
         $normalAttributes = $this->_document->getNormalAttributes();
         $filteredAttributes = $this->getAttributeFields();
@@ -662,7 +665,12 @@ class Document extends Crud
         
         return $info;
     }
-    
+
+    /**
+     * Return etag info
+     *
+     * @return null|string
+     */
     public function getEtagInfo()
     {
         if (isset($this->urlParameters["identifier"])) {
@@ -694,6 +702,13 @@ class Document extends Crud
         return join(" ", $result);
     }
 
+    /**
+     * Analyze JSON string and extract update values
+     *
+     * @param $jsonString
+     * @return array
+     * @throws Exception
+     */
     public function analyseJSON($jsonString) {
         $dataDocument = json_decode($jsonString, true);
         if ($dataDocument === null) {
@@ -728,5 +743,22 @@ class Document extends Crud
             }
         }
         return $newValues;
+    }
+
+    public function checkId($identifier) {
+        $initid = $identifier;
+        if (is_numeric($identifier)) {
+            $initid = DocManager::getInitIdFromIdOrName($identifier);
+        }
+        if ($initid !== 0 && $initid != $identifier) {
+            $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $query = parse_url($pathInfo, PHP_URL_QUERY);
+            $exception = new Exception("CRUD0222");
+            $exception->setHttpStatus("307", "This is a revision");
+            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d.json", $initid), $query));
+            $exception->setURI($this->generateURL(sprintf("documents/%d.json", $initid)));
+            throw $exception;
+        }
+        return true;
     }
 }

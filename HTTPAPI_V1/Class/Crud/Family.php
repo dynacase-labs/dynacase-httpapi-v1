@@ -88,4 +88,22 @@ class Family extends Document
         }
 
     }
+
+    public function checkId($identifier)
+    {
+        $familyName = $identifier;
+        if (is_numeric($identifier)) {
+            $familyName = DocManager::getNameFromId($identifier);
+        }
+        if ($familyName !== 0 && $familyName != $identifier) {
+            $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $query = parse_url($pathInfo, PHP_URL_QUERY);
+            $exception = new Exception("CRUD0222");
+            $exception->setHttpStatus("307", "This is an id request for a family");
+            $exception->addHeader("Location", $this->generateURL(sprintf("families/%s.json", $familyName), $query));
+            $exception->setURI($this->generateURL(sprintf("families/%s.json", $familyName)));
+            throw $exception;
+        }
+        return true;
+    }
 }

@@ -189,7 +189,6 @@ class Revision extends Document
      * Generate Etag for the current revision
      *
      * @return null|string
-     * @throws DocManager\Exception
      */
     public function getEtagInfo()
     {
@@ -208,6 +207,24 @@ class Revision extends Document
         } else {
             return parent::getEtagInfo();
         }
+    }
+
+    public function checkId($identifier)
+    {
+        $initid = $identifier;
+        if (is_numeric($identifier)) {
+            $initid = DocManager::getInitIdFromIdOrName($identifier);
+        }
+        if ($initid !== 0 && $initid != $identifier) {
+            $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $query = parse_url($pathInfo, PHP_URL_QUERY);
+            $exception = new Exception("CRUD0222");
+            $exception->setHttpStatus("307", "This is a revision");
+            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"]), $query));
+            $exception->setURI($this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"])));
+            throw $exception;
+        }
+        return true;
     }
 
 }

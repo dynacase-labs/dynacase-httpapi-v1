@@ -90,7 +90,8 @@ abstract class Crud
                 if (!$this->checkCrudPermission("GET")) {
                     throw new Exception("CRUD0105", "GET");
                 }
-                $data = $this->read($this->urlParameters["identifier"]);
+                $identifier = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : null;
+                $data = $this->read($identifier);
                 break;
 
             case "UPDATE":
@@ -162,9 +163,13 @@ abstract class Crud
         return null;
     }
 
-    public function generateURL($path)
+    public function generateURL($path, $query = null)
     {
-        return AnalyzeURL::getBaseURL().$path;
+        $url = AnalyzeURL::getBaseURL() . $path;
+        if ($query) {
+            $url .= "?".$query;
+        }
+        return $url;
     }
 
     public function analyseJSON($jsonString)
