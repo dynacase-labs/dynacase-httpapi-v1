@@ -80,18 +80,30 @@ abstract class Crud
         switch ($method) {
 
             case "CREATE":
+                if (!$this->checkCrudPermission("POST")) {
+                    throw new Exception("CRUD0105", "POST");
+                }
                 $data = $this->create();
                 break;
 
             case "READ":
+                if (!$this->checkCrudPermission("GET")) {
+                    throw new Exception("CRUD0105", "GET");
+                }
                 $data = $this->read($this->urlParameters["identifier"]);
                 break;
 
             case "UPDATE":
+                if (!$this->checkCrudPermission("PUT")) {
+                    throw new Exception("CRUD0105", "PUT");
+                }
                 $data = $this->update($this->urlParameters["identifier"]);
                 break;
 
             case "DELETE":
+                if (!$this->checkCrudPermission("DELETE")) {
+                    throw new Exception("CRUD0105", "DELETE");
+                }
                 $data = $this->delete($this->urlParameters["identifier"]);
                 break;
 
@@ -144,6 +156,9 @@ abstract class Crud
 
     public function getEtagInfo()
     {
+        if (!$this->checkCrudPermission("GET")) {
+            throw new Exception("CRUD0105", "GET");
+        }
         return null;
     }
 
@@ -155,6 +170,37 @@ abstract class Crud
     public function analyseJSON($jsonString)
     {
         return array();
+    }
+
+    /**
+     * Check the current user have a permission
+     *
+     * @param $aclName
+     * @return bool
+     * @throws Exception
+     */
+    public function checkCrudPermission($aclName) {
+        $dbAccess = getDbAccess();
+        $applicationId = null;
+        try {
+            simpleQuery($dbAccess, "select id from application where name='HTTPAPI_V1';", $applicationId, true, true, true);
+        } catch (Exception $exception) {
+            throw new Exception("CRUD0104", "Unkown application");
+        }
+
+        $permission = new \Permission($dbAccess, array(
+            \Doc::getSystemUserId(),
+            $applicationId
+        ));
+        if ($permission->isAffected()) {
+            $acl = new \Acl($dbAccess);
+            if (!$acl->Set($aclName, $applicationId)) {
+                throw new Exception("CRUD0104", "Unkown ACL $aclName");
+            } else {
+                return ($permission->HasPrivilege($acl->id));
+            }
+        }
+        throw new Exception("CRUD0104", "Unable to initialize ACL $aclName $applicationId");
     }
 
 
