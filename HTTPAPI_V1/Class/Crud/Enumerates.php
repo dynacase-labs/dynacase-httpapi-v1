@@ -30,7 +30,7 @@ class Enumerates extends Crud
      */
     public function create()
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -64,12 +64,12 @@ class Enumerates extends Crud
         }
         $attribute = $this->family->getAttribute($resourceId);
         if (!$attribute) {
-            $exception = new Exception("API0400", $resourceId, $this->family->name);
+            $exception = new Exception("CRUD0400", $resourceId, $this->family->name);
             $exception->setHttpStatus("404", "Attribute $resourceId not found");
             throw $exception;
         }
         if ($attribute->type !== "enum") {
-            $exception = new Exception("API0401", $resourceId, $attribute->type, $this->family->name);
+            $exception = new Exception("CRUD0401", $resourceId, $attribute->type, $this->family->name);
             $exception->setHttpStatus("403", "Attribute $resourceId is not an enum");
             throw $exception;
         }
@@ -130,7 +130,7 @@ class Enumerates extends Crud
      */
     public function update($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -143,7 +143,7 @@ class Enumerates extends Crud
      */
     public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -202,7 +202,7 @@ class Enumerates extends Crud
             self::containsOperator
         );
         if (!in_array($operatorFilter, $availables)) {
-            throw new Exception("API0402", $operatorFilter, implode(", ", $availables));
+            throw new Exception("CRUD0402", $operatorFilter, implode(", ", $availables));
         }
         $this->operatorFilter = $operatorFilter;
     }
@@ -229,7 +229,7 @@ class Enumerates extends Crud
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
         $this->family = DocManager::getFamily($this->urlParameters["familyId"]);
         if (!$this->family) {
-            $exception = new Exception("API0200", $familyId);
+            $exception = new Exception("CRUD0200", $familyId);
             $exception->setHttpStatus("404", "Family not found");
             throw $exception;
         }

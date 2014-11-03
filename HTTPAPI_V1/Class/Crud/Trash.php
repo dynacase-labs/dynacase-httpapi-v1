@@ -18,7 +18,7 @@ class Trash extends Document {
      * @return mixed
      */
     public function create() {
-        $exception = new Exception("API0103", "create");
+        $exception = new Exception("CRUD0103", "create");
         $exception->setHttpStatus("405");
         throw $exception;
     }
@@ -30,7 +30,7 @@ class Trash extends Document {
      * @return mixed
      */
     public function update($resourceId) {
-        $exception = new Exception("API0103", "update");
+        $exception = new Exception("CRUD0103", "update");
         $exception->setHttpStatus("405");
         throw $exception;
     }
@@ -42,7 +42,7 @@ class Trash extends Document {
      * @return mixed
      */
     public function delete($resourceId) {
-        $exception = new Exception("API0103", "delete");
+        $exception = new Exception("CRUD0103", "delete");
         $exception->setHttpStatus("405");
         throw $exception;
     }
@@ -57,12 +57,12 @@ class Trash extends Document {
     {
         $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
-            $e = new Exception("API0200", $resourceId);
+            $e = new Exception("CRUD0200", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
         if ($this->_document->doctype !== "Z") {
-            $e = new Exception("API0219", $resourceId);
+            $e = new Exception("CRUD0219", $resourceId);
             $e->setHttpStatus("404", "Document not in the trash");
             throw $e;
         }

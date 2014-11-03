@@ -8,128 +8,136 @@
 
 namespace {
 
-    class CrudCodeApi
+    class ErrorCodeCrud
     {
         /**
          * @errorCode The ressource is not implemented
          */
-        const API0102 = 'Method "%s" not implemented';
+        const CRUD0102 = 'Method "%s" not implemented';
         /**
          * @errorCode The ressource is not avalaible
          */
-        const API0103 = 'Action "%s" is not usable';
+        const CRUD0103 = 'Action "%s" is not usable';
+        /**
+         * @errorCode Unable to check permission
+         */
+        const CRUD0104 = 'Unable to check permission (%s)';
+        /**
+         * @errorCode The user don't have the permission %s
+         */
+        const CRUD0105 = "The user don't have the permission %s";
         /**
          * @errorCode The ressource is not found
          */
-        const API0200 = 'Document "%s" not found';
+        const CRUD0200 = 'Document "%s" not found';
         /**
          * @errorCode The ressource cannot be get
          */
-        const API0201 = 'Document "%s" access deny : %s';
+        const CRUD0201 = 'Document "%s" access deny : %s';
         /**
          * @errorCode The fieds partial response indicate a wrong property
          */
-        const API0202 = 'Document property fields "%s" not known';
+        const CRUD0202 = 'Document property fields "%s" not known';
         /**
          * @errorCode The family is not found
          */
-        const API0203 = 'Family "%s" not found';
+        const CRUD0203 = 'Family "%s" not found';
         /**
          * @errorCode The ressource cannot be get
          */
-        const API0204 = 'Document creation "%s" access deny';
+        const CRUD0204 = 'Document creation "%s" access deny';
         /**
          * @errorCode An attribute cannot be set
          */
-        const API0205 = 'Creation document "%s" fail - attribute "%s": "%s"';
+        const CRUD0205 = 'Creation document "%s" fail - attribute "%s": "%s"';
         /**
          * @errorCode The document cannot be recorded
          */
-        const API0206 = 'Creation document "%s" fail  : "%s"';
+        const CRUD0206 = 'Creation document "%s" fail  : "%s"';
         /**
          * @errorCode The family ressource is not found
          */
-        const API0207 = 'Family resource"%s" not found';
+        const CRUD0207 = 'Family resource"%s" not found';
         /**
          * @errorCode Content-type said json and content is not a json
          */
-        const API0208 = 'Record fail. Content page is not a json : "%s" //  example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
+        const CRUD0208 = 'Record fail. Content page is not a json : "%s" //  example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
         /**
          * @errorCode Content-type said json and content must be contains {document:{attributes:[]}
          */
-        const API0209 = 'Record fail. Json object not contains attributes : "%s" // example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
+        const CRUD0209 = 'Record fail. Json object not contains attributes : "%s" // example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
         /**
          * @errorCode Content-type said json and content must be contains {document:{attributes:[["x":{value:"a"}]}
          */
-        const API0210 = 'Record fail. Json object attributes no contain "value" fields : "%s" // example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
+        const CRUD0210 = 'Record fail. Json object attributes no contain "value" fields : "%s" // example : {"document":{"attributes":{"attributeId" : {"value" : "newValue"}}}}';
         /**
          * @errorCode An attribute cannot be set
          */
-        const API0211 = 'Update document "%s" fail - attribute "%s": "%s"';
+        const CRUD0211 = 'Update document "%s" fail - attribute "%s": "%s"';
         /**
          * @errorCode The document cannot be recorded
          */
-        const API0212 = 'Update document "%s" fail  : "%s"';
+        const CRUD0212 = 'Update document "%s" fail  : "%s"';
         /**
          * @errorCode The family cannot be updated
          */
-        const API0213 = 'Update family "%s" is not possible';
+        const CRUD0213 = 'Update family "%s" is not possible';
         /**
          * @errorCode The fieds partial response indicate a wrong key
          */
-        const API0214 = 'Document fields "%s" not known';
+        const CRUD0214 = 'Document fields "%s" not known';
         /**
          * @errorCode The document cannot be deleted
          */
-        const API0215 = 'Delete Document "%s" fail : "%s" ';
+        const CRUD0215 = 'Delete Document "%s" fail : "%s" ';
         /**
          * @errorCode The document cannot be deleted
          */
-        const API0216 = 'Delete deny for document "%s" fail : "%s" ';
+        const CRUD0216 = 'Delete deny for document "%s" fail : "%s" ';
         /**
          * @errorCode Content-type said json and content must be contains {document:{attributes:[["x":{value:"a"}]}
          */
-        const API0217 = 'Record fail. Json object attributes "%s" (multiple) no contain "value" fields : "%s"';
+        const CRUD0217 = 'Record fail. Json object attributes "%s" (multiple) no contain "value" fields : "%s"';
         /**
          * @errorCode Document attribute "%s" not known
          */
-        const API0218 = 'Document attribute "%s" not known';
+        const CRUD0218 = 'Document attribute "%s" not known';
         /**
          * @errorCode Document "%s" deleted
          */
-        const API0219 = 'Document "%s" deleted';
+        const CRUD0219 = 'Document "%s" deleted';
         /**
          * @errorCode Document "%s" deleted
          */
-        const API0220 = 'Document "%s" is not a document of the family "%s"';
+        const CRUD0220 = 'Document "%s" is not a document of the family "%s"';
         /**
          * @errorCode The ressource is not found
          */
-        const API0221 = 'The revision "%d" of document "%s" is not found';
+        const CRUD0221 = 'The revision "%d" of document "%s" is not found';
         /**
          * @errorCode The file cannot be saved to vaulft
          */
-        const API0300 = 'File Record fail.  : "%s"';
+        const CRUD0300 = 'File Record fail.  : "%s"';
         /**
          * @errorCode The file is not found in vault
          */
-        const API0301 = 'No file information for "%s" file';
+        const CRUD0301 = 'No file information for "%s" file';
         /**
          * @errorCode Could append when max_file_upload limit is reached
          */
-        const API0302 = 'No file transferred';
+        const CRUD0302 = 'No file transferred';
         /**
          * @errorCode The enum attribute is not a part of family structure
          */
-        const API0400 = 'Enum "%s" not exists in family "%s"';
+        const CRUD0400 = 'Enum "%s" not exists in family "%s"';
         /**
          * @errorCode The attribute is not an enum
          */
-        const API0401 = 'Attribute "%s" is not an enum (type "%s") in family "%s"';
+        const CRUD0401 = 'Attribute "%s" is not an enum (type "%s") in family "%s"';
         /**
          * @errorCode Only operators startsWith and contains are allowed
          */
-        const API0402 = 'Filter operateur "%s" not available. Availables are "%s"';
+        const CRUD0402 = 'Filter operateur "%s" not available. Availables are "%s"';
 
     }
 }

@@ -20,7 +20,7 @@ class TemporaryFile extends Crud
     public function create()
     {
         if (count($_FILES) === 0) {
-            $exception = new Exception("API0302", "");
+            $exception = new Exception("CRUD0302", "");
             $exception->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "HTTPAPI_V1") , $this->getUploadLimit()/1024/1024));
             throw $exception;
         }
@@ -30,12 +30,12 @@ class TemporaryFile extends Crud
             $vaultid = VaultManager::storeTemporaryFile($file["tmp_name"], $file["name"]);
             $info = VaultManager::getFileInfo($vaultid);
             if ($info === null) {
-                $exception = new Exception("API0301", $file["name"]);
+                $exception = new Exception("CRUD0301", $file["name"]);
                 throw $exception;
             }
         }
         catch(\Dcp\Exception $exception) {
-            $newException = new Exception("API0300", $exception->getDcpMessage());
+            $newException = new Exception("CRUD0300", $exception->getDcpMessage());
             switch ($exception->getDcpCode()) {
                 case "VAULT0002":
                     $newException->setUserMessage(___("Cannot store file because vault size limit is reached", "HTTPAPI_V1"));
@@ -83,7 +83,7 @@ class TemporaryFile extends Crud
      */
     public function read($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -96,7 +96,7 @@ class TemporaryFile extends Crud
      */
     public function update($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -109,7 +109,7 @@ class TemporaryFile extends Crud
      */
     public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }

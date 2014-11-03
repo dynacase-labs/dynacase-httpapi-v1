@@ -96,7 +96,7 @@ abstract class Crud
                 break;
 
             default:
-                throw new Exception("API0102", $method);
+                throw new Exception("CRUD0102", $method);
         }
         $messages = $this->getMessages();
         return $data;

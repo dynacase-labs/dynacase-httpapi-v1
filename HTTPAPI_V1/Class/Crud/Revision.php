@@ -30,7 +30,7 @@ class Revision extends Document
      */
     public function create()
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -76,7 +76,7 @@ class Revision extends Document
      */
     public function update($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -89,7 +89,7 @@ class Revision extends Document
      */
     public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -144,19 +144,19 @@ class Revision extends Document
         }
 
         if (!$this->_document) {
-            $e = new Exception("API0221", $this->revisionIdentifier, $resourceId);
+            $e = new Exception("CRUD0221", $this->revisionIdentifier, $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
 
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
-            $e = new Exception("API0220", $resourceId, $this->_family->name);
+            $e = new Exception("CRUD0220", $resourceId, $this->_family->name);
             $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $e;
         }
 
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("API0219", $resourceId);
+            $e = new Exception("CRUD0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
             $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
             throw $e;
@@ -174,7 +174,7 @@ class Revision extends Document
         if ($familyId !== false) {
             $this->_family = DocManager::getFamily($familyId);
             if (!$this->_family) {
-                $exception = new Exception("API0200", $familyId);
+                $exception = new Exception("CRUD0200", $familyId);
                 $exception->setHttpStatus("404", "Family not found");
                 throw $exception;
             }

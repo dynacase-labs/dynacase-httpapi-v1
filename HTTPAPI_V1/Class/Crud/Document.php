@@ -46,7 +46,7 @@ class Document extends Crud
      */
     public function create()
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -61,7 +61,7 @@ class Document extends Crud
         $this->setDocument($resourceId);
         $err = $this->_document->control("view");
         if ($err) {
-            $e = new Exception("API0201", $resourceId, $err);
+            $e = new Exception("CRUD0201", $resourceId, $err);
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
         }
@@ -82,14 +82,14 @@ class Document extends Crud
         
         $err = $this->_document->canEdit();
         if ($err) {
-            $exception = new Exception("API0201", $resourceId, $err);
+            $exception = new Exception("CRUD0201", $resourceId, $err);
             $exception->setUserMEssage(___("Update forbidden", "HTTPAPI_V1"));
             $exception->setHttpStatus("403", "Forbidden");
             throw $exception;
         }
         
         if ($this->_document->doctype === 'C') {
-            $exception = new Exception("API0213", $this->_document->name);
+            $exception = new Exception("CRUD0213", $this->_document->name);
             $exception->setHttpStatus("403", "Forbidden");
             throw $exception;
         }
@@ -103,7 +103,7 @@ class Document extends Crud
                 $err = $this->_document->setValue($aid, $value, -1, $kindex);
             }
             if ($err) {
-                $exception = new Exception("API0211", $this->_document->id, $aid, $err);
+                $exception = new Exception("CRUD0211", $this->_document->id, $aid, $err);
                 $exception->setHttpStatus("500", "Unable to modify the document");
                 $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
                 $info = array(
@@ -121,7 +121,7 @@ class Document extends Crud
          */
         $err = $this->_document->store($info);
         if ($err) {
-            $exception = new Exception("API0212", $this->_document->id, $err);
+            $exception = new Exception("CRUD0212", $this->_document->id, $err);
             $exception->setHttpStatus("500", "Unable to modify the document");
             $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
             $exception->setData($info);
@@ -159,14 +159,14 @@ class Document extends Crud
         
         $err = $this->_document->control("delete");
         if ($err) {
-            $e = new Exception("API0216", $resourceId, $err);
+            $e = new Exception("CRUD0216", $resourceId, $err);
             $e->setHttpStatus("403", "Forbidden");
             throw $e;
         }
         
         $err = $this->_document->delete();
         if ($err) {
-            $e = new Exception("API0215", $this->_document->getTitle() , $err);
+            $e = new Exception("CRUD0215", $this->_document->getTitle() , $err);
             throw $e;
         }
         $this->_document->addHistoryEntry(___("Deleted by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
@@ -184,12 +184,12 @@ class Document extends Crud
     {
         $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
-            $e = new Exception("API0200", $resourceId);
+            $e = new Exception("CRUD0200", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("API0219", $resourceId);
+            $e = new Exception("CRUD0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
             $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->initid)));
             throw $e;
@@ -330,7 +330,7 @@ class Document extends Crud
                     default:
                         $this->propRender[$propId] = $this->_document->getPropertyValue($propId);
                         if ($this->propRender[$propId] === false) {
-                            throw new Exception("API0202", $propId);
+                            throw new Exception("CRUD0202", $propId);
                         }
                 }
             }
@@ -493,7 +493,7 @@ class Document extends Crud
         }
         , $attributes);
         if (!empty($falseAttribute)) {
-            throw new Exception("API0218", join(" and attribute ", $falseAttribute));
+            throw new Exception("CRUD0218", join(" and attribute ", $falseAttribute));
         }
         return $attributes;
     }
@@ -529,7 +529,7 @@ class Document extends Crud
         if (!$correctField) {
             $fields = $this->getFields();
             if ($fields) {
-                throw new Exception("API0214", implode(",", $fields));
+                throw new Exception("CRUD0214", implode(",", $fields));
             }
         }
         return $conf;
@@ -697,10 +697,10 @@ class Document extends Crud
     public function analyseJSON($jsonString) {
         $dataDocument = json_decode($jsonString, true);
         if ($dataDocument === null) {
-            throw new Exception("API0208", $jsonString);
+            throw new Exception("CRUD0208", $jsonString);
         }
         if (!isset($dataDocument["document"]["attributes"]) || !is_array($dataDocument["document"]["attributes"])) {
-            throw new Exception("API0209", $jsonString);
+            throw new Exception("CRUD0209", $jsonString);
         }
         $values = $dataDocument["document"]["attributes"];
 
@@ -722,7 +722,7 @@ class Document extends Crud
                 $newValues[$aid] = $multipleValues;
             } else {
                 if (!is_array($value) || !array_key_exists("value", $value)) {
-                    throw new Exception("API0210", $jsonString);
+                    throw new Exception("CRUD0210", $jsonString);
                 }
                 $newValues[$aid] = $value["value"];
             }

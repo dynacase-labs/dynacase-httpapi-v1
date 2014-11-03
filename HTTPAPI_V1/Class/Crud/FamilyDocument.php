@@ -36,13 +36,13 @@ class FamilyDocument extends Document
         foreach ($newValues as $attrid => $value) {
             $err = $this->_document->setValue($attrid, $value);
             if ($err) {
-                throw new Exception("API0205", $this->_family->name, $attrid, $err);
+                throw new Exception("CRUD0205", $this->_family->name, $attrid, $err);
             }
         }
         
         $err = $this->_document->store($info);
         if ($err) {
-            $exception = new Exception("API0206", $this->_family->name, $err);
+            $exception = new Exception("CRUD0206", $this->_family->name, $err);
             $exception->setData($info);
             throw $exception;
         }
@@ -65,7 +65,7 @@ class FamilyDocument extends Document
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
         $this->_family = DocManager::getFamily($familyId);
         if (!$this->_family) {
-            $exception = new Exception("API0200", $familyId);
+            $exception = new Exception("CRUD0200", $familyId);
             $exception->setHttpStatus("404", "Family not found");
             throw $exception;
         }
@@ -80,17 +80,17 @@ class FamilyDocument extends Document
     {
         $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
-            $e = new Exception("API0200", $resourceId);
+            $e = new Exception("CRUD0200", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
         if (!is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
-            $e = new Exception("API0220", $resourceId, $this->_family->name);
+            $e = new Exception("CRUD0220", $resourceId, $this->_family->name);
             $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $e;
         }
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("API0219", $resourceId);
+            $e = new Exception("CRUD0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
             throw $e;
         }

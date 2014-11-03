@@ -26,7 +26,7 @@ class Family extends Document
      */
     public function update($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -39,7 +39,7 @@ class Family extends Document
      */
     public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
+        $e = new Exception("CRUD0103", __METHOD__);
         $e->setHttpStatus("501", "Not implemented");
         throw $e;
     }
@@ -56,7 +56,7 @@ class Family extends Document
 
         $this->_family = DocManager::getFamily($familyId);
         if ($this->_family === null) {
-            $exception = new Exception("API0203", $familyId);
+            $exception = new Exception("CRUD0203", $familyId);
             $exception->setHttpStatus(404, "Family not found");
             throw $exception;
         }
@@ -72,17 +72,17 @@ class Family extends Document
     {
         $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
-            $e = new Exception("API0203", $resourceId);
+            $e = new Exception("CRUD0203", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
         if ($this->_document->doctype !== "C") {
-            $e = new Exception("API0203", $resourceId);
+            $e = new Exception("CRUD0203", $resourceId);
             $e->setHttpStatus("404", "Document is not a family");
             throw $e;
         }
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("API0219", $resourceId);
+            $e = new Exception("CRUD0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
             throw $e;
         }
