@@ -101,11 +101,14 @@
                 type :        $currentMethod.val(),
                 dataType :    "json",
                 contentType : 'application/json',
-                url :         $currentURL.val(),
-                data :        content.getValue()
+                url :         $currentURL.val()
             };
+            if (requestParams.type === "POST" || requestParams.type === "PUT") {
+                requestParams.data = content.getValue()
+            }
             currentRequest = requestParams;
             window.location.hash = encodeURIComponent(JSON.stringify(requestParams));
+
 
             $.ajax(requestParams).done(function (data, textStatus, xhr) {
                 writeResult(JSON.stringify(data, null, "    "));
