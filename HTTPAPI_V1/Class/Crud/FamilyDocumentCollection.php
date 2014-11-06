@@ -111,7 +111,12 @@ class FamilyDocumentCollection extends DocumentCollection
      */
     protected function getAttributeFields()
     {
-        return DocumentUtils::getAttributesFields($this->_family, self::GET_ATTRIBUTE, $this->getFields());
+        $prefix = self::GET_ATTRIBUTE;
+        $fields = $this->getFields();
+        if ($this->hasFields(self::GET_ATTRIBUTE) || $this->hasFields(self::GET_ATTRIBUTES)) {
+            return DocumentUtils::getAttributesFields($this->_family, $prefix, $fields);
+        }
+        return array();
     }
 
     public function generateURL($path, $query = null)

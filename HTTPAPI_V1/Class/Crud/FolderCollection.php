@@ -11,7 +11,7 @@ namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\HttpApi\V1\DocManager\DocManager;
 
-class DirectoryCollection  extends DocumentCollection {
+class FolderCollection extends DocumentCollection {
 
     /**
      * @var \Doc document instance

@@ -11,6 +11,7 @@ use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
 class History extends Crud
 {
+    protected $baseURL = "documents";
     /**
      * @var \Doc
      */
@@ -58,24 +59,11 @@ class History extends Crud
 
         $info = array();
 
-        $search = new \SearchDoc();
-        $search->addFilter("initid = %d", $this->_document->initid);
-        $search->setOrder("revision desc");
-        $search->latest = false;
-        if ($this->revisionFilter >= 0) {
-            $search->addFilter("revision = %d", $this->revisionFilter);
-        }
-        if ($this->slice > 0) {
-            $search->setSlice($this->slice);
-        }
-        if ($this->offset > 0) {
-            $search->setStart($this->offset);
-        }
-        $search->setObjectReturn();
-        $documentList = $search->search()->getDocumentList();
+        $search = $this->prepareSearchDoc();
+        $documentList = $search->getDocumentList();
 
         $info["uri"] = $this->generateURL(
-            sprintf("documents/%s/history/", $this->_document->name ? $this->_document->name : $this->_document->initid));
+            sprintf("%s/%s/history/", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid));
         $info["filters"] = array(
             "slice" => $this->slice,
             "offset" => $this->offset,
@@ -96,7 +84,8 @@ class History extends Crud
             $revisionHistory[] = array(
                 "documentId" => intval($revision->id),
                 "uri" => $this->generateURL(
-                    sprintf("documents/%s/revisions/%d.json",
+                    sprintf("%s/%s/revisions/%d.json",
+                        $this->baseURL,
                         ($revision->name ? $revision->name : $revision->initid), $revision->revision)),
                 "title" => $revision->getTitle(),
                 "fixed" => ($revision->locked == -1),
@@ -257,5 +246,27 @@ class History extends Crud
             return join("", $result);
         }
         return null;
+    }
+
+    /**
+     * @return \SearchDoc
+     */
+    protected function prepareSearchDoc()
+    {
+        $search = new \SearchDoc();
+        $search->addFilter("initid = %d", $this->_document->initid);
+        $search->setOrder("revision desc");
+        if ($this->revisionFilter >= 0) {
+            $search->addFilter("revision = %d", $this->revisionFilter);
+        }
+        if ($this->slice > 0) {
+            $search->setSlice($this->slice);
+        }
+        if ($this->offset > 0) {
+            $search->setStart($this->offset);
+        }
+        $search->setObjectReturn();
+        $search->latest = false;
+        return $search;
     }
 }

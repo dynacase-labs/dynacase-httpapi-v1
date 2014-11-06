@@ -57,10 +57,11 @@ class DocumentCollection extends Crud
             "requestParameters" => array(
                 "slice" => $this->slice,
                 "offset" => $this->offset,
-                "nbResult" => count($documentList),
+                "length" => count($documentList),
                 "orderBy" => $this->orderBy
             )
         );
+
         $return["uri"] = $this->generateURL("documents/");
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $data = $documentFormatter->format();
@@ -169,18 +170,19 @@ class DocumentCollection extends Crud
      * @param string $subField
      * @return bool
      */
-    protected function hasFields($fieldId, $subField = '')
+    protected function hasFields($fieldId, $strict = false)
     {
         $returnFields = $this->getFields();
-        if (in_array($fieldId, $returnFields)) {
-            return true;
-        }
 
-        if ($subField) {
+        if (!$strict) {
             foreach ($returnFields as $aField) {
-                if (strpos($aField, $subField) === 0) {
+                if (strpos($aField, $fieldId) === 0) {
                     return true;
                 }
+            }
+        } else {
+            if (in_array($fieldId, $returnFields)) {
+                return true;
             }
         }
 
