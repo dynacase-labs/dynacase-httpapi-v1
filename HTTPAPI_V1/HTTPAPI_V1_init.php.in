@@ -47,5 +47,9 @@ $app_const = array(
         "val" => "TRUE",
         "descr" => N_("HTTPAPI_V1:activate the etag cache for the request that handle it"),
         "kind" => "enum(TRUE|FALSE)"
-    )
+    ),
+    "COLLECTION_DEFAULT_SLICE" => array(
+        "val" => "10",
+        "descr" => N_("HTTPAPI_V1:default value of the slice for collection")
+    ),
 );

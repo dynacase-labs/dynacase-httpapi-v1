@@ -18,8 +18,17 @@ body {
     background-color: #F9FFD5;
 }
 
+.send-zone {
+    padding: 5px;
+    background-color: #ffd3b6;
+}
+
 .result-zone {
     background-color: #dde7f3;
+}
+
+.result-zone-label {
+    padding-bottom: 5px;
 }
 
 .example-label {

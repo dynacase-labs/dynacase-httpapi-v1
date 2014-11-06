@@ -45,26 +45,9 @@ class Revision extends Document
     public function read($resourceId)
     {
         parent::setDocument($resourceId);
-        $info = array();
-        if ($this->revisionIdentifier === null) {
-            $search = new \SearchDoc();
-            $search->setObjectReturn(true);
-            $search->addFilter("initid = %d", $this->_document->initid);
-            $search->setOrder("revision desc");
-            $search->latest = false;
-            foreach ($search->getDocumentList() as $currentRevision) {
-                $info[] = array(
-                    "title" => $currentRevision->getTitle(),
-                    "documentId" => intval($currentRevision->id),
-                    "uri" => $this->generateURL($this->getUri($currentRevision, $currentRevision->revision))
-                );
-            }
-
-        } else {
-            $info = parent::read($resourceId);
-            $info["revision"] = $info["document"];
-            unset($info["document"]);
-        }
+        $info = parent::read($resourceId);
+        $info["revision"] = $info["document"];
+        unset($info["document"]);
         return $info;
     }
 

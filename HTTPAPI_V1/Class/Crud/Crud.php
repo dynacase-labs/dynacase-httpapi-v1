@@ -165,11 +165,7 @@ abstract class Crud
 
     public function generateURL($path, $query = null)
     {
-        $url = AnalyzeURL::getBaseURL() . $path;
-        if ($query) {
-            $url .= "?".$query;
-        }
-        return $url;
+        return URLUtils::generateURL($path, $query);
     }
 
     public function analyseJSON($jsonString)

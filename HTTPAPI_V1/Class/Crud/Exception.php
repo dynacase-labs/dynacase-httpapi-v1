@@ -146,7 +146,22 @@ namespace {
          * @errorCode Only operators startsWith and contains are allowed
          */
         const CRUD0402 = 'Filter operateur "%s" not available. Availables are "%s"';
-
+        /**
+         * @errorCode Only operators startsWith and contains are allowed
+         */
+        const CRUD0500 = 'Unable to format, the input is not in kown type';
+        /**
+         * @errorCode The sort direction must be desc or asc (not %s)
+         */
+        const CRUD0501 = 'The sort direction must be desc or asc (not %s)';
+        /**
+         * @errorCode The sort direction must be desc or asc (not %s)
+         */
+        const CRUD0502 = 'The orderBy must be an attribute or a property (not %s)';
+        /**
+         * @errorCode The collection must be a directory or a search
+         */
+        const CRUD0503 = 'The collection must be a directory or a search';
     }
 }
 

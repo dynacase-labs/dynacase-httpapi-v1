@@ -8,7 +8,6 @@
 namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
-use \Dcp\HttpApi\V1\DocManager\Exception as DocManagerException;
 
 class FamilyDocument extends Document
 {
@@ -19,37 +18,9 @@ class FamilyDocument extends Document
     //region CRUD part
     public function create()
     {
-        try {
-            $this->_document = DocManager::createDocument($this->_family->id);
-        }
-        catch(DocManagerException $exception) {
-            if ($exception->getDcpCode() === "APIDM0003") {
-                $exception = new Exception("API0204", $this->_family->name);
-                $exception->setHttpStatus(403, "Forbidden");
-                throw $exception;
-            } else {
-                throw $exception;
-            }
-        }
-        
-        $newValues = $this->contentParameters;
-        foreach ($newValues as $attrid => $value) {
-            $err = $this->_document->setValue($attrid, $value);
-            if ($err) {
-                throw new Exception("CRUD0205", $this->_family->name, $attrid, $err);
-            }
-        }
-        
-        $err = $this->_document->store($info);
-        if ($err) {
-            $exception = new Exception("CRUD0206", $this->_family->name, $err);
-            $exception->setData($info);
-            throw $exception;
-        }
-        $this->_document->addHistoryEntry(___("Create by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
-        DocManager::cache()->addDocument($this->_document);
-        
-        return $this->read($this->_document->id);
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot create a document with an ID");
+        throw $exception;
     }
     //endregion CRUD part
     
@@ -103,7 +74,7 @@ class FamilyDocument extends Document
             $pathInfo = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
             $query = parse_url($pathInfo, PHP_URL_QUERY);
             $exception = new Exception("CRUD0222");
-            $exception->setHttpStatus("307", "This is a revision");
+            $exception->setHttpStatus("307", "This is not the canonical URI");
             $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d.json", $initid), $query));
             $exception->setURI($this->generateURL(sprintf("documents/%d.json", $initid)));
             throw $exception;

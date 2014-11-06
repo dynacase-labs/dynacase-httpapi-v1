@@ -82,9 +82,9 @@ class RecordReturn implements \JsonSerializable
         ) , "", $this->httpMessage)));
         header('Content-Type: application/json');
         foreach ($this->headers as $key => $currentHeader) {
-            header(sprintf("%s : %s", $key, $currentHeader));
+            header(sprintf("%s: %s", $key, $currentHeader));
         }
-        
+
         print json_encode($this);
     }
 

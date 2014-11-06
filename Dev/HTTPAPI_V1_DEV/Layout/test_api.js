@@ -22,6 +22,16 @@
                     },
                     "Esc" : function (cm) {
                         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    },
+                    "Ctrl-R" : function(cm) {
+                        var value = cm.getValue();
+                        try {
+                            value = JSON.parse(value);
+                            value = JSON.stringify(value, null, "   ");
+                            cm.setValue(value);
+                        } catch (e) {
+                            alert("The content JSON is not valid");
+                        }
                     }
                 }
             }), result = CodeMirror.fromTextArea(document.getElementById("request_result"), {
@@ -83,12 +93,11 @@
         }
         displayContentZone();
         $currentMethod.on("change", displayContentZone);
-        $("#examplesForm").on("submit", function (event) {
+        $listOfOptions.on("change", function (event) {
             event.preventDefault();
             currentRequest = clone(window.examples[$listOfOptions.val()].params);
             currentRequest.url = computeBaseURL() + currentRequest.url;
             setRequest(currentRequest);
-            $("#request_form").trigger("submit");
         });
         $("#request_form").on("submit", function (event) {
             event.preventDefault();
@@ -108,7 +117,6 @@
             }
             currentRequest = requestParams;
             window.location.hash = encodeURIComponent(JSON.stringify(requestParams));
-
 
             $.ajax(requestParams).done(function (data, textStatus, xhr) {
                 writeResult(JSON.stringify(data, null, "    "));
@@ -130,9 +138,18 @@
             if (JSON.stringify(currentRequest) !== hash) {
                 setRequest();
             }
-        });
+        }).on("resize", function() {
+            var height = $(window).innerHeight() - $(".result-zone").position().top - 55;
+            result.setSize(null, height);
+        }).trigger("resize");
         $("#showDocumentation").on("click", function () {
             window.open(window.defaultValues.helpPage);
-        })
+        });
+        $("#sendButton").on("click", function() {
+            $("#request_form").trigger("submit");
+        });
+        $("#cleanResult").on("click", function() {
+           result.setValue("");
+        });
     });
 }(jQuery);
