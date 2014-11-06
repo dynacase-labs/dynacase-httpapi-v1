@@ -5,7 +5,10 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
+
+use Dcp\HttpApi\V1\Api\RecordReturnMessage as RecordReturnMessage;
+use Dcp\HttpApi\V1\Api\AnalyzeURL as AnalyzeURL;
 
 abstract class Crud
 {
@@ -13,14 +16,7 @@ abstract class Crud
     const READ = "READ";
     const UPDATE = "UPDATE";
     const DELETE = "DELETE";
-    /**
-     * Regexp that check if the current path can be processed by the current CRUD
-     *
-     * @var string
-     */
-    /**
-     * @var RecordReturnMessage[]
-     */
+
     protected $messages = array();
     protected $path = null;
     /**
@@ -84,23 +80,36 @@ abstract class Crud
         switch ($method) {
 
             case "CREATE":
+                if (!$this->checkCrudPermission("POST")) {
+                    throw new Exception("CRUD0105", "POST");
+                }
                 $data = $this->create();
                 break;
 
             case "READ":
-                $data = $this->read($this->urlParameters["identifier"]);
+                if (!$this->checkCrudPermission("GET")) {
+                    throw new Exception("CRUD0105", "GET");
+                }
+                $identifier = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : null;
+                $data = $this->read($identifier);
                 break;
 
             case "UPDATE":
+                if (!$this->checkCrudPermission("PUT")) {
+                    throw new Exception("CRUD0105", "PUT");
+                }
                 $data = $this->update($this->urlParameters["identifier"]);
                 break;
 
             case "DELETE":
+                if (!$this->checkCrudPermission("DELETE")) {
+                    throw new Exception("CRUD0105", "DELETE");
+                }
                 $data = $this->delete($this->urlParameters["identifier"]);
                 break;
 
             default:
-                throw new Exception("API0102", $method);
+                throw new Exception("CRUD0102", $method);
         }
         $messages = $this->getMessages();
         return $data;
@@ -109,7 +118,7 @@ abstract class Crud
     /**
      * Add a message to be sended with the response
      *
-     * @param \Dcp\HttpApi\V1\RecordReturnMessage $message
+     * @param RecordReturnMessage $message
      */
     public function addMessage(RecordReturnMessage $message)
     {
@@ -119,7 +128,7 @@ abstract class Crud
     /**
      * Get all the added messages
      *
-     * @return \Dcp\HttpApi\V1\RecordReturnMessage[]
+     * @return RecordReturnMessage[]
      */
     public function getMessages()
     {
@@ -148,17 +157,51 @@ abstract class Crud
 
     public function getEtagInfo()
     {
+        if (!$this->checkCrudPermission("GET")) {
+            throw new Exception("CRUD0105", "GET");
+        }
         return null;
     }
 
-    public function generateURL($path)
+    public function generateURL($path, $query = null)
     {
-        return AnalyzeURL::getBaseURL().$path;
+        return URLUtils::generateURL($path, $query);
     }
 
     public function analyseJSON($jsonString)
     {
         return array();
+    }
+
+    /**
+     * Check the current user have a permission
+     *
+     * @param $aclName
+     * @return bool
+     * @throws Exception
+     */
+    public function checkCrudPermission($aclName) {
+        $dbAccess = getDbAccess();
+        $applicationId = null;
+        try {
+            simpleQuery($dbAccess, "select id from application where name='HTTPAPI_V1';", $applicationId, true, true, true);
+        } catch (Exception $exception) {
+            throw new Exception("CRUD0104", "Unkown application");
+        }
+
+        $permission = new \Permission($dbAccess, array(
+            \Doc::getSystemUserId(),
+            $applicationId
+        ));
+        if ($permission->isAffected()) {
+            $acl = new \Acl($dbAccess);
+            if (!$acl->Set($aclName, $applicationId)) {
+                throw new Exception("CRUD0104", "Unkown ACL $aclName");
+            } else {
+                return ($permission->HasPrivilege($acl->id));
+            }
+        }
+        throw new Exception("CRUD0104", "Unable to initialize ACL $aclName $applicationId");
     }
 
 

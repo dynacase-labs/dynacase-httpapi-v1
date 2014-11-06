@@ -5,13 +5,13 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\DocManager;
 
 class DocManager
 {
     static $trace = false;
     /**
-     * @var DocManager\MemoryCache $localCache
+     * @var MemoryCache $localCache
      */
     static protected $localCache = null;
     /**
@@ -19,7 +19,7 @@ class DocManager
      * @param int|string $documentIdentifier
      * @param bool $latest
      * @param bool $useCache
-     * @throws DocManager\Exception
+     * @throws Exception
      * @api Get document object from identifier
      * @return \Doc
      */
@@ -91,7 +91,7 @@ class DocManager
      * Get family object identified by its identifier
      * @param int|string $familyIdentifier
      * @param bool $useCache
-     * @throws DocManager\Exception
+     * @throws Exception
      * @api Get document object from identifier
      * @return \DocFam return null if id not match a family identifier
      */
@@ -122,13 +122,13 @@ class DocManager
      * return latest id of document from its initid or other id
      *
      * @param int $initid document identificator
-     * @throws DocManager\Exception
+     * @throws Exception
      * @return int|null identifier relative to latest revision
      */
     static protected function getLatestDocumentId($initid)
     {
         if (!is_numeric($initid)) {
-            throw new DocManager\Exception("APIDM0100", print_r($initid, true));
+            throw new Exception("APIDM0100", print_r($initid, true));
         }
         $dbaccess = self::getDbAccess();
         // first more quick if alive
@@ -142,18 +142,40 @@ class DocManager
         if ($id > 0) return intval($id);
         return null;
     }
+
+    /**
+     * return latest id of document from its initid or other id
+     *
+     * @param string $name document identificator
+     *
+     * @throws Exception
+     * @return int|null identifier relative to latest revision
+     */
+    static public function getInitIdFromIdOrName($name)
+    {
+        $id = $name;
+        if (!is_numeric($name)) {
+            $id = static::getIdFromName($name);
+        }
+        $dbaccess = self::getDbAccess();
+        simpleQuery($dbaccess, sprintf("select initid from docread where id='%d' limit 1;", $id), $initid, true, true);
+        if ($id > 0) {
+            return intval($initid);
+        }
+        return null;
+    }
     /**
      * return  id of document identified by its revision
      *
      * @param int $initid document identificator
      * @param int $revision
-     * @throws DocManager\Exception
+     * @throws Exception
      * @return int|null identifier relative to latest revision
      */
     static public function getRevisedDocumentId($initid, $revision)
     {
         if (!is_numeric($initid)) {
-            throw new DocManager\Exception("APIDM0100", print_r($initid, true));
+            throw new Exception("APIDM0100", print_r($initid, true));
         }
         $dbaccess = self::getDbAccess();
         // first more quick if alive
@@ -169,7 +191,7 @@ class DocManager
      *
      * The document is not yet recorded to database and has no identifier
      * @param int|string $familyIdentifier
-     * @throws DocManager\Exception
+     * @throws Exception
      * @return \Dcp\Family\Document
      */
     static public function initializeDocument($familyIdentifier)
@@ -178,14 +200,14 @@ class DocManager
         $famId = self::getFamilyIdFromName($familyIdentifier);
         
         if (empty($famId)) {
-            throw new DocManager\Exception("APIDM0001", $familyIdentifier);
+            throw new Exception("APIDM0001", $familyIdentifier);
         }
         /**
          * @var \DocFam $family
          */
         $family = self::getDocument($famId);
         if ($family === null) {
-            throw new DocManager\Exception("APIDM0002", $familyIdentifier, $famId);
+            throw new Exception("APIDM0002", $familyIdentifier, $famId);
         }
         
         self::cache()->addDocument($family);
@@ -211,7 +233,7 @@ class DocManager
     protected static function requireFamilyClass($familyId)
     {
         if (!is_numeric($familyId)) {
-            throw new DocManager\Exception("APIDM0102", $familyId);
+            throw new Exception("APIDM0102", $familyId);
         }
         $classFilePath = sprintf("FDLGEN/Class.Doc%d.php", $familyId);
         require_once ($classFilePath);
@@ -223,7 +245,7 @@ class DocManager
      * @param int|string $familyIdentifier
      * @param bool $control
      * @param bool $useDefaultValues
-     * @throws DocManager\Exception
+     * @throws Exception
      * @return \Dcp\Family\Document
      */
     static public function createDocument($familyIdentifier, $control = true, $useDefaultValues = true)
@@ -237,7 +259,7 @@ class DocManager
         if ($control) {
             $err = $family->control('create');
             if ($err != "") {
-                throw new DocManager\Exception("APIDM0003", $familyIdentifier);
+                throw new Exception("APIDM0003", $familyIdentifier);
             }
         }
         
@@ -305,14 +327,14 @@ class DocManager
      *
      * No call to database is done to retrieve attributes values
      * @param string[] $rawDocument
-     * @throws DocManager\Exception APIDM0104, APIDM0105
+     * @throws Exception APIDM0104, APIDM0105
      * @return \Doc
      */
     static public function getDocumentFromRawDocument(array $rawDocument)
     {
         
         if (empty($rawDocument["id"]) || !self::getIdentifier($rawDocument["id"], false)) {
-            throw new DocManager\Exception("APIDM0104", print_r($rawDocument, true));
+            throw new Exception("APIDM0104", print_r($rawDocument, true));
         }
         if ($rawDocument["doctype"] == "C") {
             $d = new \DocFam();
@@ -320,7 +342,7 @@ class DocManager
             if ($rawDocument["fromid"] > 0) {
                 $d = self::initializeDocument($rawDocument["fromid"]);
             } else {
-                throw new DocManager\Exception("APIDM0105", print_r($rawDocument, true));
+                throw new Exception("APIDM0105", print_r($rawDocument, true));
             }
         }
         $d->affect($rawDocument);
@@ -446,7 +468,7 @@ class DocManager
     /**
      * Get latest id from document name (logical name)
      * @param string $documentName
-     * @throws DocManager\Exception
+     * @throws Exception
      * @api Get document identifier fro logical name
      * @return int
      */
@@ -458,7 +480,7 @@ class DocManager
             return 0;
         }
         if (!preg_match('/^[a-z][a-z0-9_]{1,63}$/i', $documentName)) {
-            throw new DocManager\Exception("APIDM0101", print_r($documentName, true));
+            throw new Exception("APIDM0101", print_r($documentName, true));
         }
         
         $dbid = self::getDbResource();
@@ -581,13 +603,13 @@ class DocManager
     }
     /**
      * Return Document Cache Object
-     * @return DocManager\Cache
+     * @return Cache
      */
     static public function &cache()
     {
         static $documentCache = null;
         if ($documentCache === null) {
-            $documentCache = new DocManager\Cache();
+            $documentCache = new Cache();
         }
         return $documentCache;
     }

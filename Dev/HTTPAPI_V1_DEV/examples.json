@@ -1,0 +1,76 @@
+{
+    "get_document" :            {
+        "id" :     "get_document",
+        "title" :  "Get a document",
+        "params" : {
+            "type" : "GET",
+            "url" :  "documents/USER_ADMIN"
+        }
+    },
+    "get_family" :              {
+        "id" :     "get_family",
+        "title" :  "Get family information",
+        "params" : {
+            "type" : "GET",
+            "url" :  "families/TEXT"
+        }
+    },
+    "get_family_information" :  {
+        "id" :     "get_family_information",
+        "title" :  "Get family information and structure",
+        "params" : {
+            "type" : "GET",
+            "url" :  "families/TEXT?fields=family.structure"
+        }
+    },
+    "create_document" :         {
+        "id" :     "create_document",
+        "title" :  "Create a document TEST",
+        "params" : {
+            "type" : "POST",
+            "url" :  "families/TEXT/documents/",
+            "data" : "{ \"document\" : { \"attributes\" : { \"ba_title\" : { \"value\" : \"Mon premier document texte\" }}}}"
+        }
+    },
+    "suppress_document" :       {
+        "id" :     "suppress_document",
+        "title" :  "Suppress a document",
+        "params" : {
+            "type" : "DELETE",
+            "url" :  "documents/<documentId>"
+        }
+    },
+    "update_document" :         {
+        "id" :     "update_document",
+        "title" :  "Update a document",
+        "params" : {
+            "type" : "PUT",
+            "url" :  "documents/<documentId>",
+            "data" : "{ \"document\" : { \"attributes\" : { \"ba_title\" : { \"value\" : \"Mon premier document texte !!\" }}}}"
+        }
+    },
+    "document_revisions" :      {
+        "id" :     "document_revisions",
+        "title" :  "Get revisions of a document",
+        "params" : {
+            "type" : "GET",
+            "url" :  "documents/USER_ADMIN/revisions/"
+        }
+    },
+    "document_first_revision" : {
+        "id" :     "document_first_revision",
+        "title" :  "Get the first revision of a document",
+        "params" : {
+            "type" : "GET",
+            "url" :  "documents/USER_ADMIN/revisions/0"
+        }
+    },
+    "document_history" :        {
+        "id" :     "document_history",
+        "title" :  "Get the history of a document",
+        "params" : {
+            "type" : "GET",
+            "url" :  "documents/USER_ADMIN/history/"
+        }
+    }
+}

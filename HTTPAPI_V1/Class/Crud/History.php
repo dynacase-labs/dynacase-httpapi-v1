@@ -5,11 +5,11 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
-use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
-class HistoryCrud extends Crud
+class History extends Crud
 {
     /**
      * @var \Doc
@@ -34,9 +34,9 @@ class HistoryCrud extends Crud
      */
     public function create()
     {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("501", "Not yet implemented");
+        throw $exception;
     }
 
     /**
@@ -51,9 +51,9 @@ class HistoryCrud extends Crud
         $this->setDocument($resourceId);
         $err = $this->_document->control("view");
         if ($err) {
-            $e = new Exception("API0201", $resourceId, $err);
-            $e->setHttpStatus("403", "Forbidden");
-            throw $e;
+            $exception = new Exception("CRUD0201", $resourceId, $err);
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
         }
 
         $info = array();
@@ -121,9 +121,9 @@ class HistoryCrud extends Crud
      */
     public function update($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot change history");
+        throw $exception;
     }
 
     /**
@@ -134,9 +134,9 @@ class HistoryCrud extends Crud
      */
     public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot delete history");
+        throw $exception;
     }
     //endregion CRUD part
 
@@ -150,22 +150,22 @@ class HistoryCrud extends Crud
     {
         $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
-            $e = new Exception("API0200", $resourceId);
-            $e->setHttpStatus("404", "Document not found");
-            throw $e;
+            $exception = new Exception("CRUD0200", $resourceId);
+            $exception->setHttpStatus("404", "Document not found");
+            throw $exception;
         }
 
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
-            $e = new Exception("API0220", $resourceId, $this->_family->name);
-            $e->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
-            throw $e;
+            $exception = new Exception("CRUD0220", $resourceId, $this->_family->name);
+            $exception->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
+            throw $exception;
         }
 
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("API0219", $resourceId);
-            $e->setHttpStatus("404", "Document deleted");
-            $e->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
-            throw $e;
+            $exception = new Exception("CRUD0219", $resourceId);
+            $exception->setHttpStatus("404", "Document deleted");
+            $exception->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
+            throw $exception;
         }
     }
 
@@ -182,7 +182,7 @@ class HistoryCrud extends Crud
         if ($familyId !== false) {
             $this->_family = DocManager::getFamily($familyId);
             if (!$this->_family) {
-                $exception = new Exception("API0200", $familyId);
+                $exception = new Exception("CRUD0200", $familyId);
                 $exception->setHttpStatus("404", "Family not found");
                 throw $exception;
             }

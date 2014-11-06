@@ -13,98 +13,12 @@ $json_system_logger = <<<'JSON'
 ]
 JSON;
 
-$json_system_crud = <<<'JSON'
-[
-    {
-        "order" : 300,
-        "class" : "\\Dcp\\HttpApi\\V1\\DocumentCrud",
-        "regExp" : "/^\\/documents\\/?(?P<identifier>[^\\/]+)$/",
-        "description" : "Documents",
-        "canonicalURL" : "documents/<documentId>"
-    },
-    {
-        "order" : 100,
-         "class" : "\\Dcp\\HttpApi\\V1\\FamilyCrud",
-         "regExp" : "/^\\/families\\/(?P<identifier>[^\\/]+)\\/?$/",
-         "description" : "Families",
-         "canonicalURL" : "families/<familyId>"
-     },
-    {
-        "order" : 200,
-        "class" : "\\Dcp\\HttpApi\\V1\\FamilyDocumentCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)$/",
-        "description" : "Documents of the family <familyId>",
-        "canonicalURL" : "families/<familyId>/documents/<documentId>"
-    },
-    {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\Trash",
-        "regExp" : "/^\\/trash\\/?(?P<identifier>[^\\/]+)$/",
-        "description" : "Deleted documents",
-        "canonicalURL" : "trash/<documentId>"
-    },
-    {
-        "order" : 300,
-        "class" : "\\Dcp\\HttpApi\\V1\\FileCrud",
-        "regExp" : "/^\\/files\\/$/",
-        "description" : "Temporary files",
-        "canonicalURL" : "files/"
-    },
-    {
-        "order" : 400,
-        "class" : "\\Dcp\\HttpApi\\V1\\EnumCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/enumerates\\/(?P<identifier>[^\\/]*)$/",
-        "description" : "Enumerate",
-        "canonicalURL" : "families/<familyId>/enumerates/<attributeIdentifier>/"
-    },
-    {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\HistoryCrud",
-        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
-        "description" : "History",
-        "canonicalURL" : "documents/<documentId>/history/"
-    },
-    {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\HistoryCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
-        "description" : "History",
-        "canonicalURL" : "families/<familyId>/documents/<documentId>/history/"
-    },
-    {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]*)$/",
-        "description" : "Revision",
-        "canonicalURL" : "documents/<documentId>/revisions/<revisionId>"
-    },
-    {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]*)$/",
-        "description" : "Revision of a document of <familyId>",
-        "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/<revisionId>"
-    },
-    {
-        "order" : 100,
-        "class" : "\\Dcp\\HttpApi\\V1\\RevisionCrud",
-        "regExp" : "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]*)$/",
-        "description" : "Revision of deleted documents",
-        "canonicalURL" : "trash/<documentId>/revisions/<revisionId>"
-    }
-]
-JSON;
-
 $app_const = array(
     "VERSION" => "@VERSION@-@RELEASE@",
-    "SYSTEM_CRUD_CLASS" => array(
-        "val" => $json_system_crud,
-        "descr" => N_("HTTPAPI_V1:default crud class"),
-        "kind" => "static"
-    ),
-    "CUSTOM_CRUD_CLASS" => array(
+    "CRUD_CLASS" => array(
         "val" => "[]",
-        "descr" => N_("HTTPAPI_V1:custom crud class")
+        "descr" => N_("HTTPAPI_V1:crud class"),
+        "kind" => "static"
     ),
     "SYSTEM_LOGGER" => array(
         "val" => $json_system_logger,
@@ -133,5 +47,9 @@ $app_const = array(
         "val" => "TRUE",
         "descr" => N_("HTTPAPI_V1:activate the etag cache for the request that handle it"),
         "kind" => "enum(TRUE|FALSE)"
-    )
+    ),
+    "COLLECTION_DEFAULT_SLICE" => array(
+        "val" => "10",
+        "descr" => N_("HTTPAPI_V1:default value of the slice for collection")
+    ),
 );

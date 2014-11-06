@@ -6,6 +6,7 @@
         var $currentURL = $("#request_url"),
             $currentMethod = $("#request_method"),
             $contentZone = $("#contentZone"),
+            $listOfOptions = $("#listOfOptions"),
             content = CodeMirror.fromTextArea(document.getElementById("request_content"), {
                 lineNumbers :       true,
                 mode :              "application/json",
@@ -15,12 +16,22 @@
                 autoCloseBrackets : true,
                 lineWrapping :      true,
                 foldGutter :        true,
-                extraKeys : {
+                extraKeys :         {
                     "F11" : function (cm) {
                         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                     },
                     "Esc" : function (cm) {
                         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    },
+                    "Ctrl-R" : function(cm) {
+                        var value = cm.getValue();
+                        try {
+                            value = JSON.parse(value);
+                            value = JSON.stringify(value, null, "   ");
+                            cm.setValue(value);
+                        } catch (e) {
+                            alert("The content JSON is not valid");
+                        }
                     }
                 }
             }), result = CodeMirror.fromTextArea(document.getElementById("request_result"), {
@@ -31,8 +42,8 @@
                 lint :          true,
                 lineWrapping :  true,
                 foldGutter :    true,
-                gutters : ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-                extraKeys : {
+                gutters :       ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                extraKeys :     {
                     "F11" : function (cm) {
                         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
                     },
@@ -40,13 +51,21 @@
                         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                     }
                 }
-            }), writeResult = function (content) {
+            }), clone = function (source) {
+                var clone = {}, prop;
+                for (prop in source) {
+                    if (source.hasOwnProperty(prop)) {
+                        clone[prop] = source[prop];
+                    }
+                }
+                return clone;
+            }, writeResult = function (content) {
                 result.setValue(content + "\n" + result.getValue());
             }, computeBaseURL = function () {
                 return window.defaultValues.baseURL;
-            }, currentRequest, setHashRequest = function () {
+            }, currentRequest, setRequest = function (currentRequest) {
                 try {
-                    currentRequest = JSON.parse(decodeURIComponent(window.location.hash.slice(1)));
+                    currentRequest = currentRequest || JSON.parse(decodeURIComponent(window.location.hash.slice(1)));
                     if (currentRequest.url) {
                         $currentURL.val(currentRequest.url);
                     }
@@ -70,10 +89,16 @@
             };
         $currentURL.val(computeBaseURL());
         if (window.location.hash) {
-            setHashRequest();
+            setRequest();
         }
         displayContentZone();
         $currentMethod.on("change", displayContentZone);
+        $listOfOptions.on("change", function (event) {
+            event.preventDefault();
+            currentRequest = clone(window.examples[$listOfOptions.val()].params);
+            currentRequest.url = computeBaseURL() + currentRequest.url;
+            setRequest(currentRequest);
+        });
         $("#request_form").on("submit", function (event) {
             event.preventDefault();
             writeResult("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤");
@@ -85,9 +110,11 @@
                 type :        $currentMethod.val(),
                 dataType :    "json",
                 contentType : 'application/json',
-                url :         $currentURL.val(),
-                data :        content.getValue()
+                url :         $currentURL.val()
             };
+            if (requestParams.type === "POST" || requestParams.type === "PUT") {
+                requestParams.data = content.getValue()
+            }
             currentRequest = requestParams;
             window.location.hash = encodeURIComponent(JSON.stringify(requestParams));
 
@@ -109,8 +136,20 @@
         $(window).on("hashchange", function () {
             var hash = window.location.hash.slice(1);
             if (JSON.stringify(currentRequest) !== hash) {
-                setHashRequest();
+                setRequest();
             }
+        }).on("resize", function() {
+            var height = $(window).innerHeight() - $(".result-zone").position().top - 55;
+            result.setSize(null, height);
+        }).trigger("resize");
+        $("#showDocumentation").on("click", function () {
+            window.open(window.defaultValues.helpPage);
+        });
+        $("#sendButton").on("click", function() {
+            $("#request_form").trigger("submit");
+        });
+        $("#cleanResult").on("click", function() {
+           result.setValue("");
         });
     });
 }(jQuery);

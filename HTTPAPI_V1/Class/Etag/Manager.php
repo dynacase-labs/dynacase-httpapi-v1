@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: charles
- * Date: 15/10/14
- * Time: 20:25
- */
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+*/
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Etag;
 
-
-class EtagManager {
+class Manager {
 
     /**
      * Verify the etag validity against the If-None-Match header

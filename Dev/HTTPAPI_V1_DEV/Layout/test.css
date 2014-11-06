@@ -1,7 +1,42 @@
-.text__input {
-    width: 100%;
+body {
+    background-color: whitesmoke;
 }
 
-.result__input {
-    height: 50%;
+.content {
+    margin: 10px 10px 0 10px;
 }
+
+.content-zone {
+    padding: 5px;
+}
+
+.toolbox {
+    background-color: #EAFFEC;
+}
+
+.request-zone {
+    background-color: #F9FFD5;
+}
+
+.send-zone {
+    padding: 5px;
+    background-color: #ffd3b6;
+}
+
+.result-zone {
+    background-color: #dde7f3;
+}
+
+.result-zone-label {
+    padding-bottom: 5px;
+}
+
+.example-label {
+    padding: 0;
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+

@@ -5,11 +5,11 @@
  * @package FDL
 */
 
-namespace Dcp\HttpApi\V1;
+namespace Dcp\HttpApi\V1\Crud;
 
-use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
-class FamilyCrud extends DocumentCrud
+class Family extends Document
 {
     /**
      * @var \DocFam
@@ -26,9 +26,9 @@ class FamilyCrud extends DocumentCrud
      */
     public function update($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot create a document with an ID");
+        throw $exception;
     }
 
     /**
@@ -39,9 +39,9 @@ class FamilyCrud extends DocumentCrud
      */
     public function delete($resourceId)
     {
-        $e = new Exception("API0002", __METHOD__);
-        $e->setHttpStatus("501", "Not implemented");
-        throw $e;
+        $exception = new Exception("CRUD0103", __METHOD__);
+        $exception->setHttpStatus("405", "You cannot delete a family with the API");
+        throw $exception;
     }
     //endregion CRUD part
 
@@ -56,7 +56,7 @@ class FamilyCrud extends DocumentCrud
 
         $this->_family = DocManager::getFamily($familyId);
         if ($this->_family === null) {
-            $exception = new Exception("API0203", $familyId);
+            $exception = new Exception("CRUD0203", $familyId);
             $exception->setHttpStatus(404, "Family not found");
             throw $exception;
         }
@@ -72,20 +72,25 @@ class FamilyCrud extends DocumentCrud
     {
         $this->_document = DocManager::getDocument($resourceId);
         if (!$this->_document) {
-            $e = new Exception("API0203", $resourceId);
+            $e = new Exception("CRUD0203", $resourceId);
             $e->setHttpStatus("404", "Document not found");
             throw $e;
         }
         if ($this->_document->doctype !== "C") {
-            $e = new Exception("API0203", $resourceId);
+            $e = new Exception("CRUD0203", $resourceId);
             $e->setHttpStatus("404", "Document is not a family");
             throw $e;
         }
         if ($this->_document->doctype === "Z") {
-            $e = new Exception("API0219", $resourceId);
+            $e = new Exception("CRUD0219", $resourceId);
             $e->setHttpStatus("404", "Document deleted");
             throw $e;
         }
 
+    }
+
+    public function checkId($identifier)
+    {
+        return DocumentUtils::checkFamilyId($identifier);
     }
 }

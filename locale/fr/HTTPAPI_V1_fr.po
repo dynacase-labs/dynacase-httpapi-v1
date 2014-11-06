@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-20 14:51+0200\n"
+"POT-Creation-Date: 2014-10-31 15:50+0100\n"
 "PO-Revision-Date: 2014-08-26 10:50+0200\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
@@ -80,6 +80,15 @@ msgstr "Classes de CRUD par défaut"
 
 msgid "HTTPAPI_V1:default logger class"
 msgstr "Classes de LOG par défaut"
+
+msgid "HTTPAPI_V1_DEV:Basic ACL"
+msgstr "ACL Basic"
+
+msgid "HTTPAPI_V1_DEV:HTTPAPI_V1_DEV"
+msgstr "Outil de développement"
+
+msgid "HTTPAPI_V1_DEV:Test HTTP API"
+msgstr "Outil de développement"
 
 msgctxt "HTTPAPI_V1"
 msgid "Update failed"
