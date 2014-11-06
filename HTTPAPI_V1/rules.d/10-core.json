@@ -37,8 +37,15 @@
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Trash",
-        "regExp" :       "/^\\/trash\\/?(?P<identifier>[^\\/]+)$/",
+        "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)$/",
         "description" :  "Deleted documents",
+        "canonicalURL" : "trash/<documentId>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashCollection",
+        "regExp" :       "/^\\/trash\\/$/",
+        "description" :  "Collection of the deleted documents",
         "canonicalURL" : "trash/<documentId>"
     },
     {
