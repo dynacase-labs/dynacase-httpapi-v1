@@ -224,7 +224,7 @@ class DocumentCollection extends Crud
     protected function prepareDocumentFormatter($documentList)
     {
         $documentFormatter = new DocumentFormatter($documentList);
-        if ($this->hasFields(self::GET_PROPERTIES)) {
+        if ($this->hasFields(self::GET_PROPERTIES, true)) {
             $documentFormatter->useDefaultProperties();
         } else {
             $documentFormatter->setProperties($this->_getPropertiesId());
