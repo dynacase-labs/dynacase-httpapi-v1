@@ -39,7 +39,7 @@ class TrashHistory extends History {
         if ($this->_document->doctype !== "Z") {
             $exception = new Exception("CRUD0219", $resourceId);
             $exception->setHttpStatus("404", "Document not deleted");
-            $exception->setURI($this->generateURL(sprintf("docuuments/%d.json", $this->_document->id)));
+            $exception->setURI($this->generateURL(sprintf("documents/%d.json", $this->_document->id)));
             throw $exception;
         }
     }
@@ -63,7 +63,7 @@ class TrashHistory extends History {
         }
         $search->setObjectReturn();
         $search->latest = false;
-        $search->trash = "only";
+        $search->trash = "also";
         return $search;
     }
 
