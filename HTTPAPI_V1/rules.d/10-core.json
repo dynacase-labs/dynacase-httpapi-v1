@@ -37,8 +37,15 @@
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Trash",
-        "regExp" :       "/^\\/trash\\/?(?P<identifier>[^\\/]+)$/",
+        "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)$/",
         "description" :  "Deleted documents",
+        "canonicalURL" : "trash/<documentId>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashCollection",
+        "regExp" :       "/^\\/trash\\/$/",
+        "description" :  "Collection of the deleted documents",
         "canonicalURL" : "trash/<documentId>"
     },
     {
@@ -61,6 +68,13 @@
         "regExp" :       "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
         "description" :  "History",
         "canonicalURL" : "documents/<documentId>/history/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashHistory",
+        "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
+        "description" :  "History of a revision",
+        "canonicalURL" : "trash/<documentId>/history/"
     },
     {
         "order" :        100,
@@ -106,17 +120,17 @@
     },
     {
         "order" :        100,
-        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RevisionCollection",
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashRevisionCollection",
         "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/revisions\\/$/",
         "description" :  "Revision of deleted documents",
         "canonicalURL" : "trash/<documentId>/revisions/"
     },
     {
         "order" :        100,
-        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DirectoryCollection",
-        "regExp" :       "/^\\/directories\\/(?P<identifier>[^\\/]+)\\/$/",
-        "description" :  "Content of the directory <identifier>",
-        "canonicalURL" : "directories/<documentId>/"
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\FolderCollection",
+        "regExp" :       "/^\\/folders\\/(?P<identifier>[^\\/]+)\\/$/",
+        "description" :  "Content of the folder <identifier>",
+        "canonicalURL" : "folders/<documentId>/"
     },
     {
         "order" :        100,

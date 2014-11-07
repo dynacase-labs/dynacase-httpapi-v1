@@ -6,7 +6,7 @@ include $(utildir)/PubRule
 
 DISTFILES = Makefile  $(appname).app $(appname)_init.php.in 
 
-SUBDIR= Layout Images Class
+SUBDIR= Layout Images Class rules.d
 
 .PHONY: publish
 

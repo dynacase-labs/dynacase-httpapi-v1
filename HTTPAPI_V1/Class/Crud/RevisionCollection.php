@@ -15,6 +15,7 @@ class RevisionCollection extends DocumentCollection {
 
 
     protected $_document = null;
+    protected $rootLevel = "documents";
 
     /**
      * Read a ressource
@@ -28,11 +29,11 @@ class RevisionCollection extends DocumentCollection {
             "requestParameters" => array(
                 "slice" => $this->slice,
                 "offset" => $this->offset,
-                "nbResult" => count($documentList),
+                "length" => count($documentList),
                 "orderBy" => $this->orderBy
             )
         );
-        $return["uri"] = $this->generateURL(sprintf("documents/%s/revisions/", $this->urlParameters["identifier"]));
+        $return["uri"] = $this->generateURL(sprintf("%s/%s/revisions/", $this->rootLevel, $this->urlParameters["identifier"]));
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $documentFormatter->addProperty("revision");
         $data = $documentFormatter->format();
@@ -43,7 +44,7 @@ class RevisionCollection extends DocumentCollection {
             if (isset($currentData["properties"]["state"]) && !$currentData["properties"]["state"]->reference) {
                 unset($currentData["properties"]["state"]);
             }
-            $currentData["uri"] = $this->generateURL(sprintf("documents/%d/revisions/%d.json", $currentData["properties"]["initid"], $currentData["properties"]["revision"]));
+            $currentData["uri"] = $this->generateURL(sprintf("%s/%d/revisions/%d.json", $this->rootLevel, $currentData["properties"]["initid"], $currentData["properties"]["revision"]));
         }
         $return["revisions"] = $data;
 

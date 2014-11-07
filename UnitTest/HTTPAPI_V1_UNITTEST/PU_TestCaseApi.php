@@ -7,7 +7,7 @@
 
 namespace Dcp\Pu\HttpApi\V1\Test;
 
-use Dcp\HttpApi\V1\DocManager;
+use Dcp\HttpApi\V1\DocManager\DocManager;
 
 require_once 'DCPTEST/PU_testcase_dcp_commonfamily.php';
 

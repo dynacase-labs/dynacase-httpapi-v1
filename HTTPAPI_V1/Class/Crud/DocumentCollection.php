@@ -57,10 +57,11 @@ class DocumentCollection extends Crud
             "requestParameters" => array(
                 "slice" => $this->slice,
                 "offset" => $this->offset,
-                "nbResult" => count($documentList),
+                "length" => count($documentList),
                 "orderBy" => $this->orderBy
             )
         );
+
         $return["uri"] = $this->generateURL("documents/");
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $data = $documentFormatter->format();
@@ -165,22 +166,24 @@ class DocumentCollection extends Crud
     /**
      * Check if the current restrict field exist
      *
-     * @param $fieldId
-     * @param string $subField
+     * @param string $fieldId field
+     * @param boolean $strict strict test
+     *
      * @return bool
      */
-    protected function hasFields($fieldId, $subField = '')
+    protected function hasFields($fieldId, $strict = false)
     {
         $returnFields = $this->getFields();
-        if (in_array($fieldId, $returnFields)) {
-            return true;
-        }
 
-        if ($subField) {
+        if (!$strict) {
             foreach ($returnFields as $aField) {
-                if (strpos($aField, $subField) === 0) {
+                if (strpos($aField, $fieldId) === 0) {
                     return true;
                 }
+            }
+        } else {
+            if (in_array($fieldId, $returnFields)) {
+                return true;
             }
         }
 
@@ -222,7 +225,7 @@ class DocumentCollection extends Crud
     protected function prepareDocumentFormatter($documentList)
     {
         $documentFormatter = new DocumentFormatter($documentList);
-        if ($this->hasFields(self::GET_PROPERTIES)) {
+        if ($this->hasFields(self::GET_PROPERTIES, true)) {
             $documentFormatter->useDefaultProperties();
         } else {
             $documentFormatter->setProperties($this->_getPropertiesId());
