@@ -5,7 +5,7 @@
     <description>Dynacase HTTP API : outil de développement</description>
 
     <requires>
-        <module comp="ge" name="dynacase-bootstrap-3" version="3.2"/>
+        <module comp="ge" name="dynacase-bootstrap-3-installer" version="3.2"/>
         <module comp="ge" name="dynacase-core" version="3.2"/>
     </requires>
 
