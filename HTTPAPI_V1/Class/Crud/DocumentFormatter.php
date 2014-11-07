@@ -15,7 +15,7 @@ class DocumentFormatter
     static protected $uselessProperties = array("lockdomainid", "domainid", "svalues", "ldapdn", "comment", "classname");
     /* @var \FormatCollection $formatCollection */
     protected $formatCollection;
-    protected $defaultProperties = array("initid", "title", "revision", "state", "icon");
+    protected $defaultProperties = array("initid", "title", "revision", "state", "icon", "name");
     protected $properties = array();
 
     public function __construct($source)
@@ -79,6 +79,10 @@ class DocumentFormatter
         $this->formatCollection->mimeTypeIconSize = 20;
         $this->formatCollection->useShowEmptyOption = false;
         return $this->formatCollection->render();
+    }
+
+    public function getFormatCollection() {
+        return $this->formatCollection;
     }
 
 } 

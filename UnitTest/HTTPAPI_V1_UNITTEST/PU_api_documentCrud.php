@@ -7,9 +7,10 @@
 
 namespace Dcp\Pu\HttpApi\V1\Test;
 
-use Dcp\HttpApi\V1\DocManager;
-use Dcp\HttpApi\V1\DocumentCrud;
-use Dcp\HttpApi\V1\Exception;
+use Dcp\HttpApi\V1\Api\AnalyzeURL;
+use Dcp\HttpApi\V1\DocManager\DocManager;
+use Dcp\HttpApi\V1\Crud\Document as DocumentCrud;
+use Dcp\HttpApi\V1\Crud\Exception;
 
 require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
@@ -60,9 +61,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.displayValue" => "023",
                     "document.properties.title" => "Un élément",
                     "document.properties.name" => "TST_APIB1",
-                    "document.properties.fromname" => "TST_APIBASE",
-                    "document.properties.fromtitle" => "Test Base",
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             ) ,
             array(
@@ -85,9 +84,7 @@ class TestDocumentCrud extends TestCaseApi
                     ) ,
                     "document.properties.title" => "Un deuxième élément",
                     "document.properties.name" => "TST_APIB2",
-                    "document.properties.fromname" => "TST_APIBASE",
-                    "document.properties.fromtitle" => "Test Base",
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             ) ,
             array(
@@ -99,7 +96,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 23,
                     "document.attributes.tst_number.displayValue" => "023",
                     "document.properties" => null,
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             ) ,
             array(
@@ -108,7 +105,7 @@ class TestDocumentCrud extends TestCaseApi
                 array(
                     "document.attributes" => null,
                     "document.properties" => null,
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             ) ,
             array(
@@ -117,8 +114,7 @@ class TestDocumentCrud extends TestCaseApi
                 array(
                     "document.properties.title" => "Un élément",
                     "document.properties.name" => "TST_APIB1",
-                    "document.properties.id" => null,
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             ) ,
             array(
@@ -134,7 +130,7 @@ class TestDocumentCrud extends TestCaseApi
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_title.type" => "text",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.id" => "tst_number",
                     "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.type" => "int",
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             )
         );
@@ -168,7 +164,8 @@ class TestDocumentCrud extends TestCaseApi
                 }
             }
             if (is_string($expectValue)) {
-                $expectValue = str_replace('{id}', $document->id, $expectValue);
+                $expectValue = str_replace('{id}', $document->initid, $expectValue);
+                $expectValue = str_replace('{baseUrl}', AnalyzeURL::getBaseURL(), $expectValue);
             }
             $this->assertEquals($expectValue, $cdata, sprintf("wrong value for $dkey :%s ", print_r($data, true)));
         }
@@ -218,7 +215,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 56,
                     "document.attributes.tst_number.displayValue" => "056",
                     "document.properties.title" => "test n°1",
-                    "document.uri" => "api/v1/documents/{id}.json"
+                    "document.uri" => "{baseUrl}documents/{id}.json"
                 )
             ) ,
             array(
@@ -237,7 +234,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_number.value" => 678,
                     "document.attributes.tst_number.displayValue" => "678",
                     "document.properties.title" => "test n°2",
-                    "document.uri" => "api/v1/documents/{id}.json",
+                    "document.uri" => "{baseUrl}documents/{id}.json",
                     "document.attributes.tst_text" => array(
                         array(
                             "value" => "Un",
@@ -268,7 +265,7 @@ class TestDocumentCrud extends TestCaseApi
             $this->assertFalse(true, "An exception must occur");
         }
         catch(Exception $e) {
-            $this->assertEquals(501, $e->getHttpStatus());
+            $this->assertEquals(405, $e->getHttpStatus());
         }
     }
     
@@ -319,9 +316,7 @@ class TestDocumentCrud extends TestCaseApi
                     "document.attributes.tst_title.value" => "Un élément",
                     "document.attributes.tst_title.displayValue" => "<strong>Un élément</strong>",
                     "document.properties.title" => "Un élément",
-                    "document.properties.locked" => - 1,
-                    "document.properties.doctype" => "Z",
-                    "document.uri" => "api/v1/trash/{id}.json"
+                    "document.uri" => "{baseUrl}trash/{id}.json"
                 )
             )
         );

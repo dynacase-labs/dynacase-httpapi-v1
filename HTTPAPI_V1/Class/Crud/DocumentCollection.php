@@ -166,8 +166,9 @@ class DocumentCollection extends Crud
     /**
      * Check if the current restrict field exist
      *
-     * @param $fieldId
-     * @param string $subField
+     * @param string $fieldId field
+     * @param boolean $strict strict test
+     *
      * @return bool
      */
     protected function hasFields($fieldId, $strict = false)
