@@ -20,14 +20,14 @@ class History extends Crud
      * @var \DocFam
      */
     protected $_family = null;
-
-    protected $slice = -1;
-
+    
+    protected $slice = - 1;
+    
     protected $offset = 0;
-
-    protected $revisionFilter = -1;
+    
+    protected $revisionFilter = - 1;
     //region CRUD part
-
+    
     /**
      * Create new ressource
      * @throws Exception
@@ -39,7 +39,6 @@ class History extends Crud
         $exception->setHttpStatus("501", "Not yet implemented");
         throw $exception;
     }
-
     /**
      * Get ressource
      *
@@ -56,20 +55,19 @@ class History extends Crud
             $exception->setHttpStatus("403", "Forbidden");
             throw $exception;
         }
-
+        
         $info = array();
-
+        
         $search = $this->prepareSearchDoc();
         $documentList = $search->getDocumentList();
-
-        $info["uri"] = $this->generateURL(
-            sprintf("%s/%s/history/", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid));
+        
+        $info["uri"] = $this->generateURL(sprintf("%s/%s/history/", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid));
         $info["filters"] = array(
             "slice" => $this->slice,
             "offset" => $this->offset,
             "revision" => $this->revisionFilter
         );
-
+        
         $revisionHistory = array();
         /**
          * @var \Doc $revision
@@ -80,28 +78,53 @@ class History extends Crud
                 unset($history[$k]["id"]);
                 unset($history[$k]["initid"]);
                 $history[$k]["uid"] = intval($msg["uid"]);
+                switch ($history[$k]["level"]) {
+                    case \DocHisto::ERROR:
+                        $history[$k]["level"] = "error";
+                        break;
+
+                    case \DocHisto::WARNING:
+                        $history[$k]["level"] = "warning";
+                        break;
+
+                    case \DocHisto::MESSAGE:
+                        $history[$k]["level"] = "message";
+                        break;
+
+                    case \DocHisto::INFO:
+                        $history[$k]["level"] = "info";
+                        break;
+
+                    case \DocHisto::NOTICE:
+                        $history[$k]["level"] = "notice";
+                        break;
+                }
             }
             $revisionHistory[] = array(
-                "documentId" => intval($revision->id),
-                "uri" => $this->generateURL(
-                    sprintf("%s/%s/revisions/%d.json",
-                        $this->baseURL,
-                        ($revision->name ? $revision->name : $revision->initid), $revision->revision)),
-                "title" => $revision->getTitle(),
-                "fixed" => ($revision->locked == -1),
-                "revision" => intval($revision->revision),
-                "state" => $revision->getState(),
-                "stateLabel" => ($revision->state) ? _($revision->state) : '',
-                "stateColor" => ($revision->state) ? _($revision->getStateColor()) : '',
+                "documentId" => intval($revision->id) ,
+                "uri" => $this->generateURL(sprintf("%s/%s/revisions/%d.json", $this->baseURL, ($revision->name ? $revision->name : $revision->initid) , $revision->revision)) ,
+                "title" => $revision->getTitle() ,
+                "fixed" => ($revision->locked == - 1) ,
+                "revision" => intval($revision->revision) ,
+                "owner" => array(
+                    "id" => $revision->owner,
+                    "title" => \Account::getDisplayName($revision->owner)
+                ) ,
+                "state" => array(
+                    "reference" => $revision->getState() ,
+                    "stateLabel" => ($revision->state) ? _($revision->state) : '',
+                    "activity" => ($revision->state) ? _($revision->getStateActivity()) : '',
+                    "color" => ($revision->state) ? _($revision->getStateColor()) : ''
+                ) ,
+                
                 "version" => $revision->version,
-                "revisionDate" => strftime("%Y-%m-%d %T", $revision->revdate),
+                "revisionDate" => strftime("%Y-%m-%d %T", $revision->revdate) ,
                 "messages" => $history
             );
         }
         $info["history"] = $revisionHistory;
         return $info;
     }
-
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -114,7 +137,6 @@ class History extends Crud
         $exception->setHttpStatus("405", "You cannot change history");
         throw $exception;
     }
-
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -128,7 +150,7 @@ class History extends Crud
         throw $exception;
     }
     //endregion CRUD part
-
+    
     /**
      * Find the current document and set it in the internal options
      *
@@ -143,13 +165,13 @@ class History extends Crud
             $exception->setHttpStatus("404", "Document not found");
             throw $exception;
         }
-
+        
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
             $exception = new Exception("CRUD0220", $resourceId, $this->_family->name);
             $exception->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $exception;
         }
-
+        
         if ($this->_document->doctype === "Z") {
             $exception = new Exception("CRUD0219", $resourceId);
             $exception->setHttpStatus("404", "Document deleted");
@@ -157,7 +179,6 @@ class History extends Crud
             throw $exception;
         }
     }
-
     /**
      * Set the family of the current request
      *
@@ -177,7 +198,6 @@ class History extends Crud
             }
         }
     }
-
     /**
      * Set limit of revision to send
      * @param int $slice
@@ -186,7 +206,6 @@ class History extends Crud
     {
         $this->slice = intval($slice);
     }
-
     /**
      * Set offset of revision to send
      * @param int $offset
@@ -195,7 +214,6 @@ class History extends Crud
     {
         $this->offset = intval($offset);
     }
-
     /**
      * To return history of a specific revision
      * @param int $revisionFilter
@@ -204,7 +222,6 @@ class History extends Crud
     {
         $this->revisionFilter = intval($revisionFilter);
     }
-
     /**
      * Analyze the parameters of the request
      *
@@ -213,7 +230,7 @@ class History extends Crud
     public function setContentParameters(array $parameters)
     {
         parent::setContentParameters($parameters);
-
+        
         if (isset($this->contentParameters["slice"])) {
             $this->setSlice($this->contentParameters["slice"]);
         }
@@ -224,7 +241,6 @@ class History extends Crud
             $this->setRevisionFilter($this->contentParameters["revision"]);
         }
     }
-
     /**
      * Generate the etag info for the current ressource
      *
@@ -237,7 +253,7 @@ class History extends Crud
             $id = $this->urlParameters["identifier"];
             $id = DocManager::getIdentifier($id, true);
             $sql = sprintf("select id, date, comment from dochisto where id = %d order by date desc limit 1", $id);
-            simpleQuery(getDbAccess(), $sql, $result, false, true);
+            simpleQuery(getDbAccess() , $sql, $result, false, true);
             $user = getCurrentUser();
             $result[] = $user->id;
             $result[] = $user->memberof;
@@ -247,7 +263,6 @@ class History extends Crud
         }
         return null;
     }
-
     /**
      * @return \SearchDoc
      */

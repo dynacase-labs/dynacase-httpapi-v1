@@ -7,10 +7,12 @@
 
 namespace Dcp\HttpApi\V1\Api;
 
-class AnalyzeURL {
-
-    static public function getBaseURL() {
-        $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_EXTERNURL");
+class AnalyzeURL
+{
+    
+    static public function getBaseURL()
+    {
+        $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
         $components = parse_url($coreURL);
         if ($components["path"]) {
             $components["path"] = dirname($components["path"]);
@@ -23,12 +25,40 @@ class AnalyzeURL {
         }
         $coreURL = static::unparseURL($components);
         if ($coreURL === "") {
-            $coreURL = "/";
+            $coreURL = self::getUrlPath();
         }
         $baseURL = \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "REST_BASE_URL");
-        return $coreURL.$baseURL;
+        return $coreURL . $baseURL;
     }
-
+    
+    protected static function getUrlPath()
+    {
+        $turl = @parse_url($_SERVER["REQUEST_URI"]);
+        if ($turl['path']) {
+            $scriptDirName = pathinfo($_SERVER["SCRIPT_FILENAME"], PATHINFO_DIRNAME);
+            if (strpos($scriptDirName, DEFAULT_PUBDIR) === 0) {
+                $relativeBaseFilePath = substr($scriptDirName, strlen(DEFAULT_PUBDIR));
+                $script = $_SERVER["SCRIPT_NAME"];
+                if ($relativeBaseFilePath) {
+                    $pos = strpos($script, $relativeBaseFilePath);
+                    $localPath = substr($script, 0, $pos) . '/';
+                } else {
+                    $localPath = dirname($script) . '/';
+                }
+            } else {
+                if (substr($turl['path'], -1) != '/') {
+                    $localPath = dirname($turl['path']) . '/';
+                } else {
+                    $localPath = $turl['path'];
+                }
+            }
+            $localPath = preg_replace(':/+:', '/', $localPath);
+            
+            return $localPath;
+        }
+        return '/';
+    }
+    
     static protected function unparseURL($parsed_url)
     {
         $scheme = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
@@ -42,5 +72,4 @@ class AnalyzeURL {
         $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
         return "$scheme$user$pass$host$port$path$query$fragment";
     }
-
-} 
+}
