@@ -50,7 +50,7 @@
     },
     {
         "order" :        300,
-        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\File",
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TemporaryFile",
         "regExp" :       "/^\\/temporaryFiles\\/$/",
         "description" :  "Temporary files",
         "canonicalURL" : "temporaryFiles/"
