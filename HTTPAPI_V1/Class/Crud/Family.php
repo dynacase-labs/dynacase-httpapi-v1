@@ -15,9 +15,8 @@ class Family extends Document
      * @var \DocFam
      */
     protected $_family = null;
-
     //region CRUD part
-
+    
     /**
      * Update a family
      * @param string $resourceId Resource identifier
@@ -30,7 +29,6 @@ class Family extends Document
         $exception->setHttpStatus("405", "You cannot create a document with an ID");
         throw $exception;
     }
-
     /**
      * Delete family
      * @param string $resourceId Resource identifier
@@ -44,7 +42,7 @@ class Family extends Document
         throw $exception;
     }
     //endregion CRUD part
-
+    
     /**
      * Set the current family
      *
@@ -53,7 +51,7 @@ class Family extends Document
     protected function setFamily()
     {
         $familyId = isset($this->urlParameters["familyId"]) ? $this->urlParameters["familyId"] : false;
-
+        
         $this->_family = DocManager::getFamily($familyId);
         if ($this->_family === null) {
             $exception = new Exception("CRUD0203", $familyId);
@@ -61,7 +59,6 @@ class Family extends Document
             throw $exception;
         }
     }
-
     /**
      * Set the current document
      *
@@ -70,25 +67,21 @@ class Family extends Document
      */
     protected function setDocument($resourceId)
     {
-        $this->_document = DocManager::getDocument($resourceId);
+        $this->_document = DocManager::getFamily($resourceId);
         if (!$this->_document) {
             $e = new Exception("CRUD0203", $resourceId);
-            $e->setHttpStatus("404", "Document not found");
+            $e->setHttpStatus("404", "Family not found");
             throw $e;
         }
-        if ($this->_document->doctype !== "C") {
-            $e = new Exception("CRUD0203", $resourceId);
-            $e->setHttpStatus("404", "Document is not a family");
-            throw $e;
-        }
+        
         if ($this->_document->doctype === "Z") {
+            // Never be came
             $e = new Exception("CRUD0219", $resourceId);
-            $e->setHttpStatus("404", "Document deleted");
+            $e->setHttpStatus("404", "Family deleted");
             throw $e;
         }
-
     }
-
+    
     public function checkId($identifier)
     {
         return DocumentUtils::checkFamilyId($identifier);

@@ -63,6 +63,11 @@ class Document extends Crud
     {
         $this->setDocument($resourceId);
         $err = $this->_document->control("view");
+        if (!$err) {
+            if ($this->_document->isConfidential()) {
+                $err = "Confidential document";
+            }
+        }
         if ($err) {
             $exception = new Exception("CRUD0201", $resourceId, $err);
             $exception->setHttpStatus("403", "Forbidden");
@@ -358,7 +363,6 @@ class Document extends Crud
         
         $return["document"] = $this->documentFormater->format() [0];
         
-        $this->postFormat($return["document"]);
         if (!$hasProperties) {
             unset($return["document"]["properties"]);
         }
@@ -377,29 +381,6 @@ class Document extends Crud
             }
         }
         return $return;
-    }
-    /**
-     * Adjust raw format render to be compliant with api data
-     * @param array $render
-     */
-    protected function postFormat(array & $render)
-    {
-        if (!empty($render["attributes"])) {
-            $attributes = & $render["attributes"];
-            $nullValue = new \UnknowAttributeValue(null);
-            if (!empty($attributes)) {
-                foreach ($attributes as $attrid => & $value) {
-                    if ($value === null) {
-                        $objectAttribute = $this->_document->getAttribute($attrid);
-                        if ($objectAttribute->isMultiple()) {
-                            $attributes[$attrid] = array();
-                        } else {
-                            $attributes[$attrid] = $nullValue;
-                        }
-                    }
-                }
-            }
-        }
     }
     /**
      * Generate the structure of the document

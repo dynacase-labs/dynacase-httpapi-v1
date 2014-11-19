@@ -1,4 +1,9 @@
 <?php
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+ */
 /**
  * Created by PhpStorm.
  * User: charles
@@ -8,15 +13,14 @@
 
 namespace Dcp\HttpApi\V1\Crud;
 
-
 class DocumentCollection extends Crud
 {
-
+    
     const GET_PROPERTIES = "document.properties";
     const GET_PROPERTY = "document.properties.";
     const GET_ATTRIBUTES = "document.attributes";
     const GET_ATTRIBUTE = "document.attributes.";
-
+    
     protected $defaultFields = null;
     protected $returnFields = null;
     protected $slice = 0;
@@ -26,13 +30,12 @@ class DocumentCollection extends Crud
      * @var \SearchDoc
      */
     protected $_searchDoc = null;
-
+    
     public function __construct()
     {
         parent::__construct();
         $this->defaultFields = self::GET_PROPERTIES;
     }
-
     /**
      * Create new ressource
      * @throws Exception
@@ -44,7 +47,6 @@ class DocumentCollection extends Crud
         $exception->setHttpStatus("405", "You need to use the family collection to create document");
         throw $exception;
     }
-
     /**
      * Read a ressource
      * @param string|int $resourceId Resource identifier
@@ -57,15 +59,15 @@ class DocumentCollection extends Crud
             "requestParameters" => array(
                 "slice" => $this->slice,
                 "offset" => $this->offset,
-                "length" => count($documentList),
+                "length" => count($documentList) ,
                 "orderBy" => $this->orderBy
             )
         );
-
+        
         $return["uri"] = $this->generateURL("documents/");
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $data = $documentFormatter->format();
-        foreach ($data as &$currentData) {
+        foreach ($data as & $currentData) {
             if (isset($currentData["properties"]["revision"])) {
                 $currentData["properties"]["revision"] = intval($currentData["properties"]["revision"]);
             }
@@ -75,10 +77,9 @@ class DocumentCollection extends Crud
             $currentData["uri"] = $this->generateURL(sprintf("documents/%d.json", $currentData["properties"]["initid"]));
         }
         $return["documents"] = $data;
-
+        
         return $return;
     }
-
     /**
      * Update the ressource
      * @param string|int $resourceId Resource identifier
@@ -91,7 +92,6 @@ class DocumentCollection extends Crud
         $exception->setHttpStatus("405", "You cannot update all the documents");
         throw $exception;
     }
-
     /**
      * Delete ressource
      * @param string|int $resourceId Resource identifier
@@ -104,7 +104,6 @@ class DocumentCollection extends Crud
         $exception->setHttpStatus("405", "You cannot delete all the documents.");
         throw $exception;
     }
-
     /**
      * Get the restricted attributes
      *
@@ -120,7 +119,6 @@ class DocumentCollection extends Crud
         }
         return array();
     }
-
     /**
      * Get the restrict fields value
      *
@@ -144,7 +142,6 @@ class DocumentCollection extends Crud
         }
         return $this->returnFields;
     }
-
     /**
      * Get the list of the properties required
      *
@@ -162,7 +159,6 @@ class DocumentCollection extends Crud
         }
         return $properties;
     }
-
     /**
      * Check if the current restrict field exist
      *
@@ -174,7 +170,7 @@ class DocumentCollection extends Crud
     protected function hasFields($fieldId, $strict = false)
     {
         $returnFields = $this->getFields();
-
+        
         if (!$strict) {
             foreach ($returnFields as $aField) {
                 if (strpos($aField, $fieldId) === 0) {
@@ -186,21 +182,21 @@ class DocumentCollection extends Crud
                 return true;
             }
         }
-
+        
         return false;
     }
-
-    protected function prepareSearchDoc() {
+    
+    protected function prepareSearchDoc()
+    {
         $this->_searchDoc = new \SearchDoc();
         $this->_searchDoc->setObjectReturn();
+        $this->_searchDoc->excludeConfidential(true);
     }
-
+    
     public function prepareDocumentList()
     {
         $this->prepareSearchDoc();
-        $this->slice = isset($this->contentParameters["slice"]) ?
-            $this->contentParameters["slice"]
-            : \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "COLLECTION_DEFAULT_SLICE");
+        $this->slice = isset($this->contentParameters["slice"]) ? $this->contentParameters["slice"] : \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "COLLECTION_DEFAULT_SLICE");
         $this->slice = intval($this->slice);
         $this->_searchDoc->setSlice($this->slice);
         $this->offset = isset($this->contentParameters["offset"]) ? $this->contentParameters["offset"] : 0;
@@ -210,13 +206,12 @@ class DocumentCollection extends Crud
         $this->_searchDoc->setOrder($this->orderBy);
         return $this->_searchDoc->getDocumentList();
     }
-
+    
     protected function extractOrderBy()
     {
         $orderBy = isset($this->contentParameters["orderBy"]) ? $this->contentParameters["orderBy"] : "title:asc";
         return DocumentUtils::extractOrderBy($orderBy);
     }
-
     /**
      * @param $documentList
      * @return DocumentFormatter
