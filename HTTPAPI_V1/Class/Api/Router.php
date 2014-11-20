@@ -16,7 +16,6 @@ class Router
 {
     protected static $path = null;
     protected static $returnType = null;
-
     /**
      * Execute the request
      *
@@ -42,10 +41,7 @@ class Router
         $crud->setUrlParameters($identifiedCrud["param"]);
         $crud->setContentParameters(static::extractContentParameters($method, $crud));
         $cacheControl = isset($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : false;
-        if (
-            $cacheControl !== "no-cache"
-            && $method === Crud::READ
-            && AppParam::getParameterValue("HTTPAPI_V1", "ACTIVATE_CACHE") === "TRUE") {
+        if ($cacheControl !== "no-cache" && $method === Crud::READ && AppParam::getParameterValue("HTTPAPI_V1", "ACTIVATE_CACHE") === "TRUE") {
             $etag = $crud->getEtagInfo();
             if ($etag !== null) {
                 $etag = sha1($etag);
@@ -62,7 +58,6 @@ class Router
         }
         return $return;
     }
-
     /**
      * Extract the extension of the current request path
      *
@@ -74,7 +69,7 @@ class Router
     protected static function extractExtension()
     {
         $extension = false;
-
+        
         $pathInfo = static::$path;
         /* Extract extension for format */
         if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
@@ -88,7 +83,6 @@ class Router
         }
         return $format;
     }
-
     /**
      * Check if the accept header is present and extract it
      *
@@ -99,16 +93,17 @@ class Router
     {
         $accept = isset($_SERVER['HTTP_ACCEPT']) ? mb_strtolower($_SERVER['HTTP_ACCEPT']) : "application/json";
         $accept = explode(",", $accept);
-        $accept = array_map(function ($header) {
+        $accept = array_map(function ($header)
+        {
             return preg_replace("/;.*/", "", $header);
-        }, $accept);
-
+        }
+        , $accept);
+        
         if (!in_array("application/json", $accept) && !in_array("*/*", $accept)) {
             throw new Exception("API0005", join(",", $accept));
         }
         return "application/json";
     }
-
     /**
      * Identify the CRUD class
      *
@@ -117,11 +112,12 @@ class Router
      */
     protected static function identifyCRUD()
     {
-        $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CRUD_CLASS"), true);
-        usort($systemCrud, function ($value1, $value2) {
+        $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CRUD_CLASS") , true);
+        usort($systemCrud, function ($value1, $value2)
+        {
             return $value1["order"] < $value2["order"];
         });
-
+        
         $crudFound = false;
         foreach ($systemCrud as $currentCrud) {
             $param = array();
@@ -135,8 +131,6 @@ class Router
         }
         return $crudFound;
     }
-
-
     /**
      * Extract the content of the request
      *
@@ -154,7 +148,6 @@ class Router
         }
         return array();
     }
-
     /**
      * Analyze the content type and return the values
      *
@@ -171,7 +164,6 @@ class Router
             throw new Exception("API0003", $_SERVER["CONTENT_TYPE"]);
         }
     }
-
     /**
      * Analyze the json content of the current request and extract values
      *
@@ -183,7 +175,6 @@ class Router
         $body = file_get_contents("php://input");
         return $crudElement->analyseJSON($body);
     }
-
     /**
      * Analyze the values from the form data
      *
@@ -193,15 +184,14 @@ class Router
     {
         $values = $_POST;
         if (static::convertActionToCrud() === Crud::UPDATE) {
-            parse_str(file_get_contents("php://input"), $values);
+            parse_str(file_get_contents("php://input") , $values);
         }
         $newValues = array();
         foreach ($values as $attrid => $value) {
-            $newValues[strtolower($attrid)] = $value;
+            $newValues[strtolower($attrid) ] = $value;
         }
         return $newValues;
     }
-
     /**
      * @return string
      */
@@ -211,13 +201,12 @@ class Router
             return Crud::READ;
         } elseif ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"])) {
             return Crud::CREATE;
-        } elseif ($_SERVER["REQUEST_METHOD"] === "PUT" || $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] === "PUT") {
+        } elseif ($_SERVER["REQUEST_METHOD"] === "PUT" || (isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"]) && $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] === "PUT")) {
             return Crud::UPDATE;
-        } elseif ($_SERVER["REQUEST_METHOD"] === "DELETE" || $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] === "DELETE") {
+        } elseif ($_SERVER["REQUEST_METHOD"] === "DELETE" || (isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"]) && $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] === "DELETE")) {
             return Crud::DELETE;
         }
         $exception = new Exception("Unable to find the CRUD method");
         throw new $exception;
     }
-
 }
