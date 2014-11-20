@@ -53,12 +53,15 @@ class DocumentFormatter
             $this->formatCollection->addAttribute($currentAttribute);
         }
     }
-    
-    public function setProperties(Array $properties)
+
+    public function setProperties(Array $properties, $withDefault = false)
     {
         $this->properties = array();
         foreach ($properties as $currentProperty) {
             $this->addProperty($currentProperty);
+        }
+        if ($withDefault) {
+            $this->properties = array_merge($this->properties, $this->defaultProperties);
         }
     }
     

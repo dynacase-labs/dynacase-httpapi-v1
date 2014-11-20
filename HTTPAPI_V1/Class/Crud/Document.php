@@ -346,14 +346,14 @@ class Document extends Crud
         $correctField = false;
         $hasProperties = false;
         
-        if ($this->hasFields(self::GET_PROPERTIES, true)) {
+        if ($this->hasFields(self::GET_PROPERTIES, true) && !$this->hasFields(self::GET_PROPERTY)) {
             $correctField = true;
             $hasProperties = true;
             $this->documentFormater->useDefaultProperties();
         } elseif ($this->hasFields(self::GET_PROPERTY)) {
             $correctField = true;
             $hasProperties = true;
-            $this->documentFormater->setProperties($this->_getPropertiesId());
+            $this->documentFormater->setProperties($this->_getPropertiesId(), $this->hasFields(self::GET_PROPERTIES, true));
         }
         
         if ($this->hasFields(self::GET_ATTRIBUTES)) {

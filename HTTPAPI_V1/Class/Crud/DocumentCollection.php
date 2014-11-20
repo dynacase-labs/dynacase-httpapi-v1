@@ -67,7 +67,7 @@ class DocumentCollection extends Crud
         $return["uri"] = $this->generateURL("documents/");
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $data = $documentFormatter->format();
-        foreach ($data as & $currentData) {
+        foreach ($data as &$currentData) {
             if (isset($currentData["properties"]["revision"])) {
                 $currentData["properties"]["revision"] = intval($currentData["properties"]["revision"]);
             }
@@ -220,10 +220,10 @@ class DocumentCollection extends Crud
     protected function prepareDocumentFormatter($documentList)
     {
         $documentFormatter = new DocumentFormatter($documentList);
-        if ($this->hasFields(self::GET_PROPERTIES, true)) {
+        if ($this->hasFields(self::GET_PROPERTIES, true) && !$this->hasFields(self::GET_PROPERTY)) {
             $documentFormatter->useDefaultProperties();
         } else {
-            $documentFormatter->setProperties($this->_getPropertiesId());
+            $documentFormatter->setProperties($this->_getPropertiesId(), $this->hasFields(self::GET_PROPERTIES, true));
         }
         $documentFormatter->setAttributes($this->getAttributeFields());
         return $documentFormatter;
