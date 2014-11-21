@@ -7,19 +7,19 @@
 
 namespace Dcp\HttpApi\V1\Crud;
 
-class Searches extends DocumentCollection
+class Folders extends DocumentCollection
 {
 
     protected function prepareSearchDoc()
     {
         $this->_searchDoc = new \SearchDoc();
         $this->_searchDoc->setObjectReturn();
-        $this->_searchDoc->addFilter("doctype = 'S'");
+        $this->_searchDoc->addFilter("doctype = 'D'");
     }
 
     public function generateURL($path, $query = null)
     {
-        $path = str_replace("documents/", "searches/", $path);
+        $path = str_replace("documents/", "folders/", $path);
         return parent::generateURL($path, $query);
     }
 

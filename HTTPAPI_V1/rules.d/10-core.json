@@ -127,6 +127,11 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Folders",
+        "regExp" :       "/^\\/folders\\/$/",
+        "description" :  "List of the folders",
+        "canonicalURL" : "folders/"
+    },
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\FolderCollection",
         "regExp" :       "/^\\/folders\\/(?P<identifier>[^\\/]+)\\/$/",
         "description" :  "Content of the folder <identifier>",
