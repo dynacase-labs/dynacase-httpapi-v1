@@ -67,15 +67,6 @@ class DocumentCollection extends Crud
         $return["uri"] = $this->generateURL("documents/");
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $data = $documentFormatter->format();
-        foreach ($data as &$currentData) {
-            if (isset($currentData["properties"]["revision"])) {
-                $currentData["properties"]["revision"] = intval($currentData["properties"]["revision"]);
-            }
-            if (isset($currentData["properties"]["state"]) && !$currentData["properties"]["state"]->reference) {
-                unset($currentData["properties"]["state"]);
-            }
-            $currentData["uri"] = $this->generateURL(sprintf("documents/%d.json", $currentData["properties"]["initid"]));
-        }
         $return["documents"] = $data;
         
         return $return;
@@ -185,19 +176,30 @@ class DocumentCollection extends Crud
         
         return false;
     }
-    
+
+    /**
+     * Prepare the searchDoc
+     * You can inherit of this function to make specialized collection (trash, search, etc...)
+     */
     protected function prepareSearchDoc()
     {
         $this->_searchDoc = new \SearchDoc();
         $this->_searchDoc->setObjectReturn();
         $this->_searchDoc->excludeConfidential(true);
     }
-    
+
+    /**
+     * Analyze the slice, offset and sortBy
+     *
+     * @return \DocumentList
+     */
     public function prepareDocumentList()
     {
         $this->prepareSearchDoc();
-        $this->slice = isset($this->contentParameters["slice"]) ? $this->contentParameters["slice"] : \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "COLLECTION_DEFAULT_SLICE");
-        $this->slice = intval($this->slice);
+        $this->slice = isset($this->contentParameters["slice"]) ? mb_strtolower($this->contentParameters["slice"]) : \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "COLLECTION_DEFAULT_SLICE");
+        if ($this->slice !== "all") {
+            $this->slice = intval($this->slice);
+        }
         $this->_searchDoc->setSlice($this->slice);
         $this->offset = isset($this->contentParameters["offset"]) ? $this->contentParameters["offset"] : 0;
         $this->offset = intval($this->offset);
@@ -206,13 +208,22 @@ class DocumentCollection extends Crud
         $this->_searchDoc->setOrder($this->orderBy);
         return $this->_searchDoc->getDocumentList();
     }
-    
+
+    /**
+     * Extract orderBy
+     *
+     * @return string
+     * @throws Exception
+     */
     protected function extractOrderBy()
     {
         $orderBy = isset($this->contentParameters["orderBy"]) ? $this->contentParameters["orderBy"] : "title:asc";
         return DocumentUtils::extractOrderBy($orderBy);
     }
     /**
+     * Initialize the document formatter
+     * Extract the properties and attributes
+     *
      * @param $documentList
      * @return DocumentFormatter
      * @throws \Dcp\HttpApi\V1\DocManager\Exception
