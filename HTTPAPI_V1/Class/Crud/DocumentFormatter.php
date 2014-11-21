@@ -21,14 +21,7 @@ class DocumentFormatter
     );
     /* @var \FormatCollection $formatCollection */
     protected $formatCollection;
-    protected $defaultProperties = array(
-        "initid",
-        "title",
-        "revision",
-        "state",
-        "icon",
-        "name"
-    );
+    protected $defaultProperties = array("initid", "title", "revision", "state", "icon", "name", "fromid");
     protected $properties = array();
     
     public function __construct($source)

@@ -15,7 +15,7 @@ function default_page(Action &$action) {
     $baseURL = \Dcp\HttpApi\V1\Api\AnalyzeURL::getBaseURL();
 
     usort($crud, function ($value1, $value2) {
-        return $value1["order"] < $value2["order"];
+        return $value1["canonicalURL"] > $value2["canonicalURL"];
     });
 
     $defaultValues = function($value) use ($baseURL) {
