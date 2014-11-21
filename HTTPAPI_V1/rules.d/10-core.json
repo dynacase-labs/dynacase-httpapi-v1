@@ -3,7 +3,7 @@
         "order" :        300,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Document",
         "regExp" :       "/^\\/documents\\/?(?P<identifier>[^\\/]+)$/",
-        "description" :  "Documents",
+        "description" :  "Documents <documentId>",
         "canonicalURL" : "documents/<documentId>"
     },
     {
@@ -16,8 +16,8 @@
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Family",
-        "regExp" :       "/^\\/families\\/(?P<identifier>[^\\/]+)\\/?$/",
-        "description" :  "Families",
+        "regExp" :       "/^\\/families\\/(?P<identifier>[^\\/]+)$/",
+        "description" :  "Family <familyId>",
         "canonicalURL" : "families/<familyId>"
     },
     {
@@ -38,7 +38,7 @@
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Trash",
         "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)$/",
-        "description" :  "Deleted documents",
+        "description" :  "Deleted document <identifier>",
         "canonicalURL" : "trash/<documentId>"
     },
     {
@@ -46,7 +46,7 @@
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashCollection",
         "regExp" :       "/^\\/trash\\/$/",
         "description" :  "Collection of the deleted documents",
-        "canonicalURL" : "trash/<documentId>"
+        "canonicalURL" : "trash/"
     },
     {
         "order" :        300,
@@ -59,70 +59,70 @@
         "order" :        400,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Enumerates",
         "regExp" :       "/^\\/families\\/(?P<familyId>[^\\/]+)\\/enumerates\\/(?P<identifier>[^\\/]*)$/",
-        "description" :  "Enumerate",
-        "canonicalURL" : "families/<familyId>/enumerates/<attributeIdentifier>/"
+        "description" :  "Content of the enumerate <attributeIdentifier> of the family <familyId>",
+        "canonicalURL" : "families/<familyId>/enumerates/<attributeIdentifier>"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\History",
         "regExp" :       "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
-        "description" :  "History",
+        "description" :  "History of the document <documentId>",
         "canonicalURL" : "documents/<documentId>/history/"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashHistory",
         "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
-        "description" :  "History of a revision",
+        "description" :  "History of the document <documentId>",
         "canonicalURL" : "trash/<documentId>/history/"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\History",
         "regExp" :       "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/history\\/$/",
-        "description" :  "History",
+        "description" :  "History of the document <documentId> of the family <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/history/"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",
         "regExp" :       "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]+)$/",
-        "description" :  "Revision",
+        "description" :  "Revision <revisionId> of the document <documentId>",
         "canonicalURL" : "documents/<documentId>/revisions/<revisionId>"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RevisionCollection",
         "regExp" :       "/^\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/$/",
-        "description" :  "List of revisions of a document",
+        "description" :  "List of revisions of the document <documentId>",
         "canonicalURL" : "documents/<documentId>/revisions/"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",
         "regExp" :       "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]+)$/",
-        "description" :  "Revision of a document of <familyId>",
+        "description" :  "Revision <revisionId> of the document <documentId> of the <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/<revisionId>"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RevisionCollection",
         "regExp" :       "/^\\/families\\/(?P<familyId>[^\\/]+)\\/documents\\/(?P<identifier>[^\\/]+)\\/revisions\\/$/",
-        "description" :  "Revision of a document of <familyId>",
+        "description" :  "Revisions of the document <documentId> of the <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/revisions/"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",
         "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/revisions\\/(?P<revision>[0-9]+)$/",
-        "description" :  "Revision of deleted documents",
+        "description" :  "Revision <revisionId> of the deleted document <documentId>",
         "canonicalURL" : "trash/<documentId>/revisions/<revisionId>"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashRevisionCollection",
         "regExp" :       "/^\\/trash\\/(?P<identifier>[^\\/]+)\\/revisions\\/$/",
-        "description" :  "Revision of deleted documents",
+        "description" :  "Revision of deleted document <documentId>",
         "canonicalURL" : "trash/<documentId>/revisions/"
     },
     {
@@ -132,17 +132,20 @@
         "description" :  "List of the folders",
         "canonicalURL" : "folders/"
     },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\FolderCollection",
         "regExp" :       "/^\\/folders\\/(?P<identifier>[^\\/]+)\\/$/",
         "description" :  "Content of the folder <identifier>",
-        "canonicalURL" : "folders/<documentId>/"
+        "canonicalURL" : "folders/<identifier>/"
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\SearchCollection",
         "regExp" :       "/^\\/searches\\/(?P<identifier>[^\\/]+)\\/$/",
         "description" :  "Content of the search <identifier>",
-        "canonicalURL" : "searches/<documentId>/"
+        "canonicalURL" : "searches/<identifier>/"
+    },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Searches",
