@@ -143,5 +143,11 @@
         "regExp" :       "/^\\/searches\\/(?P<identifier>[^\\/]+)\\/$/",
         "description" :  "Content of the search <identifier>",
         "canonicalURL" : "searches/<documentId>/"
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Searches",
+        "regExp" :       "/^\\/searches\\/$/",
+        "description" :  "List of the searches",
+        "canonicalURL" : "searches/"
     }
 ]
