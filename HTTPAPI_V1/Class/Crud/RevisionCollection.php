@@ -1,10 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: charles
- * Date: 05/11/14
- * Time: 17:14
- */
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+*/
 
 namespace Dcp\HttpApi\V1\Crud;
 
@@ -38,12 +37,6 @@ class RevisionCollection extends DocumentCollection {
         $documentFormatter->addProperty("revision");
         $data = $documentFormatter->format();
         foreach ($data as &$currentData) {
-            if (isset($currentData["properties"]["revision"])) {
-                $currentData["properties"]["revision"] = intval($currentData["properties"]["revision"]);
-            }
-            if (isset($currentData["properties"]["state"]) && !$currentData["properties"]["state"]->reference) {
-                unset($currentData["properties"]["state"]);
-            }
             $currentData["uri"] = $this->generateURL(sprintf("%s/%d/revisions/%d.json", $this->rootLevel, $currentData["properties"]["initid"], $currentData["properties"]["revision"]));
         }
         $return["revisions"] = $data;
