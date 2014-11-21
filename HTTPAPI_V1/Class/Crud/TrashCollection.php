@@ -24,4 +24,13 @@ class TrashCollection extends DocumentCollection {
         return parent::generateURL($path, $query);
     }
 
+    protected function prepareDocumentFormatter($documentList)
+    {
+        $documentFormatter = parent::prepareDocumentFormatter($documentList);
+        $documentFormatter->setGenerateURI(function ($document) {
+            return URLUtils::generateURL("trash/{$document->initid}.json");
+        });
+        return $documentFormatter;
+    }
+
 } 
