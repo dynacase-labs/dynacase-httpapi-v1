@@ -40,11 +40,11 @@ class TestFamilyCrud extends TestCaseApi
         $doc = DocManager::getFamily($name);
         $this->assertTrue($doc !== null, "Family $name not found");
 
-        $dc = new FamilyCrud();
+        $familyCrud = new FamilyCrud();
         if ($fields !== null) {
-            $dc->setDefaultFields($fields);
+            $familyCrud->setDefaultFields($fields);
         }
-        $data = $dc->read($name);
+        $data = $familyCrud->read($name);
 
         foreach ($expectedValues as $dkey => $expectValue) {
             $keys = explode(".", $dkey);
@@ -56,7 +56,6 @@ class TestFamilyCrud extends TestCaseApi
                     if (is_object($cdata)) {
                         $cdata = get_object_vars($cdata);
                     } elseif (is_array($cdata)) {
-
                         foreach ($cdata as $k => $v) {
                             if (is_object($v)) {
                                 $cdata[$k] = get_object_vars($v);
@@ -111,9 +110,9 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testUpdateFamily($name)
     {
-        $dc = new FamilyCrud();
+        $familyCrud = new FamilyCrud();
         try {
-            $dc->update($name);
+            $familyCrud->update($name);
             $this->assertFalse(true, "An exception must occur");
         } catch (Exception $e) {
             $this->assertEquals(405, $e->getHttpStatus());
@@ -135,9 +134,9 @@ class TestFamilyCrud extends TestCaseApi
      */
     public function testDeleteFamily($name)
     {
-        $dc = new FamilyCrud();
+        $familyCrud = new FamilyCrud();
         try {
-            $dc->update($name);
+            $familyCrud->update($name);
             $this->assertFalse(true, "An exception must occur");
         } catch (Exception $e) {
             $this->assertEquals(405, $e->getHttpStatus());
@@ -176,9 +175,9 @@ class TestFamilyCrud extends TestCaseApi
 //                $this->assertEquals($value, $data["document"]["attributes"][$aid]->value, "No good value for $aid");
 //            }
 //        }
-        $dc = new FamilyCrud();
+        $familyCrud = new FamilyCrud();
         try {
-            $dc->create($name);
+            $familyCrud->create($name);
             $this->assertFalse(true, "An exception must occur");
         } catch (Exception $e) {
             $this->assertEquals(405, $e->getHttpStatus());

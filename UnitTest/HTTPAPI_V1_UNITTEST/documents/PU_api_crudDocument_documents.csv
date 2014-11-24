@@ -1,0 +1,63 @@
+"//FAM","Test API(TST_APIBASE)","<specid>","<fldid>","Title","account","account_multiple","color","date","docid","docid_multiple","double","enum","htmltext","integer","longtext","text","account_array","account_multiple_array","color _array","date _array","docid _array","docid_multiple _array","double _array","enum _array","htmltext _array","integer _array","longtext _array","text _array"
+"ORDER","TST_APIBASE",,,"tst_apibase_title","tst_apibase_account","tst_apibase_account_multiple","tst_apibase_color","tst_apibase_date","tst_apibase_docid","tst_apibase_docid_multiple","tst_apibase_double","tst_apibase_enum","tst_apibase_htmltext","tst_apibase_integer","tst_apibase_longtext","tst_apibase_text","tst_apibase_account_array","tst_apibase_account_multiple_array","tst_apibase_color_array","tst_apibase_date_array","tst_apibase_docid_array","tst_apibase_docid_multiple_array","tst_apibase_double_array","tst_apibase_enum_array","tst_apibase_htmltext_array","tst_apibase_integer_array","tst_apibase_longtext_array","tst_apibase_text_array"
+"DOC","TST_APIBASE","TST_APIBASE_TEST_1",,"test 1","USER_ADMIN","USER_GUEST
+USER_ADMIN","#7DFF93","2014-11-18",,,123456,"AD","<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>",123456,"123456789 Lorem !! &&&&& ;;; èèèè ??? ###
+
+tesxttt","tesxttt","USER_GUEST
+
+USER_ADMIN","USER_GUEST
+
+USER_GUEST<BR>USER_ADMIN","#FF5719
+#47FF54
+#268BFF
+#E819FF","2014-11-19
+2014-11-20
+
+2014-11-21",,,"4.2
+5.4654647884512E+96","0
+70
+30
+100","<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>","1
+42
+546546478845123
+
+-546546478845123","Un long texte<BR><BR>Un long texte
+À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution.
+À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution.
+Le monde de Star Wars est inspiré de nombreuses œuvres cinématographiques (serials, western, cinéma japonais), mais aussi littéraires (essentiellement d'après les ouvrages de Frank Herbert, mais aussi d'Isaac Asimov et de J. R. R. Tolkien) et de faits historiques réels. À son tour, le monde créé par George Lucas a influencé une génération de réalisateurs et contribué à la création de nouvelles techniques dans le domaine du cinéma, notamment en ce qui concerne le montage, les bruitages et les effets spéciaux. L'univers de Star Wars a fait l'objet de nombreuses parodies et hommages et dispose également d'une grande communauté de fans qui s'exprime par le biais de diverses manifestations.","Star trek
+Stargate
+Star Wars"
+"DOC","TST_APIBASE","TST_APIBASE_TEST_2",,"test 2","USER_ADMIN","USER_GUEST
+USER_ADMIN","#7DFF93","2014-11-18","TST_APIBASE_TEST_1","TST_APIBASE_TEST_1
+TST_APIBASE_TEST_2",123456,"AD","<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>",123456,"123456789 Lorem !! &&&&& ;;; èèèè ??? ###
+
+tesxttt","tesxttt","USER_GUEST
+
+USER_ADMIN","USER_GUEST
+
+USER_GUEST<BR>USER_ADMIN","#FF5719
+#47FF54
+#268BFF
+#E819FF","2014-11-19
+2014-11-20
+
+2014-11-21","TST_APIBASE_TEST_1
+
+TST_APIBASE_TEST_2","TST_APIBASE_TEST_1<BR>TST_APIBASE_TEST_2
+
+TST_APIBASE_TEST_1
+TST_APIBASE_TEST_2","4.2
+5.4654647884512E+96","0
+70
+30
+100","<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>","1
+42
+546546478845123
+
+-546546478845123","Un long texte<BR><BR>Un long texte
+À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution.
+À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution.
+Le monde de Star Wars est inspiré de nombreuses œuvres cinématographiques (serials, western, cinéma japonais), mais aussi littéraires (essentiellement d'après les ouvrages de Frank Herbert, mais aussi d'Isaac Asimov et de J. R. R. Tolkien) et de faits historiques réels. À son tour, le monde créé par George Lucas a influencé une génération de réalisateurs et contribué à la création de nouvelles techniques dans le domaine du cinéma, notamment en ce qui concerne le montage, les bruitages et les effets spéciaux. L'univers de Star Wars a fait l'objet de nombreuses parodies et hommages et dispose également d'une grande communauté de fans qui s'exprime par le biais de diverses manifestations.","Star trek
+Stargate
+Star Wars"
+"DOC","TST_APIBASE","TST_APIBASE_TEST_DELETED",,"test to delete",,,,,,,,,,,,,,,,,,,,,,,,
