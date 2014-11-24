@@ -19,6 +19,9 @@ class SuiteApi
         
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestDocumentCrud");
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestDocumentsCollectionCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestHistory");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestRevisionCollection");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestRevision");
         //$suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\TestFamilyCrud");
 
         return $suite;

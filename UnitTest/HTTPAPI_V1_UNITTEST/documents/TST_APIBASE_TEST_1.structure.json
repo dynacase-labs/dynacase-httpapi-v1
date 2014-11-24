@@ -1,6 +1,6 @@
 {
     "document" : {
-        "uri" : "/api/v1/documents/1144.json"
+        "uri" : "%baseURL%documents/%test1Initid%.json"
     },
     "family" :   {
         "structure" : {
@@ -1062,7 +1062,7 @@
                                         "label" : "Zimbabwe"
                                     }
                                 ],
-                                "enumUri" :      "/api/v1/families/TST_APIBASE/enumerates/tst_apibase_enum"
+                                "enumUri" :      "%baseURL%families/TST_APIBASE/enumerates/tst_apibase_enum"
                             },
                             "tst_apibase_file" :             {
                                 "id" :           "tst_apibase_file",
@@ -1363,7 +1363,7 @@
                                                 "label" : "100 %"
                                             }
                                         ],
-                                        "enumUri" :      "/api/v1/families/TST_APIBASE/enumerates/tst_apibase_enum_array"
+                                        "enumUri" :      "%baseURL%families/TST_APIBASE/enumerates/tst_apibase_enum_array"
                                     }
                                 }
                             },

@@ -1,0 +1,201 @@
+{
+    "requestParameters" : {
+        "slice" :   10,
+        "offset" :  0,
+        "length" :  1,
+        "orderBy" : "revision desc, id desc"
+    },
+    "uri" :               "%baseURL%documents/TST_APIBASE_TEST_1/revisions/",
+    "revisions" :         [
+        {
+            "properties" : {
+                "id" :       %test1Initid%,
+                "title" :    "test 1",
+                "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+                "initid" :   %test1Initid%,
+                "name" :     "TST_APIBASE_TEST_1",
+                "revision" : 0
+            },
+            "attributes" : {
+                "tst_apibase_title" :                  {
+                    "value" :        "test 1",
+                    "displayValue" : "test 1"
+                },
+                "tst_apibase_color" :                  {
+                    "value" :        "#7DFF93",
+                    "displayValue" : "#7DFF93"
+                },
+                "tst_apibase_date" :                   {
+                    "value" :        "2014-11-18",
+                    "displayValue" : "18/11/2014"
+                },
+                "tst_apibase_docid" :                  {
+                    "value" :        null,
+                    "displayValue" : null
+                },
+                "tst_apibase_docid_multiple" :         [],
+                "tst_apibase_double" :                 {
+                    "value" :        123456,
+                    "displayValue" : "123456"
+                },
+                "tst_apibase_enum" :                   {
+                    "value" :        "AD",
+                    "displayValue" : "Andorre"
+                },
+                "tst_apibase_file" :                   {
+                    "value" :        null,
+                    "displayValue" : null
+                },
+                "tst_apibase_htmltext" :               {
+                    "value" :        "<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>",
+                    "displayValue" : "<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>"
+                },
+                "tst_apibase_image" :                  {
+                    "value" :        null,
+                    "displayValue" : null
+                },
+                "tst_apibase_integer" :                {
+                    "value" :        123456,
+                    "displayValue" : "123456"
+                },
+                "tst_apibase_longtext" :               {
+                    "value" :        "123456789 Lorem !! &&&&& ;;; èèèè ??? ###\n\ntesxttt",
+                    "displayValue" : "123456789 Lorem !! &&&&& ;;; èèèè ??? ###\n\ntesxttt"
+                },
+                "tst_apibase_text" :                   {
+                    "value" :        "tesxttt",
+                    "displayValue" : "tesxttt"
+                },
+                "tst_apibase_color_array" :            [
+                    {
+                        "value" :        "#FF5719",
+                        "displayValue" : "#FF5719"
+                    },
+                    {
+                        "value" :        "#47FF54",
+                        "displayValue" : "#47FF54"
+                    },
+                    {
+                        "value" :        "#268BFF",
+                        "displayValue" : "#268BFF"
+                    },
+                    {
+                        "value" :        "#E819FF",
+                        "displayValue" : "#E819FF"
+                    }
+                ],
+                "tst_apibase_date_array" :             [
+                    {
+                        "value" :        "2014-11-19",
+                        "displayValue" : "19/11/2014"
+                    },
+                    {
+                        "value" :        "2014-11-20",
+                        "displayValue" : "20/11/2014"
+                    },
+                    {
+                        "value" :        null,
+                        "displayValue" : ""
+                    },
+                    {
+                        "value" :        "2014-11-21",
+                        "displayValue" : "21/11/2014"
+                    }
+                ],
+                "tst_apibase_docid_array" :            [],
+                "tst_apibase_docid_multiple_array" :   [],
+                "tst_apibase_double_array" :           [
+                    {
+                        "value" :        4.2,
+                        "displayValue" : "4.2"
+                    },
+                    {
+                        "value" :        5.4654647884512e+96,
+                        "displayValue" : "5.4654647884512E+96"
+                    }
+                ],
+                "tst_apibase_enum_array" :             [
+                    {
+                        "value" :        "0",
+                        "displayValue" : "0 %"
+                    },
+                    {
+                        "value" :        "70",
+                        "displayValue" : "70 %"
+                    },
+                    {
+                        "value" :        "30",
+                        "displayValue" : "30 %"
+                    },
+                    {
+                        "value" :        "100",
+                        "displayValue" : "100 %"
+                    }
+                ],
+                "tst_apibase_file_array" :             [],
+                "tst_apibase_htmltext_array" :         [
+                    {
+                        "value" :        "<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>",
+                        "displayValue" : "<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>"
+                    }
+                ],
+                "tst_apibase_image_array" :            [],
+                "tst_apibase_integer_array" :          [
+                    {
+                        "value" :        1,
+                        "displayValue" : "1"
+                    },
+                    {
+                        "value" :        42,
+                        "displayValue" : "42"
+                    },
+                    {
+                        "value" :        546546478845123,
+                        "displayValue" : "546546478845123"
+                    },
+                    {
+                        "value" :        0,
+                        "displayValue" : ""
+                    },
+                    {
+                        "value" :        -546546478845123,
+                        "displayValue" : "-546546478845123"
+                    }
+                ],
+                "tst_apibase_longtext_array" :         [
+                    {
+                        "value" :        "Un long texte\n\nUn long texte",
+                        "displayValue" : "Un long texte\n\nUn long texte"
+                    },
+                    {
+                        "value" :        "À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution.",
+                        "displayValue" : "À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution."
+                    },
+                    {
+                        "value" :        "À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution.",
+                        "displayValue" : "À l'origine, Stargate, la porte des étoiles est un film réalisé par Roland Emmerich en 1994. À cette époque, seule une porte des étoiles extérieure est connue, celle d'Abydos. En 1997, la MGM rachète les droits sur le film et tourne l'épisode-pilote de la série télévisée Stargate SG-1, Enfants des dieux (Children of the Gods), où on découvre l'existence de tout un réseau de portes des étoiles dans la galaxie. Des équipes d'exploration composées, pour la plupart, de membres de l'United States Air Force sont alors formées, leur principale mission étant de découvrir sur d'autres mondes des technologies utiles à la défense de la Terre. Ils découvrent des civilisations étrangères (Asgard, Tok'ra…) dont certaines se montrent hostiles (Goa'uld, Réplicateurs, Ori…) et dont les technologies sont à différents stades d'évolution."
+                    },
+                    {
+                        "value" :        "Le monde de Star Wars est inspiré de nombreuses œuvres cinématographiques (serials, western, cinéma japonais), mais aussi littéraires (essentiellement d'après les ouvrages de Frank Herbert, mais aussi d'Isaac Asimov et de J. R. R. Tolkien) et de faits historiques réels. À son tour, le monde créé par George Lucas a influencé une génération de réalisateurs et contribué à la création de nouvelles techniques dans le domaine du cinéma, notamment en ce qui concerne le montage, les bruitages et les effets spéciaux. L'univers de Star Wars a fait l'objet de nombreuses parodies et hommages et dispose également d'une grande communauté de fans qui s'exprime par le biais de diverses manifestations.",
+                        "displayValue" : "Le monde de Star Wars est inspiré de nombreuses œuvres cinématographiques (serials, western, cinéma japonais), mais aussi littéraires (essentiellement d'après les ouvrages de Frank Herbert, mais aussi d'Isaac Asimov et de J. R. R. Tolkien) et de faits historiques réels. À son tour, le monde créé par George Lucas a influencé une génération de réalisateurs et contribué à la création de nouvelles techniques dans le domaine du cinéma, notamment en ce qui concerne le montage, les bruitages et les effets spéciaux. L'univers de Star Wars a fait l'objet de nombreuses parodies et hommages et dispose également d'une grande communauté de fans qui s'exprime par le biais de diverses manifestations."
+                    }
+                ],
+                "tst_apibase_text_array" :             [
+                    {
+                        "value" :        "Star trek",
+                        "displayValue" : "Star trek"
+                    },
+                    {
+                        "value" :        "Stargate",
+                        "displayValue" : "Stargate"
+                    },
+                    {
+                        "value" :        "Star Wars",
+                        "displayValue" : "Star Wars"
+                    }
+                ]
+            },
+            "uri" :        "%baseURL%documents/%test1Initid%/revisions/0.json"
+        }
+    ]
+}
