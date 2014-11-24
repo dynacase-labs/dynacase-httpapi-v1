@@ -265,26 +265,6 @@ class Document extends Crud
         return DocumentUtils::getAttributesFields($this->_document, self::GET_ATTRIBUTE, $this->getFields());
     }
     /**
-     * Generate the default URI of the current ressource
-     *
-     * @return null|string
-     */
-    protected function getUri()
-    {
-        if ($this->_document) {
-            if ($this->_document->defDoctype === "C") {
-                return $this->generateURL(sprintf("families/%s.json", $this->_document->name));
-            } else {
-                if ($this->_document->doctype === "Z") {
-                    return $this->generateURL(sprintf("trash/%s.json", $this->_document->initid));
-                } else {
-                    return $this->generateURL(sprintf("documents/%s.json", $this->_document->initid));
-                }
-            }
-        }
-        return null;
-    }
-    /**
      * Get the restrict fields value
      *
      * The restrict fields is used for restrict the return of the get request
@@ -366,8 +346,6 @@ class Document extends Crud
         if (!$hasProperties) {
             unset($return["document"]["properties"]);
         }
-        
-        $return["document"]["uri"] = $this->getUri();
         
         if ($this->hasFields(self::GET_STRUCTURE)) {
             $correctField = true;

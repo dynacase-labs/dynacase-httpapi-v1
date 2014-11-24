@@ -6,7 +6,7 @@
 */
 namespace Dcp\HttpApi\V1\Crud;
 
-use Dcp\HttpApi\V1\DocManager\Exception;
+use Dcp\HttpApi\V1\DocManager\Exception as DocumentException;
 
 /**
  * Class DocumentFormatter
@@ -16,7 +16,7 @@ use Dcp\HttpApi\V1\DocManager\Exception;
  */
 class DocumentFormatter
 {
-    
+
     static protected $uselessProperties = array(
         "lockdomainid",
         "domainid",
@@ -37,7 +37,7 @@ class DocumentFormatter
     );
     protected $properties = array();
     protected $generateUrl = null;
-    
+
     public function __construct($source)
     {
         if (is_a($source, "Doc")) {
@@ -56,7 +56,17 @@ class DocumentFormatter
         }
         /* init the standard generator of url (redirect to the documents collection */
         $this->generateUrl = function ($document) {
-            return URLUtils::generateURL("documents/{$document->initid}.json");
+            if ($document) {
+                if ($document->defDoctype === "C") {
+                    return URLUtils::generateURL(sprintf("families/%s.json", $document->name));
+                } else {
+                    if ($document->doctype === "Z") {
+                        return URLUtils::generateURL(sprintf("trash/%s.json", $document->initid));
+                    } else {
+                        return URLUtils::generateURL(sprintf("documents/%s.json", $document->initid));
+                    }
+                }
+            }
         };
     }
 
@@ -66,7 +76,8 @@ class DocumentFormatter
      *
      * @param $callable
      */
-    public function setGenerateURI($callable) {
+    public function setGenerateURI($callable)
+    {
         $this->generateUrl = $callable;
     }
 
@@ -119,7 +130,7 @@ class DocumentFormatter
             }
         } else {
             if (!in_array($propertyId, $propertyKeys) || in_array($propertyId, static::$uselessProperties)) {
-                throw new Exception("CRUD0202", $propertyId);
+                throw new DocumentException("CRUD0202", $propertyId);
             }
             $this->properties[] = $propertyId;
         }
@@ -152,8 +163,7 @@ class DocumentFormatter
         $this->formatCollection->useShowEmptyOption = false;
         $this->formatCollection->setPropDateStyle(\DateAttributeValue::isoWTStyle);
         /** Format uniformly the void multiple values */
-        $this->formatCollection->setAttributeRenderHook(function ($info, $attribute)
-        {
+        $this->formatCollection->setAttributeRenderHook(function ($info, $attribute) {
             if ($info === null) {
                 /**
                  * @var \NormalAttribute $attribute
@@ -168,14 +178,14 @@ class DocumentFormatter
         });
         $generateUrl = $this->generateUrl;
         /** Add uri property and suppress state if no state **/
-        $this->formatCollection->setDocumentRenderHook(function($values, \Doc $document) use ($generateUrl) {
+        $this->formatCollection->setDocumentRenderHook(function ($values, \Doc $document) use ($generateUrl) {
             $values["uri"] = $generateUrl($document);
             if (isset($values["properties"]["state"]) && !$values["properties"]["state"]->reference) {
                 unset($values["properties"]["state"]);
             }
             return $values;
         });
-        
+
         return $this->formatCollection->render();
     }
 
