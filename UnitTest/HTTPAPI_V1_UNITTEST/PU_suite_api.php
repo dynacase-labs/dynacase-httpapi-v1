@@ -18,7 +18,7 @@ class SuiteApi
         $suite = new FrameworkDcp('Package');
         
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestDocumentCrud");
-        //$suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\TestDocumentsCollectionCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestDocumentsCollectionCrud");
         //$suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\TestFamilyCrud");
 
         return $suite;

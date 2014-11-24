@@ -239,4 +239,17 @@ class DocumentCollection extends Crud
         $documentFormatter->setAttributes($this->getAttributeFields());
         return $documentFormatter;
     }
+
+    /**
+     * Initialize the default fields
+     *
+     * @param $fields
+     * @return $this
+     */
+    public function setDefaultFields($fields)
+    {
+        $this->returnFields = null;
+        $this->defaultFields = $fields;
+        return $this;
+    }
 }
