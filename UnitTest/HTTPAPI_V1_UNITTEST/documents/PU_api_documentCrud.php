@@ -202,7 +202,9 @@ class TestDocumentCrud extends TestCaseApi
         $data = str_replace('%updatedInitid%', $updated->getPropertyValue('initid'), $data);
         $data = str_replace('%updatedId%', $updated->getPropertyValue('id'), $data);
         $data = str_replace('%anonymousGestId%', $guestDoc->getPropertyValue('id'), $data);
+        $data = str_replace('%anonymousGestTitle%', $guestDoc->getTitle(), $data);
         $data = str_replace('%masterDefaultId%', $adminDoc->getPropertyValue('id'), $data);
+        $data = str_replace('%masterDefaultTitle%', $adminDoc->getTitle(), $data);
 
         $data = json_decode($data, true);
 
