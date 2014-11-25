@@ -372,7 +372,7 @@ class Document extends Crud
         $return = array();
         $order = 0;
         foreach ($normalAttributes as $attribute) {
-            if ($attribute->type === "array" || $attribute->mvisibility === "I") {
+            if ($attribute->type === "array") {
                 continue;
             }
             $parentAttribute = $attribute->fieldSet;
