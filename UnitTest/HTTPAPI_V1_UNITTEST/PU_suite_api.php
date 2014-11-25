@@ -25,13 +25,12 @@ class ApiTestSuite extends FrameworkDcp {
         $this->importFamily("HTTPAPI_V1_UNITTEST/PU_api_crudDocument_family.csv");
     }
 
-
     /**
      * Delete the standard test family after the test suite
      *
      */
     public function tearDown() {
-        $this->destroyFamily("TST_APIBASE");
+        //$this->destroyFamily("TST_APIBASE");
         parent::tearDown();
     }
 
@@ -63,18 +62,17 @@ class ApiTestSuite extends FrameworkDcp {
         if (!is_file($fileName)) {
             throw new Exception("Unable to find $fileName");
         }
-        $oImport = new \ImportDocument();
-        $oImport->setCsvOptions(",", '"');
-        $oImport->setVerifyAttributeAccess(false);
-        $oImport->importDocuments($action, $fileName);
-        $err = $oImport->getErrorMessage();
+        $importDocument = new \ImportDocument();
+        $importDocument->setCsvOptions(",", '"');
+        $importDocument->setVerifyAttributeAccess(false);
+        $importDocument->importDocuments($action, $fileName);
+        $err = $importDocument->getErrorMessage();
         if ($err) {
             throw new Exception("Unable to import $err");
         }
     }
 
 }
-
 
 class SuiteApi
 {
@@ -88,6 +86,9 @@ class SuiteApi
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestRevisionCollection");
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Documents\\TestRevision");
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyDocumentCollection");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyDocumentCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyEnumerateCrud");
 
         return $suite;
     }

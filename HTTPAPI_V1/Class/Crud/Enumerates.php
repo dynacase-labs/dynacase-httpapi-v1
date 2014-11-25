@@ -31,7 +31,7 @@ class Enumerates extends Crud
     public function create()
     {
         $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("500", "No yet implemented");
+        $exception->setHttpStatus("501", "No yet implemented");
         throw $exception;
     }
 
@@ -42,7 +42,7 @@ class Enumerates extends Crud
      * @throws Exception
      * @return mixed
      */
-    public function read($resourceId)
+    public function read($resourceId = "")
     {
         if ($resourceId === "") {
             $result = array(
@@ -54,6 +54,7 @@ class Enumerates extends Crud
                 return $currentAttribute->type === "enum";
             });
             foreach ($enums as $currentEnum) {
+                /* @var \NormalAttribute $currentEnum */
                 $result["enumerates"][] = array(
                     "attributeId" => $currentEnum->id,
                     "label" => $currentEnum->getLabel(),
@@ -131,7 +132,7 @@ class Enumerates extends Crud
     public function update($resourceId)
     {
         $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("500", "No yet implemented");
+        $exception->setHttpStatus("501", "No yet implemented");
         throw $exception;
     }
 
@@ -144,7 +145,7 @@ class Enumerates extends Crud
     public function delete($resourceId)
     {
         $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("500", "No yet implemented");
+        $exception->setHttpStatus("501", "No yet implemented");
         throw $exception;
     }
     //endregion CRUD part
