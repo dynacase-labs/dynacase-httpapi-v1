@@ -43,6 +43,10 @@ class DocumentFormatter
         if (is_a($source, "Doc")) {
             /* if the $source is a doc, we want to render only one document*/
             $this->formatCollection = new \FormatCollection($source);
+            if ($source->mid > 0) {
+                // mask already set no need to set default mask
+                $this->formatCollection->setVerifyAttributeAccess(false);
+            }
         } elseif (is_a($source, "DocumentList")) {
             $this->formatCollection = new \FormatCollection();
             $this->formatCollection->useCollection($source);
