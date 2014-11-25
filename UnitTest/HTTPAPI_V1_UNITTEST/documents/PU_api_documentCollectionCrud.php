@@ -40,15 +40,20 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
     }
 
     /**
-     * @param string $fields
+     * @param array $fields
      * @param array $expectedData
      * @dataProvider dataReadDocument
      */
-    public function testRead($fields, $expectedData)
+    public function testRead(array $modifiers, array $fields, $expectedData)
     {
         $crud = new DocumentCollection();
+        $crud->setContentParameters($modifiers);
         if ($fields !== null) {
-            $crud->setDefaultFields($fields);
+            $fieldsString = "";
+            foreach ($fields as $currentFields) {
+                $fieldsString .= "document.properties.$currentFields,";
+            }
+            $crud->setDefaultFields($fieldsString);
         }
         $data = $crud->read(null);
 
@@ -56,15 +61,41 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
 
         $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
+        $this->checkProperties($data["documents"], $fields);
     }
+
+    protected function checkProperties(Array $documents, array $propertiesName = array())
+    {
+        foreach ($documents as $currentDocument) {
+            $this->assertArrayHasKey("properties", $currentDocument, "Unable to find the properties for" . var_export($currentDocument, true));
+            $this->assertArrayHasKey("uri", $currentDocument, "Unable to find the uri for" . var_export($currentDocument, true));
+            if (!empty($propertiesName)) {
+                foreach ($propertiesName as $currentPropertyName) {
+                    $this->assertArrayHasKey($currentPropertyName, $currentDocument["properties"], "Unable to find the properties $currentPropertyName for" . var_export($currentDocument, true));
+                }
+            }
+        }
+    }
+
 
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/get_collection.json");
         return array(
             array(
-                null,
+                array(),
+                array(),
                 $collection
+            ),
+            array(
+                array(),
+                array("adate", "owner", "doctype"),
+                $collection
+            ),
+            array(
+                array("orderBy" => "adate", "slice" => "1", "offset" => "1"),
+                array(),
+                file_get_contents("HTTPAPI_V1_UNITTEST/documents/get_collection.custom.json")
             )
         );
     }
@@ -74,7 +105,7 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      *
      * @dataProvider dataUpdateDocument
      */
-    public function testUpdateDocument($name, $updateValues , $expectedValues)
+    public function testUpdateDocument($name, $updateValues, $expectedValues)
     {
         $crud = new DocumentCollection();
         try {
@@ -118,8 +149,6 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
             array()
         ));
     }
-
-
 
 
 }
