@@ -26,7 +26,7 @@ class Family extends Document
     public function update($resourceId)
     {
         $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("405", "You cannot create a document with an ID");
+        $exception->setHttpStatus("405", "You cannot update a family");
         throw $exception;
     }
     /**
