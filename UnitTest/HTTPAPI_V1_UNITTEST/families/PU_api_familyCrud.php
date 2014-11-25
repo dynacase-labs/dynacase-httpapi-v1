@@ -53,6 +53,9 @@ class TestFamilyCrud extends TestDocumentCrud
         $this->assertTrue($doc !== null, "Document $name not found");
 
         $crud = new Family();
+        if ($fields !== null) {
+            $crud->setDefaultFields($fields);
+        }
         $data = $crud->read($name);
 
         $data = json_decode(json_encode($data), true);
@@ -63,12 +66,21 @@ class TestFamilyCrud extends TestDocumentCrud
 
     public function dataReadDocument()
     {
-        $collection = file_get_contents("HTTPAPI_V1_UNITTEST/families/TST_APIBASE.json");
         return array(
             array(
                 "TST_APIBASE",
                 null,
-                $collection
+                file_get_contents("HTTPAPI_V1_UNITTEST/families/TST_APIBASE.json")
+            ),
+            array(
+                "TST_APIBASE",
+                "family.structure",
+                file_get_contents("HTTPAPI_V1_UNITTEST/families/TST_APIBASE.structure.json")
+            ),
+            array(
+                "TST_APIBASE",
+                "family.structure,document.properties",
+                file_get_contents("HTTPAPI_V1_UNITTEST/families/TST_APIBASE.structure.properties.json")
             )
         );
     }
