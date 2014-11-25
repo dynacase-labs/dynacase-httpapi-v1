@@ -5,31 +5,17 @@
  * @package Dcp\Pu
 */
 
-namespace Dcp\Pu\HttpApi\V1\Test\Documents;
+namespace Dcp\Pu\HttpApi\V1\Test\Families;
 
-use Dcp\Pu\HttpApi\V1\Test\TestCaseApi;
-use Dcp\HttpApi\V1\Api\AnalyzeURL;
+use Dcp\Pu\HttpApi\V1\Test\Documents\TestDocumentCrud;
 use Dcp\HttpApi\V1\DocManager\DocManager;
-use Dcp\HttpApi\V1\Crud\Document as DocumentCrud;
+use Dcp\HttpApi\V1\Crud\FamilyDocument as FamilyCrud;
 use Dcp\HttpApi\V1\Crud\Exception as DocumentException;
 
 require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
-class TestDocumentCrud extends TestCaseApi
+class TestFamilyDocumentCrud extends TestDocumentCrud
 {
-
-    /**
-     * import TST_APIBASE family
-     * @static
-     * @return string
-     */
-    protected static function getCommonImportFile()
-    {
-        $import = array();
-        $import[] = "PU_api_crudDocument_documents.csv";
-        return $import;
-    }
-
 
     /**
      * Test that unable to create document
@@ -38,9 +24,9 @@ class TestDocumentCrud extends TestCaseApi
      */
     public function testCreate()
     {
-        $documentCrud = new DocumentCrud();
+        $crud = new FamilyCrud();
         try {
-            $documentCrud->create();
+            $crud->create();
             $this->assertFalse(true, "An exception must occur");
         } catch (DocumentException $exception) {
             $this->assertEquals(405, $exception->getHttpStatus());
@@ -65,11 +51,12 @@ class TestDocumentCrud extends TestCaseApi
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
 
-        $documentCrud = new DocumentCrud();
+        $crud = new FamilyCrud();
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
         if ($fields !== null) {
-            $documentCrud->setDefaultFields($fields);
+            $crud->setDefaultFields($fields);
         }
-        $data = $documentCrud->read($name);
+        $data = $crud->read($name);
 
         $data = json_decode(json_encode($data), true);
 
@@ -121,9 +108,10 @@ class TestDocumentCrud extends TestCaseApi
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
 
-        $documentCrud = new DocumentCrud();
-        $documentCrud->setContentParameters($documentCrud->analyseJSON($updateValues));
-        $data = $documentCrud->update($name);
+        $crud = new FamilyCrud();
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
+        $crud->setContentParameters($crud->analyseJSON($updateValues));
+        $data = $crud->update($name);
 
         $data = json_decode(json_encode($data), true);
 
@@ -158,11 +146,12 @@ class TestDocumentCrud extends TestCaseApi
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
 
-        $documentCrud = new DocumentCrud();
+        $crud = new FamilyCrud();
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
         if ($fields !== null) {
-            $documentCrud->setDefaultFields($fields);
+            $crud->setDefaultFields($fields);
         }
-        $data = $documentCrud->delete($name);
+        $data = $crud->delete($name);
 
         $data = json_decode(json_encode($data), true);
 
@@ -182,35 +171,6 @@ class TestDocumentCrud extends TestCaseApi
         );
     }
 
-    public function prepareData($data)
-    {
-        //Get RefDoc
-
-        $adminDoc = DocManager::getDocument("USER_ADMIN");
-        $this->assertNotNull($adminDoc, "Unable to find admin doc");
-        $guestDoc = DocManager::getDocument("USER_GUEST");
-        $this->assertNotNull($guestDoc, "Unable to find guest doc");
-        $documentTest1 = DocManager::getDocument("TST_APIBASE_TEST_1");
-        $this->assertNotNull($documentTest1, "Unable to find document 1");
-        $updated = DocManager::getDocument("TST_APIBASE_UPDATED");
-        $this->assertNotNull($updated, "Unable to find document updated");
-
-        //Replace variant part
-        $data = str_replace('%baseURL%', AnalyzeURL::getBaseURL(), $data);
-        $data = str_replace('%test1Initid%', $documentTest1->getPropertyValue('initid'), $data);
-        $data = str_replace('%test1Id%', $documentTest1->getPropertyValue('id'), $data);
-        $data = str_replace('%updatedInitid%', $updated->getPropertyValue('initid'), $data);
-        $data = str_replace('%updatedId%', $updated->getPropertyValue('id'), $data);
-        $data = str_replace('%anonymousGestId%', $guestDoc->getPropertyValue('id'), $data);
-        $data = str_replace('%masterDefaultId%', $adminDoc->getPropertyValue('id'), $data);
-
-        $data = json_decode($data, true);
-
-        $this->assertEquals(JSON_ERROR_NONE, json_last_error(), "Unable to decode the test data");
-
-        return $data;
-
-    }
 
 
 }

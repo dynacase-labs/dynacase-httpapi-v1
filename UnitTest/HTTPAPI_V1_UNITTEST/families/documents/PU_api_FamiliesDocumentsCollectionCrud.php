@@ -5,35 +5,43 @@
  * @package Dcp\Pu
 */
 
-namespace Dcp\Pu\HttpApi\V1\Test\Documents;
+namespace Dcp\Pu\HttpApi\V1\Test\Families;
 
-use Dcp\HttpApi\V1\Crud\DocumentCollection as DocumentCollection;
+use Dcp\HttpApi\V1\Crud\FamilyDocumentCollection as FamilyDocumentCollection;
 use Dcp\HttpApi\V1\Crud\Exception as DocumentException;
 
 require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
-class TestDocumentsCollectionCrud extends TestDocumentCrud
+class TestFamilyDocumentCollection extends \Dcp\Pu\HttpApi\V1\Test\Documents\TestDocumentsCollectionCrud
 {
     /**
      * Test that unable to create document
      *
      * @dataProvider dataCreateDocument
+     * @param $content
+     * @param $values
+     * @throws DocumentException
+     * @throws \Dcp\HttpApi\V1\DocManager\Exception
+     * @throws \Exception
      */
-    public function testCreate()
+    public function testCreate($content, $values)
     {
-        $crud = new DocumentCollection();
-        try {
-            $crud->create();
-            $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
-            $this->assertEquals(405, $exception->getHttpStatus());
-        }
+        $crud = new FamilyDocumentCollection();
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
+        $crud->setContentParameters($crud->analyseJSON($content));
+        $data = $crud->create();
+
+        $data = json_decode(json_encode($data), true);
+
+        $expectedValues = $this->prepareData($values);
+        $this->verifyData($data, $expectedValues);
     }
 
     public function dataCreateDocument()
     {
         return array(array(
-            "NO"
+            file_get_contents("HTTPAPI_V1_UNITTEST/families/documents/TST_APIBASE.create.json"),
+            file_get_contents("HTTPAPI_V1_UNITTEST/families/documents/TST_API_BASE.created.json")
         ));
     }
 
@@ -44,9 +52,10 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      */
     public function testRead(array $modifiers, array $fields, $expectedData)
     {
-        $crud = new DocumentCollection();
+        $crud = new FamilyDocumentCollection();
         $crud->setContentParameters($modifiers);
-        if ($fields !== null) {
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
+        if (!empty($fields)) {
             $fieldsString = "";
             foreach ($fields as $currentFields) {
                 $fieldsString .= "document.properties.$currentFields,";
@@ -78,7 +87,7 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
 
     public function dataReadDocument()
     {
-        $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/get_collection.json");
+        $collection = file_get_contents("HTTPAPI_V1_UNITTEST/families/documents/get_TST_API_BASE_collection.json");
         return array(
             array(
                 array(),
@@ -89,11 +98,6 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
                 array(),
                 array("adate", "owner", "doctype"),
                 $collection
-            ),
-            array(
-                array("orderBy" => "adate", "slice" => "1", "offset" => "1"),
-                array(),
-                file_get_contents("HTTPAPI_V1_UNITTEST/documents/get_collection.custom.json")
             )
         );
     }
@@ -105,7 +109,8 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      */
     public function testUpdateDocument($name, $updateValues, $expectedValues)
     {
-        $crud = new DocumentCollection();
+        $crud = new FamilyDocumentCollection();
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
         try {
             $crud->update(null);
             $this->assertFalse(true, "An exception must occur");
@@ -130,7 +135,8 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      */
     public function testDeleteDocument($name, $fields, $expectedValues)
     {
-        $crud = new DocumentCollection();
+        $crud = new FamilyDocumentCollection();
+        $crud->setUrlParameters(array("familyId" => "TST_APIBASE"));
         try {
             $crud->delete(null);
             $this->assertFalse(true, "An exception must occur");
