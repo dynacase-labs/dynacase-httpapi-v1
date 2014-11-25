@@ -23,7 +23,6 @@
             },
             "icon" :           "resizeimg.php?img=Images%2Fdoc.png&size=24",
             "initid" :         "%test1Id%",
-            "lmodify" :        "Y",
             "locked" :         0,
             "name" :           "TST_APIBASE_TEST_1",
             "note" :           {
@@ -36,7 +35,6 @@
             "profid" :         "0",
             "revision" :       0,
             "revisionData" :   {
-                "isModified" : true,
                 "id" :         "%test1Id%",
                 "number" :     0,
                 "createdBy" :  {

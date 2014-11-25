@@ -17,7 +17,8 @@ require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
 class TestDocumentCrud extends TestCaseApi
 {
-    const familyName = "TST_APIBASE";
+    protected static $csvImportSeparator = ",";
+    protected static $csvEnclosure = '"';
 
     /**
      * import TST_APIBASE family
@@ -26,11 +27,11 @@ class TestDocumentCrud extends TestCaseApi
      */
     protected static function getCommonImportFile()
     {
-        return array(
-            "documents/PU_api_crudDocument_family.csv",
-            "documents/PU_api_crudDocument_documents.csv"
-        );
+        $import = array();
+        $import[] = "PU_api_crudDocument_documents.csv";
+        return $import;
     }
+
 
     /**
      * Test that unable to create document
@@ -48,7 +49,8 @@ class TestDocumentCrud extends TestCaseApi
         }
     }
 
-    public function dataCreateDocument() {
+    public function dataCreateDocument()
+    {
         return array(array(
             "NO"
         ));
@@ -60,7 +62,7 @@ class TestDocumentCrud extends TestCaseApi
      * @param array $expectedData
      * @dataProvider dataReadDocument
      */
-    public function testRead($name, $fields, array $expectedData)
+    public function testRead($name, $fields, $expectedData)
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
@@ -73,44 +75,34 @@ class TestDocumentCrud extends TestCaseApi
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
 
     public function dataReadDocument()
     {
         $document1 = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_1.json");
-        $document1 = $this->prepareData($document1);
-        $document2 = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_2.json");
-        $document2 = $this->prepareData($document2);
         $properties = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_1.properties.json");
-        $properties = $this->prepareData($properties);
         $propertiesAll = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_1.properties.all.json");
-        $propertiesAll = $this->prepareData($propertiesAll);
         $structure = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_1.structure.json");
-        $structure = $this->prepareData($structure);
         return array(
             array(
-                $document1["document"]["properties"]["name"],
+                "TST_APIBASE_TEST_1",
                 null,
                 $document1
             ),
             array(
-                $document2["document"]["properties"]["name"],
-                null,
-                $document2
-            ),
-            array(
-                $properties["document"]["properties"]["name"],
+                "TST_APIBASE_TEST_1",
                 "document.properties",
                 $properties
             ),
             array(
-                $propertiesAll["document"]["properties"]["name"],
+                "TST_APIBASE_TEST_1",
                 "document.properties.all",
                 $propertiesAll
             ),
             array(
-                $propertiesAll["document"]["properties"]["name"],
+                "TST_APIBASE_TEST_1",
                 "family.structure",
                 $structure
             )
@@ -126,7 +118,8 @@ class TestDocumentCrud extends TestCaseApi
      *
      * @dataProvider dataUpdateDocument
      */
-    public function testUpdateDocument($name, $updateValues, array $expectedValues) {
+    public function testUpdateDocument($name, $updateValues, $expectedValues)
+    {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
 
@@ -136,17 +129,17 @@ class TestDocumentCrud extends TestCaseApi
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedValues = $this->prepareData($expectedValues);
         $this->verifyData($data, $expectedValues);
     }
 
     public function dataUpdateDocument()
     {
-        $updateValues = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_1.updateValues.json");
-        $updatedDocument = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST_1.updated.json");
-        $updatedDocument = $this->prepareData($updatedDocument);
+        $updateValues = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_UPDATED.updateValues.json");
+        $updatedDocument = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_UPDATED.updated.json");
         return array(
             array(
-                $updatedDocument["document"]["properties"]["name"],
+                "TST_APIBASE_UPDATED",
                 $updateValues,
                 $updatedDocument
             )
@@ -156,13 +149,13 @@ class TestDocumentCrud extends TestCaseApi
     /**
      * @param string $name
      * @param string $fields
-     * @param array $expectedValues
+     * @param string $expectedValues
      *
      * @throws DocumentException
      *
      * @dataProvider dataDeleteDocument
      */
-    public function testDeleteDocument($name, $fields, array $expectedValues)
+    public function testDeleteDocument($name, $fields, $expectedValues)
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
@@ -175,13 +168,13 @@ class TestDocumentCrud extends TestCaseApi
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedValues = $this->prepareData($expectedValues);
         $this->verifyData($data, $expectedValues);
     }
 
     public function dataDeleteDocument()
     {
         $document = file_get_contents("HTTPAPI_V1_UNITTEST/documents/TST_APIBASE_TEST.deleted.json");
-        $document = $this->prepareData($document);
         return array(
             array(
                 "TST_APIBASE_TEST_DELETED",
@@ -194,17 +187,22 @@ class TestDocumentCrud extends TestCaseApi
     public function prepareData($data)
     {
         //Get RefDoc
+
         $adminDoc = DocManager::getDocument("USER_ADMIN");
+        $this->assertNotNull($adminDoc, "Unable to find admin doc");
         $guestDoc = DocManager::getDocument("USER_GUEST");
+        $this->assertNotNull($guestDoc, "Unable to find guest doc");
         $documentTest1 = DocManager::getDocument("TST_APIBASE_TEST_1");
-        $documentTest2 = DocManager::getDocument("TST_APIBASE_TEST_2");
+        $this->assertNotNull($documentTest1, "Unable to find document 1");
+        $updated = DocManager::getDocument("TST_APIBASE_UPDATED");
+        $this->assertNotNull($updated, "Unable to find document updated");
 
         //Replace variant part
         $data = str_replace('%baseURL%', AnalyzeURL::getBaseURL(), $data);
         $data = str_replace('%test1Initid%', $documentTest1->getPropertyValue('initid'), $data);
         $data = str_replace('%test1Id%', $documentTest1->getPropertyValue('id'), $data);
-        $data = str_replace('%test2Initid%', $documentTest2->getPropertyValue('initid'), $data);
-        $data = str_replace('%test2Id%', $documentTest2->getPropertyValue('id'), $data);
+        $data = str_replace('%updatedInitid%', $updated->getPropertyValue('initid'), $data);
+        $data = str_replace('%updatedId%', $updated->getPropertyValue('id'), $data);
         $data = str_replace('%anonymousGestId%', $guestDoc->getPropertyValue('id'), $data);
         $data = str_replace('%masterDefaultId%', $adminDoc->getPropertyValue('id'), $data);
 
@@ -215,5 +213,6 @@ class TestDocumentCrud extends TestCaseApi
         return $data;
 
     }
+
 
 }

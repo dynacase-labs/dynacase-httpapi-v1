@@ -43,7 +43,7 @@ class TestRevisionCollection extends TestDocumentCrud
      * @param array $expectedData
      * @dataProvider dataReadDocument
      */
-    public function testRead($name, $fields, array $expectedData)
+    public function testRead($name, $fields, $expectedData)
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
@@ -55,13 +55,13 @@ class TestRevisionCollection extends TestDocumentCrud
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
 
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/revisions/revisions.json");
-        $collection = $this->prepareData($collection);
         return array(
             array(
                 "TST_APIBASE_TEST_1",
@@ -79,7 +79,7 @@ class TestRevisionCollection extends TestDocumentCrud
      * @param array $updateValues
      * @param array $expectedValues
      */
-    public function testUpdateDocument($name, $updateValues , array $expectedValues)
+    public function testUpdateDocument($name, $updateValues , $expectedValues)
     {
         $crud = new Revision();
         try {
@@ -104,7 +104,7 @@ class TestRevisionCollection extends TestDocumentCrud
      *
      * @dataProvider dataDeleteDocument
      */
-    public function testDeleteDocument($name, $fields, array $expectedValues)
+    public function testDeleteDocument($name, $fields, $expectedValues)
     {
         $crud = new Revision();
         try {

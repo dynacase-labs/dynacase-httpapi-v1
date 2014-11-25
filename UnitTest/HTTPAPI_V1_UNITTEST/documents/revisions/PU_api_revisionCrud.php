@@ -43,7 +43,7 @@ class TestRevision extends TestDocumentCrud
      * @param array $expectedData
      * @dataProvider dataReadDocument
      */
-    public function testRead($name, $fields, array $expectedData)
+    public function testRead($name, $fields, $expectedData)
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
@@ -53,13 +53,13 @@ class TestRevision extends TestDocumentCrud
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
 
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/revisions/revision.json");
-        $collection = $this->prepareData($collection);
         return array(
             array(
                 "TST_APIBASE_TEST_1",
@@ -75,9 +75,9 @@ class TestRevision extends TestDocumentCrud
      * @dataProvider dataUpdateDocument
      * @param string $name
      * @param array $updateValues
-     * @param array $expectedValues
+     * @param $expectedValues
      */
-    public function testUpdateDocument($name, $updateValues , array $expectedValues)
+    public function testUpdateDocument($name, $updateValues , $expectedValues)
     {
         $crud = new Revision();
         try {
@@ -101,8 +101,11 @@ class TestRevision extends TestDocumentCrud
      * Test that unable to update document
      *
      * @dataProvider dataDeleteDocument
+     * @param string $name
+     * @param string $fields
+     * @param array $expectedValues
      */
-    public function testDeleteDocument($name, $fields, array $expectedValues)
+    public function testDeleteDocument($name, $fields, $expectedValues)
     {
         $crud = new Revision();
         try {

@@ -9,7 +9,6 @@ namespace Dcp\Pu\HttpApi\V1\Test\Documents;
 
 use Dcp\HttpApi\V1\Crud\History as History;
 use Dcp\HttpApi\V1\Crud\Exception as DocumentException;
-use Dcp\HttpApi\V1\Crud\Exception;
 use Dcp\HttpApi\V1\DocManager\DocManager;
 
 require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
@@ -40,11 +39,14 @@ class TestHistory extends TestDocumentCrud
     }
 
     /**
+     * @param string $name
      * @param string $fields
-     * @param array $expectedData
+     * @param string $expectedData
+     *
+     * @throws DocumentException
      * @dataProvider dataReadDocument
      */
-    public function testRead($name, $fields, array $expectedData)
+    public function testRead($name, $fields, $expectedData)
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
@@ -55,13 +57,13 @@ class TestHistory extends TestDocumentCrud
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
 
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/history/history.json");
-        $collection = $this->prepareData($collection);
         return array(
             array(
                 "TST_APIBASE_TEST_1",

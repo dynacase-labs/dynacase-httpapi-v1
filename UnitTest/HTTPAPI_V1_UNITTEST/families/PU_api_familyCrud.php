@@ -5,215 +5,144 @@
  * @package FDL
 */
 
-namespace Dcp\Pu\HttpApi\V1\Test;
+namespace Dcp\Pu\HttpApi\V1\Test\Families;
 
+use Dcp\HttpApi\V1\Api\AnalyzeURL;
+use Dcp\HttpApi\V1\Crud\Exception as DocumentException;
 use Dcp\HttpApi\V1\DocManager\DocManager;
-use Dcp\HttpApi\V1\Crud\Family as FamilyCrud;
-use Dcp\HttpApi\V1\Crud\Exception;
+use Dcp\HttpApi\V1\Crud\Family as Family;
+use Dcp\Pu\HttpApi\V1\Test\Documents\TestDocumentCrud;
 
 require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
 
-class TestFamilyCrud extends TestCaseApi
+class TestFamilyCrud extends TestDocumentCrud
 {
-    const familyName = "TSTAPI_DOCCRUD";
-
     /**
-     * import TST_DOCENUM family
-     * @static
-     * @return string
+     * Test that unable to create document
+     *
+     * @dataProvider dataCreateDocument
      */
-    protected static function getCommonImportFile()
+    public function testCreate()
     {
-        return array(
-            "PU_api_crudFamily.csv"
-        );
+        $crud = new Family();
+        try {
+            $crud->create();
+            $this->assertFalse(true, "An exception must occur");
+        } catch (DocumentException $exception) {
+            $this->assertEquals(405, $exception->getHttpStatus());
+        }
+    }
+
+    public function dataCreateDocument()
+    {
+        return array(array(
+            "NO"
+        ));
     }
 
     /**
      * @param string $name
      * @param string $fields
-     * @param array $expectedValues
-     * @dataProvider datagetFamily
+     * @param array $expectedData
+     * @throws DocumentException
+     * @dataProvider dataReadDocument
      */
-    public function testgetFamily($name, $fields, array $expectedValues)
+    public function testRead($name, $fields, $expectedData)
     {
-        $doc = DocManager::getFamily($name);
-        $this->assertTrue($doc !== null, "Family $name not found");
+        $doc = DocManager::getDocument($name);
+        $this->assertTrue($doc !== null, "Document $name not found");
 
-        $familyCrud = new FamilyCrud();
-        if ($fields !== null) {
-            $familyCrud->setDefaultFields($fields);
-        }
-        $data = $familyCrud->read($name);
+        $crud = new Family();
+        $data = $crud->read($name);
 
-        foreach ($expectedValues as $dkey => $expectValue) {
-            $keys = explode(".", $dkey);
-            $cdata = $data;
-            foreach ($keys as $key) {
-                if ($expectValue !== null) {
-                    $this->assertTrue(isset($cdata[$key]), sprintf("key \"%s\" not found %s", $key, print_r($cdata, true)));
-                    $cdata = $cdata[$key];
-                    if (is_object($cdata)) {
-                        $cdata = get_object_vars($cdata);
-                    } elseif (is_array($cdata)) {
-                        foreach ($cdata as $k => $v) {
-                            if (is_object($v)) {
-                                $cdata[$k] = get_object_vars($v);
-                            }
-                        }
-                    }
-                } else {
-                    if (isset($cdata[$key])) {
-                        $cdata = $cdata[$key];
-                    } else {
-                        $cdata = null;
-                        break;
-                    }
-                }
-            }
-            $this->assertEquals($expectValue, $cdata, sprintf("wrong value for $dkey :%s ", print_r($data, true)));
-        }
+        $data = json_decode(json_encode($data), true);
+
+        $expectedData = $this->prepareData($expectedData);
+        $this->verifyData($data, $expectedData);
     }
 
-    public function datagetFamily()
+    public function dataReadDocument()
     {
+        $collection = file_get_contents("HTTPAPI_V1_UNITTEST/families/TST_APIBASE.json");
         return array(
             array(
-                "TST_APIFAMILY",
+                "TST_APIBASE",
                 null,
-                array(
-                    "document.properties.title" => "Test Base",
-                    "document.properties.name" => "TST_APIFAMILY"
-                )
-            ),
-            array(
-                "TST_APIFAMILY",
-                "family.structure",
-                array(
-                    "family.structure.tst_tab_info.id" => "tst_tab_info",
-                    "family.structure.tst_tab_info.type" => "tab",
-                    "family.structure.tst_tab_info.content.tst_fr_info.id" => "tst_fr_info",
-                    "family.structure.tst_tab_info.content.tst_fr_info.type" => "frame",
-                    "family.structure.tst_tab_info.content.tst_fr_info.visibility" => "W",
-                    "family.structure.tst_tab_info.content.tst_fr_info.content.tst_title.id" => "tst_title",
-                    "family.structure.tst_tab_info.content.tst_fr_info.content.tst_title.type" => "text",
-                    "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.id" => "tst_number",
-                    "family.structure.tst_tab_info.content.tst_fr_info.content.tst_number.type" => "int",
-                )
+                $collection
             )
         );
     }
 
     /**
+     * Test that unable to update document
+     *
+     * @dataProvider dataUpdateDocument
      * @param string $name
-     * @dataProvider dataUpdateFamily
+     * @param array $updateValues
+     * @param array $expectedValues
      */
-    public function testUpdateFamily($name)
+    public function testUpdateDocument($name, $updateValues, $expectedValues)
     {
-        $familyCrud = new FamilyCrud();
+        $crud = new Family();
         try {
-            $familyCrud->update($name);
+            $crud->update($name);
             $this->assertFalse(true, "An exception must occur");
-        } catch (Exception $e) {
-            $this->assertEquals(405, $e->getHttpStatus());
+        } catch (DocumentException $exception) {
+            $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
 
-    public function dataUpdateFamily()
+    public function dataUpdateDocument()
     {
-        return array(
-            array(
-                "TST_APIFAMILY"
-            )
-        );
+        return array(array(
+            "TST_APIBASE",
+            null,
+            array()
+        ));
     }
 
     /**
+     * Test that unable to update document
+     *
+     * @dataProvider dataDeleteDocument
      * @param string $name
-     * @dataProvider dataDeleteFamily
+     * @param string $fields
+     * @param array $expectedValues
      */
-    public function testDeleteFamily($name)
+    public function testDeleteDocument($name, $fields, $expectedValues)
     {
-        $familyCrud = new FamilyCrud();
+        $crud = new Family();
         try {
-            $familyCrud->update($name);
+            $crud->delete(null);
             $this->assertFalse(true, "An exception must occur");
-        } catch (Exception $e) {
-            $this->assertEquals(405, $e->getHttpStatus());
+        } catch (DocumentException $exception) {
+            $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
 
-    public function dataDeleteFamily()
+    public function dataDeleteDocument()
     {
-        return array(
-            array(
-                "TST_APIFAMILY"
-            )
-        );
+        return array(array(
+            null,
+            null,
+            array()
+        ));
     }
 
-    /**
-     * @param string $name
-     * @dataProvider dataCreateFamily
-     */
-    public function testCreateDocument($name)
-    {
-//        $dc = new FamilyDocumentCrud();
-//        $dc->setUrlParameters(array("familyId" => $famName));
-//        $dc->setContentParameters($setValues);
-//        $data = $dc->create();
-//
-//        foreach ($setValues as $aid => $value) {
-//            $this->assertFalse(empty($data["document"]["attributes"][$aid]) , sprintf("Undefined %s : Ss", $aid, print_r($data, true)));
-//            if (is_array($value)) {
-//                $values = $data["document"]["attributes"][$aid];
-//
-//                foreach ($values as $k => $singleValue) {
-//                    $this->assertEquals($value[$k], $singleValue->value, "No good value for $aid [$k]");
-//                }
-//            } else {
-//                $this->assertEquals($value, $data["document"]["attributes"][$aid]->value, "No good value for $aid");
-//            }
-//        }
-        $familyCrud = new FamilyCrud();
-        try {
-            $familyCrud->create($name);
-            $this->assertFalse(true, "An exception must occur");
-        } catch (Exception $e) {
-            $this->assertEquals(405, $e->getHttpStatus());
-        }
-    }
+    public function prepareData($data) {
+        //Get RefDoc
+        $familyDoc = DocManager::getDocument("TST_APIBASE");
+        $this->assertNotNull($familyDoc, "Unable to find family TST_APIBASE doc");
 
-    public function dataCreateFamily()
-    {
-        return array(
-            array(
-                "TST_APIFAMILY"
-            )
-        );
-    }
+        //Replace variant part
+        $data = str_replace('%baseURL%', AnalyzeURL::getBaseURL(), $data);
+        $data = str_replace('%initId%', $familyDoc->getPropertyValue('initid'), $data);
+        $data = str_replace('%id%', $familyDoc->getPropertyValue('id'), $data);
 
-//    public function dataCreateDocument()
-//    {
-//        return array(
-//            array(
-//                "TST_APIFAMILY",
-//                array(
-//                    "tst_title" => "test n°1",
-//                    "tst_number" => 56
-//                )
-//            ) ,
-//            array(
-//                "TST_APIFAMILY",
-//                array(
-//                    "tst_title" => "test n°2",
-//                    "tst_number" => 678,
-//                    "tst_text" => array(
-//                        "Un",
-//                        "Deux"
-//                    )
-//                )
-//            )
-//        );
-//    }
+        $data = json_decode($data, true);
+
+        $this->assertEquals(JSON_ERROR_NONE, json_last_error(), "Unable to decode the test data");
+
+        return $data;
+    }
 }

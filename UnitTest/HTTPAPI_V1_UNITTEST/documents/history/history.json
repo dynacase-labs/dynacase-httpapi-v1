@@ -7,7 +7,7 @@
     },
     "history" : [
         {
-            "documentId" :   1144,
+            "documentId" :   %test1Id%,
             "uri" :          "%baseURL%documents/TST_APIBASE_TEST_1/revisions/0.json",
             "fixed" :        false,
             "revision" :     0,

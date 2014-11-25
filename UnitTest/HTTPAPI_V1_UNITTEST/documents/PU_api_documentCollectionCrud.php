@@ -44,7 +44,7 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      * @param array $expectedData
      * @dataProvider dataReadDocument
      */
-    public function testRead($fields, array $expectedData)
+    public function testRead($fields, $expectedData)
     {
         $crud = new DocumentCollection();
         if ($fields !== null) {
@@ -54,13 +54,13 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
 
         $data = json_decode(json_encode($data), true);
 
+        $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
 
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/get_collection.json");
-        $collection = $this->prepareData($collection);
         return array(
             array(
                 null,
@@ -74,7 +74,7 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      *
      * @dataProvider dataUpdateDocument
      */
-    public function testUpdateDocument($name, $updateValues , array $expectedValues)
+    public function testUpdateDocument($name, $updateValues , $expectedValues)
     {
         $crud = new DocumentCollection();
         try {
@@ -99,7 +99,7 @@ class TestDocumentsCollectionCrud extends TestDocumentCrud
      *
      * @dataProvider dataDeleteDocument
      */
-    public function testDeleteDocument($name, $fields, array $expectedValues)
+    public function testDeleteDocument($name, $fields, $expectedValues)
     {
         $crud = new DocumentCollection();
         try {
