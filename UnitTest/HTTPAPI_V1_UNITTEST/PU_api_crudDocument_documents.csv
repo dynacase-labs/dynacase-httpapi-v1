@@ -1,6 +1,13 @@
+"//FAM","dossier(DIR)","<specid>","<fldid>","titre",,,,,,,,,,,,,,,,,,,,,,,,
+"ORDER","DIR",,,"ba_title",,,,,,,,,,,,,,,,,,,,,,,,
+"DOC","DIR","DIR_TEST_API",,"TEST_API",,,"no",,,,,,,,,,,,,,,,,,,,,
+"//FAM","recherche(SEARCH)","<specid>","<fldid>","titre","famille (id)",,,,,,,,,,,,,,,,,,,,,,,
+"ORDER","SEARCH",,,"ba_title","se_famid",,,,,,,,,,,,,,,,,,,,,,,
+"DOC","SEARCH","TEST_SEARCH",,"Recherche simple","TST_APIBASE",,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 "//FAM","Test API(TST_APIBASE)","<specid>","<fldid>","Title","account","account_multiple","color","date","docid","docid_multiple","double","enum","htmltext","integer","longtext","text","account_array","account_multiple_array","color _array","date _array","docid _array","docid_multiple _array","double _array","enum _array","htmltext _array","integer _array","longtext _array","text _array"
 "ORDER","TST_APIBASE",,,"tst_apibase_title","tst_apibase_account","tst_apibase_account_multiple","tst_apibase_color","tst_apibase_date","tst_apibase_docid","tst_apibase_docid_multiple","tst_apibase_double","tst_apibase_enum","tst_apibase_htmltext","tst_apibase_integer","tst_apibase_longtext","tst_apibase_text","tst_apibase_account_array","tst_apibase_account_multiple_array","tst_apibase_color_array","tst_apibase_date_array","tst_apibase_docid_array","tst_apibase_docid_multiple_array","tst_apibase_double_array","tst_apibase_enum_array","tst_apibase_htmltext_array","tst_apibase_integer_array","tst_apibase_longtext_array","tst_apibase_text_array"
-"DOC","TST_APIBASE","TST_APIBASE_TEST_1",,"test 1","USER_ADMIN","USER_GUEST
+"DOC","TST_APIBASE","TST_APIBASE_TEST_1","DIR_TEST_API","test 1","USER_ADMIN","USER_GUEST
 USER_ADMIN","#7DFF93","2014-11-18",,,123456,"AD","<p>123456789 <strong>Lorem !!</strong> &amp;&amp;&amp;&amp;&amp; ;;; èèèè ??? ###</p>",123456,"123456789 Lorem !! &&&&& ;;; èèèè ??? ###
 
 tesxttt","tesxttt","USER_GUEST
