@@ -1,0 +1,74 @@
+{
+    "document" : {
+        "properties" : {
+            "id" :             "%test1Id%",
+            "title" :          "test 1",
+            "affected" :       {
+                "id" :    0,
+                "title" : ""
+            },
+            "allocated" :      null,
+            "atags" :          null,
+            "confidential" :   null,
+            "createdBy" :      {
+                "id" : "%masterDefaultId%"
+            },
+            "cvid" :           null,
+            "doctype" :        "F",
+            "dprofid" :        "0",
+            "family" :         {
+                "title" : "Test API",
+                "name" :  "TST_APIBASE",
+                "icon" :  "resizeimg.php?img=Images%2Fdoc.png&size=24"
+            },
+            "icon" :           "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "initid" :         "%test1Id%",
+            "locked" :         0,
+            "name" :           "TST_APIBASE_TEST_1",
+            "note" :           {
+                "id" :    0,
+                "title" : ""
+            },
+            "owner" :          "1",
+            "postitid" :       null,
+            "prelid" :         null,
+            "profid" :         "0",
+            "revision" :       0,
+            "revisionData" :   {
+                "id" :         "%test1Id%",
+                "number" :     0,
+                "createdBy" :  {
+                    "id" : "%masterDefaultId%"
+                }
+            },
+            "security" :       {
+                "lock" :            {
+                    "id" : 0
+                },
+                "readOnly" :        false,
+                "fixed" :           false,
+                "profil" :          {
+                    "id" :    0,
+                    "title" : ""
+                },
+                "confidentiality" : "public"
+            },
+            "status" :         "alive",
+            "tags" :           [],
+            "type" :           "document",
+            "usage" :          "normal",
+            "usefor" :         "N",
+            "version" :        null,
+            "viewController" : {
+                "id" :    0,
+                "title" : ""
+            },
+            "wid" :            null,
+            "workflow" :       {
+                "id" :    0,
+                "title" : ""
+            }
+        },
+        "uri" :        "%baseURL%documents/%test1Id%.json"
+    }
+}

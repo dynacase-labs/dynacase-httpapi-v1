@@ -1,0 +1,13 @@
+{
+    "document" : {
+        "properties" : {
+            "title" :    "Created for unit test !"
+        },
+        "attributes" : {
+            "tst_apibase_title" : {
+                "value" :        "Created for unit test !",
+                "displayValue" : "Created for unit test !"
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "document" : {
+        "properties" : {
+            "id" :       %initId%,
+            "title" :    "Test API",
+            "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "initid" :   %initId%,
+            "name" :     "TST_APIBASE",
+            "revision" : 0
+        },
+        "uri" :        "%baseURL%families/TST_APIBASE.json"
+    }
+}

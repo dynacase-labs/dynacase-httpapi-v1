@@ -12,6 +12,16 @@ use Dcp\HttpApi\V1\DocManager\DocManager;
 
 class DocumentUtils {
 
+    /**
+     * Check if the document id is valid
+     *
+     * Redurect to the canonical url if the id asked is a revision
+     *
+     * @param $identifier
+     * @param string $canonicalURL
+     * @return bool
+     * @throws Exception
+     */
     static public function checkDocumentId($identifier, $canonicalURL = "documents/%d.json") {
         $initid = $identifier;
         if (is_numeric($identifier)) {
@@ -29,8 +39,18 @@ class DocumentUtils {
         return true;
     }
 
+    /**
+     * Analyze the content of a json request
+     *
+     * @param $jsonString
+     * @return array
+     * @throws Exception
+     */
     static public function analyzeDocumentJSON($jsonString) {
         $dataDocument = json_decode($jsonString, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("CRUD0208", "Unable to json decode ".$jsonString);
+        }
         if ($dataDocument === null) {
             throw new Exception("CRUD0208", $jsonString);
         }
@@ -40,7 +60,8 @@ class DocumentUtils {
         $values = $dataDocument["document"]["attributes"];
 
         $newValues = array();
-        foreach ($values as $aid => $value) {
+        // Only keep the value element of each attribute passed
+        foreach ($values as $attributeId => $value) {
             if (is_array($value) && !array_key_exists("value", $value)) {
                 $multipleValues = array();
                 foreach ($value as $singleValue) {
@@ -54,17 +75,26 @@ class DocumentUtils {
                         $multipleValues[] = $singleValue["value"];
                     }
                 }
-                $newValues[$aid] = $multipleValues;
+                $newValues[$attributeId] = $multipleValues;
             } else {
                 if (!is_array($value) || !array_key_exists("value", $value)) {
                     throw new Exception("CRUD0210", $jsonString);
                 }
-                $newValues[$aid] = $value["value"];
+                $newValues[$attributeId] = $value["value"];
             }
         }
         return $newValues;
     }
 
+    /**
+     * Check if a required family exist
+     * Redirect to the logical name def if the request use the id
+     *
+     * @param $identifier
+     * @param string $urlReturn
+     * @return bool
+     * @throws Exception
+     */
     static public function checkFamilyId($identifier, $urlReturn = "families/%s.json") {
         $familyName = $identifier;
         if (is_numeric($identifier)) {
@@ -82,12 +112,24 @@ class DocumentUtils {
         return true;
     }
 
+    /**
+     * Analyze the list of required attributes
+     *
+     * @param \Doc $currentDoc
+     * @param string $prefix
+     * @param array $fields
+     * @return array
+     * @throws Exception
+     */
     static public function getAttributesFields(\Doc $currentDoc = null, $prefix = "document.attributes.", $fields = array()) {
         $falseAttribute = array();
+        // Compute the list of the attributes that should be displayed (if list is empty all will be displayed)
         $restrictedAttributes = array_filter($fields, function ($currentField) use ($prefix) {
             return mb_stripos($currentField, $prefix) === 0 && $currentField !== $prefix;
         });
         $restrictedAttributes = array_unique($restrictedAttributes);
+        // end compute list
+        // Analyze if all the restricted attributes as a part of the current doc or the current fam
         $restrictedAttributes = array_map(function ($currentField) use ($prefix, &$currentDoc, &$falseAttribute) {
                 $attributeId = str_replace($prefix, "", $currentField);
                 /* @var \Doc $currentDoc */
@@ -95,11 +137,14 @@ class DocumentUtils {
                 return $attributeId;
             }
             , $restrictedAttributes);
+        // if there is attributes that not valid throw exception
         if (!empty($falseAttribute)) {
             throw new Exception("CRUD0218", join(" and attribute ", $falseAttribute));
         }
         $attributes = array();
+        // compute the list
         if ($currentDoc) {
+            // get all attributes without the restricted and I and array (if we have a ref doc)
             $normalAttributes = $currentDoc->getNormalAttributes();
             foreach ($normalAttributes as $attrId => $attribute) {
                 if ($attribute->type != "array" && $attribute->mvisibility !== "I") {
@@ -110,15 +155,26 @@ class DocumentUtils {
                 }
             }
         } else {
+            // if we don't have a ref doc just return the asked attributes list (I will be empty by render doc)
             $attributes = $restrictedAttributes;
         }
         return $attributes;
     }
 
+    /**
+     * Analyze the order by
+     *
+     * @param $orderBy
+     * @param \Doc $currentDoc
+     * @return string
+     * @throws Exception
+     */
     static public function extractOrderBy($orderBy, \Doc $currentDoc = null) {
+        // Explode the string orderBy in an array
         $orderElements = explode(",", $orderBy);
         $result = array();
         $hasId = false;
+        // Check for earch element if the property or attributes exist and the order to
         $propertiesList = array_keys(\Doc::$infofields);
         foreach ($orderElements as $currentElement) {
             $detectOrder = explode(":", $currentElement);
@@ -135,6 +191,7 @@ class DocumentUtils {
             }
             $result[] = sprintf("%s %s", $orderBy, $orderDirection);
         }
+        // if the id is not asked add it (for avoid double result in slice)
         if (!$hasId) {
             $result[] = sprintf("id desc");
         }

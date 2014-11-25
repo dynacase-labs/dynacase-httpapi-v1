@@ -20,4 +20,24 @@ class TestCaseApi extends \Dcp\Pu\TestCaseDcpCommonFamily
         parent::resetDocumentCache();
         DocManager::cache()->clear();
     }
+
+    /**
+     * Verify data coherence between API DATA and expectedValues
+     *
+     * @param $data
+     * @param $expectedValues
+     * @param string $keys
+     */
+    protected function verifyData(array $data, array $expectedValues, $keys = "")
+    {
+        foreach ($expectedValues as $currentKey => $expectedValue) {
+            $this->assertArrayHasKey($currentKey, $data, "Unable to find the key $currentKey for $keys [api result : " . var_export($data, true) . " ] // [expected : " . var_export($expectedValues, true) . " ]");
+            if (is_array($expectedValue)) {
+                $nextKey = $keys . (empty($keys) ? $currentKey : ".$currentKey");
+                $this->verifyData($data[$currentKey], $expectedValue, $nextKey);
+            } else {
+                $this->assertEquals($expectedValue, $data[$currentKey], "wrong value for $currentKey ($keys)  [api result : " . var_export($data[$currentKey], true) . " ] // [expected : " . var_export($expectedValue, true) . " ]");
+            }
+        }
+    }
 }

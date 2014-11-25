@@ -1,10 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: charles
- * Date: 06/11/14
- * Time: 12:15
- */
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+*/
 
 namespace Dcp\HttpApi\V1\Crud;
 
@@ -58,8 +57,13 @@ class SearchCollection extends DocumentCollection
     {
         $prefix = self::GET_ATTRIBUTE;
         $fields = $this->getFields();
-        if ($this->hasFields(self::GET_ATTRIBUTE)) {
-            return DocumentUtils::getAttributesFields($this->_document, $prefix, $fields);
+        $famid = $this->_document->getAttributeValue("se_famid");
+        $docFam = null;
+        if ($famid) {
+            $docFam = DocManager::getDocument($famid);
+        }
+        if ($this->hasFields(self::GET_ATTRIBUTES)) {
+            return DocumentUtils::getAttributesFields($docFam, $prefix, $fields);
         }
         return array();
     }

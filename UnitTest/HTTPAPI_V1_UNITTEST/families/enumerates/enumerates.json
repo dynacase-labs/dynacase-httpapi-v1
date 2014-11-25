@@ -1,0 +1,15 @@
+{
+    "uri" :        "%baseURL%families/TST_APIBASE/enumerates/",
+    "enumerates" : [
+        {
+            "attributeId" : "tst_apibase_enum",
+            "label" :       "enum",
+            "uri" :         "%baseURL%families/TST_APIBASE/enumerates/tst_apibase_enum.json"
+        },
+        {
+            "attributeId" : "tst_apibase_enum_array",
+            "label" :       "enum _array",
+            "uri" :         "%baseURL%families/TST_APIBASE/enumerates/tst_apibase_enum_array.json"
+        }
+    ]
+}

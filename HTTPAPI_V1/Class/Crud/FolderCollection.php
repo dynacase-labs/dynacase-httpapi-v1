@@ -22,7 +22,7 @@ class FolderCollection extends DocumentCollection {
     protected function prepareSearchDoc()
     {
         $ressourceId = $this->urlParameters["identifier"];
-        DocumentUtils::checkDocumentId($ressourceId, "directories/%s/");
+        DocumentUtils::checkDocumentId($ressourceId, "folders/%s/");
         $this->_document = DocManager::getDocument($ressourceId);
         if (!$this->_document) {
             $exception = new Exception("CRUD0200", $ressourceId);
@@ -66,7 +66,7 @@ class FolderCollection extends DocumentCollection {
     public function generateURL($path, $query = null)
     {
         if ($path === "documents/") {
-            $path = sprintf("directories/%s/", $this->_document->name);
+            $path = sprintf("folders/%s/", $this->_document->initid);
         }
         return parent::generateURL($path, $query);
     }

@@ -1,0 +1,18 @@
+{
+    "document" : {
+        "properties" : {
+            "id" :       %updatedId%,
+            "title" :    "Updated",
+            "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "initid" :   %updatedInitid%,
+            "name" :     "TST_APIBASE_UPDATED",
+            "revision" : 0
+        },
+        "attributes" : {
+            "tst_apibase_title" : {
+                "value" :        "Updated",
+                "displayValue" : "Updated"
+            }
+        }
+    }
+}

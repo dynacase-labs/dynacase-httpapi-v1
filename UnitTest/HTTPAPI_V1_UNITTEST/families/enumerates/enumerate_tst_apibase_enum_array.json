@@ -1,0 +1,26 @@
+{
+    "uri" :       "%baseURL%families/TST_APIBASE/enumerates/tst_apibase_enum_array.json",
+    "label" :     "enum _array",
+    "filter" :    {
+        "operator" : "contains",
+        "keyword" :  ""
+    },
+    "enumItems" : [
+        {
+            "key" :   "0",
+            "label" : "0 %"
+        },
+        {
+            "key" :   "30",
+            "label" : "30 %"
+        },
+        {
+            "key" :   "70",
+            "label" : "70 %"
+        },
+        {
+            "key" :   "100",
+            "label" : "100 %"
+        }
+    ]
+}

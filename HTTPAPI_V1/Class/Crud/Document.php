@@ -265,26 +265,6 @@ class Document extends Crud
         return DocumentUtils::getAttributesFields($this->_document, self::GET_ATTRIBUTE, $this->getFields());
     }
     /**
-     * Generate the default URI of the current ressource
-     *
-     * @return null|string
-     */
-    protected function getUri()
-    {
-        if ($this->_document) {
-            if ($this->_document->defDoctype === "C") {
-                return $this->generateURL(sprintf("families/%s.json", $this->_document->name));
-            } else {
-                if ($this->_document->doctype === "Z") {
-                    return $this->generateURL(sprintf("trash/%s.json", $this->_document->initid));
-                } else {
-                    return $this->generateURL(sprintf("documents/%s.json", $this->_document->initid));
-                }
-            }
-        }
-        return null;
-    }
-    /**
      * Get the restrict fields value
      *
      * The restrict fields is used for restrict the return of the get request
@@ -346,14 +326,14 @@ class Document extends Crud
         $correctField = false;
         $hasProperties = false;
         
-        if ($this->hasFields(self::GET_PROPERTIES, true)) {
+        if ($this->hasFields(self::GET_PROPERTIES, true) && !$this->hasFields(self::GET_PROPERTY)) {
             $correctField = true;
             $hasProperties = true;
             $this->documentFormater->useDefaultProperties();
         } elseif ($this->hasFields(self::GET_PROPERTY)) {
             $correctField = true;
             $hasProperties = true;
-            $this->documentFormater->setProperties($this->_getPropertiesId());
+            $this->documentFormater->setProperties($this->_getPropertiesId(), $this->hasFields(self::GET_PROPERTIES, true));
         }
         
         if ($this->hasFields(self::GET_ATTRIBUTES)) {
@@ -366,8 +346,6 @@ class Document extends Crud
         if (!$hasProperties) {
             unset($return["document"]["properties"]);
         }
-        
-        $return["document"]["uri"] = $this->getUri();
         
         if ($this->hasFields(self::GET_STRUCTURE)) {
             $correctField = true;
@@ -394,7 +372,7 @@ class Document extends Crud
         $return = array();
         $order = 0;
         foreach ($normalAttributes as $attribute) {
-            if ($attribute->type === "array" || $attribute->mvisibility === "I") {
+            if ($attribute->type === "array") {
                 continue;
             }
             $parentAttribute = $attribute->fieldSet;

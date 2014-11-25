@@ -1,0 +1,9 @@
+{
+    "requestParameters" : {
+        "slice" :   10,
+        "offset" :  0,
+        "length" :  10,
+        "orderBy" : "title asc, id desc"
+    },
+    "uri" :               "%baseURL%documents/"
+}

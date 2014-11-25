@@ -1,0 +1,8 @@
+{
+    "requestParameters" : {
+        "slice" :   10,
+        "offset" :  0,
+        "orderBy" : "title asc, id desc"
+    },
+    "uri" :               "%baseURL%families/TST_APIBASE/documents/"
+}
