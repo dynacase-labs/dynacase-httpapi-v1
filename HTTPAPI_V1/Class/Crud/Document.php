@@ -104,20 +104,21 @@ class Document extends Crud
         
         $newValues = $this->contentParameters;
         foreach ($newValues as $aid => $value) {
-            $kindex = - 1;
-            if ($value === null or $value === '') {
-                $err = $this->_document->clearValue($aid);
-            } else {
-                $err = $this->_document->setValue($aid, $value, -1, $kindex);
+            try {
+                if ($value === null or $value === '') {
+                    $this->_document->setAttributeValue($aid, null);
+                } else {
+                    $this->_document->setAttributeValue($aid, $value);
+                }
             }
-            if ($err) {
+            catch(\Dcp\AttributeValue\Exception $e) {
                 $exception = new Exception("CRUD0211", $this->_document->id, $aid, $err);
                 $exception->setHttpStatus("500", "Unable to modify the document");
                 $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
                 $info = array(
                     "id" => $aid,
-                    "index" => $kindex,
-                    "err" => $err
+                    "index" => $e->index,
+                    "err" => $e->originalError ? $e->originalError : $e->getDcpMessage()
                 );
                 
                 $exception->setData($info);
@@ -333,7 +334,7 @@ class Document extends Crud
         } elseif ($this->hasFields(self::GET_PROPERTY)) {
             $correctField = true;
             $hasProperties = true;
-            $this->documentFormater->setProperties($this->_getPropertiesId(), $this->hasFields(self::GET_PROPERTIES, true));
+            $this->documentFormater->setProperties($this->_getPropertiesId() , $this->hasFields(self::GET_PROPERTIES, true));
         }
         
         if ($this->hasFields(self::GET_ATTRIBUTES)) {
