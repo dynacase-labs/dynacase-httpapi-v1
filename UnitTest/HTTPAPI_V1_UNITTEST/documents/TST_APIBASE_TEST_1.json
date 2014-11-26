@@ -18,7 +18,7 @@
                 "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
                 "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                 "value" :          "%masterDefaultId%",
-                "displayValue" :   "Master Default"
+                "displayValue" :   "%masterDefaultTitle%"
             },
             "tst_apibase_account_multiple" :       [
                 {
@@ -26,14 +26,14 @@
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
                     "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                     "value" :          "%anonymousGestId%",
-                    "displayValue" :   "anonymous guest"
+                    "displayValue" :   "%anonymousGestTitle%"
                 },
                 {
                     "familyRelation" : "",
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
                     "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                     "value" :          "%masterDefaultId%",
-                    "displayValue" :   "Master Default"
+                    "displayValue" :   "%masterDefaultTitle%"
                 }
             ],
             "tst_apibase_color" :                  {
@@ -87,7 +87,7 @@
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
                     "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                     "value" :          "%anonymousGestId%",
-                    "displayValue" :   "anonymous guest"
+                    "displayValue" :   "%anonymousGestTitle%"
                 },
                 {
                     "familyRelation" : "",
@@ -101,7 +101,7 @@
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
                     "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                     "value" :          "%masterDefaultId%",
-                    "displayValue" :   "Master Default"
+                    "displayValue" :   "%masterDefaultTitle%"
                 }
             ],
             "tst_apibase_account_multiple_array" : [
@@ -111,7 +111,7 @@
                         "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
                         "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                         "value" :          "%anonymousGestId%",
-                        "displayValue" :   "anonymous guest"
+                        "displayValue" :   "%anonymousGestTitle%"
                     }
                 ],
                 [],
@@ -121,14 +121,14 @@
                         "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
                         "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                         "value" :          "%anonymousGestId%",
-                        "displayValue" :   "anonymous guest"
+                        "displayValue" :   "%anonymousGestTitle%"
                     },
                     {
                         "familyRelation" : "",
                         "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
                         "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
                         "value" :          "%masterDefaultId%",
-                        "displayValue" :   "Master Default"
+                        "displayValue" :   "%masterDefaultTitle%"
                     }
                 ]
             ],

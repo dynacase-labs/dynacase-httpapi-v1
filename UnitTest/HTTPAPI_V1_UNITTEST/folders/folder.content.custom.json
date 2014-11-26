@@ -1,0 +1,22 @@
+{
+    "requestParameters" : {
+        "slice" :   1,
+        "offset" :  0,
+        "length" :  1,
+        "orderBy" : "adate asc, id desc"
+    },
+    "uri" :               "%baseURL%folders/%directoryId%/",
+    "documents" :         [
+        {
+            "properties" : {
+                "id" :       %test1Id%,
+                "title" :    "test 1",
+                "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+                "initid" :   %test1Initid%,
+                "name" :     "TST_APIBASE_TEST_1",
+                "revision" : 0
+            },
+            "uri" :        "%baseURL%documents/%test1Initid%.json"
+        }
+    ]
+}

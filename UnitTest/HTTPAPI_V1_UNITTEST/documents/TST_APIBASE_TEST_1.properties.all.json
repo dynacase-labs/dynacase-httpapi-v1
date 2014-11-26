@@ -31,7 +31,7 @@
             },
             "owner" :          "1",
             "postitid" :       null,
-            "prelid" :         null,
+            "prelid" :         "%directoryId%",
             "profid" :         "0",
             "revision" :       0,
             "revisionData" :   {

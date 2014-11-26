@@ -194,6 +194,10 @@ class TestDocumentCrud extends TestCaseApi
         $this->assertNotNull($documentTest1, "Unable to find document 1");
         $updated = DocManager::getDocument("TST_APIBASE_UPDATED");
         $this->assertNotNull($updated, "Unable to find document updated");
+        $directory = DocManager::getDocument("DIR_TEST_API");
+        $this->assertNotNull($directory, "Unable to find document directory");
+        $search = DocManager::getDocument("TEST_SEARCH");
+        $this->assertNotNull($search, "Unable to find document searche");
 
         //Replace variant part
         $data = str_replace('%baseURL%', AnalyzeURL::getBaseURL(), $data);
@@ -202,7 +206,11 @@ class TestDocumentCrud extends TestCaseApi
         $data = str_replace('%updatedInitid%', $updated->getPropertyValue('initid'), $data);
         $data = str_replace('%updatedId%', $updated->getPropertyValue('id'), $data);
         $data = str_replace('%anonymousGestId%', $guestDoc->getPropertyValue('id'), $data);
+        $data = str_replace('%anonymousGestTitle%', $guestDoc->getTitle(), $data);
         $data = str_replace('%masterDefaultId%', $adminDoc->getPropertyValue('id'), $data);
+        $data = str_replace('%masterDefaultTitle%', $adminDoc->getTitle(), $data);
+        $data = str_replace('%directoryId%', $directory->getPropertyValue('initid'), $data);
+        $data = str_replace('%searchId%', $search->getPropertyValue('initid'), $data);
 
         $data = json_decode($data, true);
 

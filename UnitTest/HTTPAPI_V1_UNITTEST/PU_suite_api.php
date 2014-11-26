@@ -89,6 +89,10 @@ class SuiteApi
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyDocumentCollection");
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyDocumentCrud");
         $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Families\\TestFamilyEnumerateCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Folders\\TestFoldersCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Folders\\TestFolderCollectionCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Searches\\TestSearchesCrud");
+        $suite->addTestSuite("Dcp\\Pu\\HttpApi\\V1\\Test\\Searches\\TestSearchesCollectionCrud");
 
         return $suite;
     }
