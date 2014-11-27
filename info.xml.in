@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <module name="@PACKAGE@" disabled="no" version="@VERSION@" release="@RELEASE@">
 
-    <description>@PACKAGE@</description>
+    <description>Dynacase HTTP Api v1</description>
 
     <requires>
         <module comp='ge' version='3.2.18' name='dynacase-core'/>

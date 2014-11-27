@@ -2,7 +2,7 @@
 <module name="@PACKAGE@-dev" disabled="no" version="@VERSION@" release="@RELEASE@"
         basecomponent="no">
 
-    <description>Dynacase HTTP API : outil de développement</description>
+    <description>Dynacase HTTP Api v1 : sandbox</description>
 
     <requires>
         <module comp="ge" name="dynacase-httpapi-v1" version="1.0.0"/>
