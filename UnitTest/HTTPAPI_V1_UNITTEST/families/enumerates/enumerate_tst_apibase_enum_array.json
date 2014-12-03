@@ -1,7 +1,7 @@
 {
     "uri" :       "%baseURL%families/TST_APIBASE/enumerates/tst_apibase_enum_array.json",
     "label" :     "enum _array",
-    "filter" :    {
+    "requestParameters" :    {
         "operator" : "contains",
         "keyword" :  ""
     },

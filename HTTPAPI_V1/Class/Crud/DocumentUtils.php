@@ -1,4 +1,9 @@
 <?php
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+*/
 /**
  * Created by PhpStorm.
  * User: charles
@@ -10,8 +15,8 @@ namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\HttpApi\V1\DocManager\DocManager;
 
-class DocumentUtils {
-
+class DocumentUtils
+{
     /**
      * Check if the document id is valid
      *
@@ -22,7 +27,8 @@ class DocumentUtils {
      * @return bool
      * @throws Exception
      */
-    static public function checkDocumentId($identifier, $canonicalURL = "documents/%d.json") {
+    static public function checkDocumentId($identifier, $canonicalURL = "documents/%d.json")
+    {
         $initid = $identifier;
         if (is_numeric($identifier)) {
             $initid = DocManager::getInitIdFromIdOrName($identifier);
@@ -32,13 +38,12 @@ class DocumentUtils {
             $query = parse_url($pathInfo, PHP_URL_QUERY);
             $exception = new Exception("CRUD0222");
             $exception->setHttpStatus("307", "This is a revision");
-            $exception->addHeader("Location", URLUtils::generateURL(sprintf($canonicalURL, $initid), $query));
+            $exception->addHeader("Location", URLUtils::generateURL(sprintf($canonicalURL, $initid) , $query));
             $exception->setURI(URLUtils::generateURL(sprintf($canonicalURL, $initid)));
             throw $exception;
         }
         return true;
     }
-
     /**
      * Analyze the content of a json request
      *
@@ -46,10 +51,11 @@ class DocumentUtils {
      * @return array
      * @throws Exception
      */
-    static public function analyzeDocumentJSON($jsonString) {
+    static public function analyzeDocumentJSON($jsonString)
+    {
         $dataDocument = json_decode($jsonString, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception("CRUD0208", "Unable to json decode ".$jsonString);
+            throw new Exception("CRUD0208", "Unable to json decode " . $jsonString);
         }
         if ($dataDocument === null) {
             throw new Exception("CRUD0208", $jsonString);
@@ -58,7 +64,7 @@ class DocumentUtils {
             throw new Exception("CRUD0209", $jsonString);
         }
         $values = $dataDocument["document"]["attributes"];
-
+        
         $newValues = array();
         // Only keep the value element of each attribute passed
         foreach ($values as $attributeId => $value) {
@@ -85,7 +91,6 @@ class DocumentUtils {
         }
         return $newValues;
     }
-
     /**
      * Check if a required family exist
      * Redirect to the logical name def if the request use the id
@@ -95,7 +100,8 @@ class DocumentUtils {
      * @return bool
      * @throws Exception
      */
-    static public function checkFamilyId($identifier, $urlReturn = "families/%s.json") {
+    static public function checkFamilyId($identifier, $urlReturn = "families/%s.json")
+    {
         $familyName = $identifier;
         if (is_numeric($identifier)) {
             $familyName = DocManager::getNameFromId($identifier);
@@ -105,13 +111,12 @@ class DocumentUtils {
             $query = parse_url($pathInfo, PHP_URL_QUERY);
             $exception = new Exception("CRUD0222");
             $exception->setHttpStatus("307", "This is an id request for a family");
-            $exception->addHeader("Location", URLUtils::generateURL(sprintf($urlReturn, $familyName), $query));
+            $exception->addHeader("Location", URLUtils::generateURL(sprintf($urlReturn, $familyName) , $query));
             $exception->setURI(URLUtils::generateURL(sprintf($urlReturn, $familyName)));
             throw $exception;
         }
         return true;
     }
-
     /**
      * Analyze the list of required attributes
      *
@@ -121,22 +126,27 @@ class DocumentUtils {
      * @return array
      * @throws Exception
      */
-    static public function getAttributesFields(\Doc $currentDoc = null, $prefix = "document.attributes.", $fields = array()) {
+    static public function getAttributesFields($currentDoc = null, $prefix = "document.attributes.", $fields = array())
+    {
         $falseAttribute = array();
         // Compute the list of the attributes that should be displayed (if list is empty all will be displayed)
-        $restrictedAttributes = array_filter($fields, function ($currentField) use ($prefix) {
+        $restrictedAttributes = array_filter($fields, function ($currentField) use ($prefix)
+        {
             return mb_stripos($currentField, $prefix) === 0 && $currentField !== $prefix;
         });
         $restrictedAttributes = array_unique($restrictedAttributes);
         // end compute list
         // Analyze if all the restricted attributes as a part of the current doc or the current fam
-        $restrictedAttributes = array_map(function ($currentField) use ($prefix, &$currentDoc, &$falseAttribute) {
+        if ($currentDoc) {
+            $restrictedAttributes = array_map(function ($currentField) use ($prefix, &$currentDoc, &$falseAttribute)
+            {
                 $attributeId = str_replace($prefix, "", $currentField);
                 /* @var \Doc $currentDoc */
                 self::isAttribute($currentDoc, $attributeId);
                 return $attributeId;
             }
             , $restrictedAttributes);
+        }
         // if there is attributes that not valid throw exception
         if (!empty($falseAttribute)) {
             throw new Exception("CRUD0218", join(" and attribute ", $falseAttribute));
@@ -160,7 +170,6 @@ class DocumentUtils {
         }
         return $attributes;
     }
-
     /**
      * Analyze the order by
      *
@@ -169,7 +178,8 @@ class DocumentUtils {
      * @return string
      * @throws Exception
      */
-    static public function extractOrderBy($orderBy, \Doc $currentDoc = null) {
+    static public function extractOrderBy($orderBy, \Doc $currentDoc = null)
+    {
         // Explode the string orderBy in an array
         $orderElements = explode(",", $orderBy);
         $result = array();
@@ -197,7 +207,6 @@ class DocumentUtils {
         }
         return implode(", ", $result);
     }
-
     /**
      * Check if an attrid is an attribute of the currentDoc
      *
@@ -210,19 +219,10 @@ class DocumentUtils {
     {
         if ($currentDoc) {
             $currentAttribute = $currentDoc->getAttribute($currentElement);
-            if ($currentAttribute === false
-                || $currentAttribute->type === "frame"
-                || $currentAttribute->type === "array"
-                || $currentAttribute->type === "tab"
-                || $currentAttribute->type === "menu"
-                || $currentAttribute->usefor === "Q"
-                || $currentAttribute->mvisibility === "I"
-            ) {
+            if ($currentAttribute === false || $currentAttribute->type === "frame" || $currentAttribute->type === "array" || $currentAttribute->type === "tab" || $currentAttribute->type === "menu" || $currentAttribute->usefor === "Q" || $currentAttribute->mvisibility === "I") {
                 throw new Exception("CRUD0502", $currentElement);
             }
         }
         return true;
     }
-
-
-} 
+}

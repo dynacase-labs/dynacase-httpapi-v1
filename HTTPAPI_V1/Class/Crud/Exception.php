@@ -159,9 +159,13 @@ namespace {
          */
         const CRUD0502 = 'The orderBy must be an attribute or a property (not %s)';
         /**
-         * @errorCode The collection must be a directory or a search
+         * @errorCode The collection must be a search
          */
-        const CRUD0503 = 'The collection must be a directory or a search';
+        const CRUD0503 = 'The collection must be a search';
+        /**
+         * @errorCode The collection must be a folder
+         */
+        const CRUD0504 = 'The collection must be a folder';
     }
 }
 

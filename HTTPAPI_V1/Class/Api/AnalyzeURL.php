@@ -14,17 +14,16 @@ class AnalyzeURL
     {
         $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
         $components = parse_url($coreURL);
-        if ($components["path"]) {
-            $components["path"] = dirname($components["path"]);
-        }
-        if (isset($components["query"])) {
-            unset($components["query"]);
-        }
-        if (isset($components["fragment"])) {
-            unset($components["fragment"]);
-        }
-        $coreURL = static::unparseURL($components);
-        if ($coreURL === "") {
+        
+        if ($coreURL) {
+            if (isset($components["query"])) {
+                unset($components["query"]);
+            }
+            if (isset($components["fragment"])) {
+                unset($components["fragment"]);
+            }
+            $coreURL = static::unparseURL($components);
+        } else {
             $coreURL = self::getUrlPath();
         }
         $baseURL = \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "REST_BASE_URL");

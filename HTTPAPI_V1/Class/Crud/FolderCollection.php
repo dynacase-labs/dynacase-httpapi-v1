@@ -1,4 +1,9 @@
 <?php
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+ */
 /**
  * Created by PhpStorm.
  * User: charles
@@ -8,17 +13,15 @@
 
 namespace Dcp\HttpApi\V1\Crud;
 
-
 use Dcp\HttpApi\V1\DocManager\DocManager;
 
-class FolderCollection extends DocumentCollection {
-
+class FolderCollection extends DocumentCollection
+{
     /**
      * @var \Doc document instance
      */
     protected $_document = null;
-
-
+    
     protected function prepareSearchDoc()
     {
         $ressourceId = $this->urlParameters["identifier"];
@@ -36,7 +39,7 @@ class FolderCollection extends DocumentCollection {
             throw $exception;
         }
         if ($this->_document->doctype !== "D") {
-            $exception = new Exception("CRUD0503", $ressourceId);
+            $exception = new Exception("CRUD0504", $ressourceId);
             $exception->setHttpStatus("400", "The document is not a directory");
             $exception->setURI($this->generateURL(sprintf("documents/%d.json", $this->_document->initid)));
             throw $exception;
@@ -45,8 +48,6 @@ class FolderCollection extends DocumentCollection {
         $this->_searchDoc->setObjectReturn();
         $this->_searchDoc->useCollection($ressourceId);
     }
-
-
     /**
      * Get the restricted attributes
      *
@@ -62,7 +63,7 @@ class FolderCollection extends DocumentCollection {
         }
         return array();
     }
-
+    
     public function generateURL($path, $query = null)
     {
         if ($path === "documents/") {
@@ -70,10 +71,17 @@ class FolderCollection extends DocumentCollection {
         }
         return parent::generateURL($path, $query);
     }
-
+    
     protected function extractOrderBy()
     {
         $orderBy = isset($this->contentParameters["orderBy"]) ? $this->contentParameters["orderBy"] : "title:asc";
         return DocumentUtils::extractOrderBy($orderBy, $this->_document);
     }
-} 
+    protected function getCollectionProperties()
+    {
+        return array(
+            "title" => $this->_document->getTitle() ,
+            "uri" => $this->generateURL(sprintf("documents/%d.json", $this->_document->initid))
+        );
+    }
+}
