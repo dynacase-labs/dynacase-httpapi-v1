@@ -2,19 +2,23 @@
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-31 15:50+0100\n"
-"PO-Revision-Date: 2014-08-26 10:50+0200\n"
+"POT-Creation-Date: 2014-12-03 13:41+0100\n"
+"PO-Revision-Date: 2014-12-03 13:44+0100\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#, php-format
+msgctxt "ddui"
+msgid "%s Documents"
+msgstr "Documents %s"
 
 msgctxt "HTTPAPI_V1"
 msgid "Cannot store file because vault size limit is reached"
@@ -54,6 +58,9 @@ msgstr "Lire avec l'API HTTP"
 msgid "HTTPAPI_V1:Access to http api update"
 msgstr "Mettre à jour avec l'API HTTP"
 
+msgid "HTTPAPI_V1:Admin right"
+msgstr "Droit administrateur"
+
 msgid "HTTPAPI_V1:Anakeen documentation URL"
 msgstr "URL de la documentation de l'API"
 
@@ -66,20 +73,23 @@ msgstr "Page par défaut"
 msgid "HTTPAPI_V1:Http Api"
 msgstr "API HTTP"
 
+msgid "HTTPAPI_V1:INIT_RULES"
+msgstr "Compilation des règles de routage"
+
 msgid "HTTPAPI_V1:activate the etag cache for the request that handle it"
 msgstr "Activer les etag http pour les requêtes GET"
 
-msgid "HTTPAPI_V1:custom crud class"
-msgstr "Classes de CRUD additionnelles"
+msgid "HTTPAPI_V1:crud class"
+msgstr "Classe CRUD"
 
 msgid "HTTPAPI_V1:custom logger class"
 msgstr "Classes de log additionnelles"
 
-msgid "HTTPAPI_V1:default crud class"
-msgstr "Classes de CRUD par défaut"
-
 msgid "HTTPAPI_V1:default logger class"
 msgstr "Classes de LOG par défaut"
+
+msgid "HTTPAPI_V1:default value of the slice for collection"
+msgstr "Valeur par défaut pour le nombre de résultats retourné pour une collection"
 
 msgid "HTTPAPI_V1_DEV:Basic ACL"
 msgstr "ACL Basic"
@@ -89,6 +99,14 @@ msgstr "Outil de développement"
 
 msgid "HTTPAPI_V1_DEV:Test HTTP API"
 msgstr "Outil de développement"
+
+msgctxt "ddui"
+msgid "The folders"
+msgstr "Les dossiers"
+
+msgctxt "ddui"
+msgid "The trash"
+msgstr "La poubelle"
 
 msgctxt "HTTPAPI_V1"
 msgid "Update failed"
@@ -101,3 +119,12 @@ msgstr "Mise à jour interdite"
 msgctxt "HTTPAPI_V1"
 msgid "Updated by HTTP API"
 msgstr "Mis à jour par l'API HTTP"
+
+msgid "api"
+msgstr "api"
+
+#~ msgid "HTTPAPI_V1:custom crud class"
+#~ msgstr "Classes de CRUD additionnelles"
+
+#~ msgid "HTTPAPI_V1:default crud class"
+#~ msgstr "Classes de CRUD par défaut"
