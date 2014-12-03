@@ -1,23 +1,25 @@
 {
-    "uri" :     "%baseURL%documents/TST_APIBASE_TEST_1/history/",
-    "filters" : {
-        "slice" :    -1,
-        "offset" :   0,
-        "revision" : -1
+    "uri": "%baseURL%documents/TST_APIBASE_TEST_1/history/",
+    "requestParameters": {
+        "slice": -1,
+        "offset": 0,
+        "revision": -1
     },
-    "history" : [
+    "history": [
         {
-            "documentId" :   %test1Id%,
-            "uri" :          "%baseURL%documents/TST_APIBASE_TEST_1/revisions/0.json",
-            "fixed" :        false,
-            "revision" :     0,
-            "state" :        {
-                "reference" :  null,
-                "stateLabel" : "",
-                "activity" :   "",
-                "color" :      ""
-            },
-            "version" :      null
+            "uri": "%baseURL%documents/TST_APIBASE_TEST_1/revisions/0.json",
+            "properties": {
+                "id": "%test1Id%",
+                "status": "alive",
+                "revision": 0,
+                "state": {
+                    "reference": null,
+                    "stateLabel": "",
+                    "activity": "",
+                    "color": ""
+                },
+                "version": null
+            }
         }
     ]
 }

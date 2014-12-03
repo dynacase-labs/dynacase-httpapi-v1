@@ -484,7 +484,7 @@ class Document extends Crud
                 }
                 $info["enumItems"] = $enumItems;
             }
-            $info["enumUri"] = $this->generateURL(sprintf("families/%s/enumerates/%s", $this->_document->fromname, $attribute->id));
+            $info["enumUri"] = $this->generateURL(sprintf("families/%s/enumerates/%s", ($this->_document->doctype === "C" ? $this->_document->name : $this->_document->fromname) , $attribute->id));
         }
         
         return $info;

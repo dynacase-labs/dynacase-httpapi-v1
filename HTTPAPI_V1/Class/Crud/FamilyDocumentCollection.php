@@ -1,4 +1,9 @@
 <?php
+/*
+ * @author Anakeen
+ * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
+ * @package FDL
+ */
 /**
  * Created by PhpStorm.
  * User: charles
@@ -13,7 +18,6 @@ use \Dcp\HttpApi\V1\DocManager\Exception as DocManagerException;
 
 class FamilyDocumentCollection extends DocumentCollection
 {
-
     /**
      * @var \DocFam
      */
@@ -22,7 +26,6 @@ class FamilyDocumentCollection extends DocumentCollection
      * @var \Doc document instance
      */
     protected $_document = null;
-
     /**
      * @return mixed
      * @throws DocManagerException
@@ -33,7 +36,8 @@ class FamilyDocumentCollection extends DocumentCollection
     {
         try {
             $this->_document = DocManager::createDocument($this->_family->id);
-        } catch (DocManagerException $exception) {
+        }
+        catch(DocManagerException $exception) {
             if ($exception->getDcpCode() === "APIDM0003") {
                 $exception = new Exception("API0204", $this->_family->name);
                 $exception->setHttpStatus(403, "Forbidden");
@@ -42,7 +46,7 @@ class FamilyDocumentCollection extends DocumentCollection
                 throw $exception;
             }
         }
-
+        
         $newValues = $this->contentParameters;
         foreach ($newValues as $attrid => $value) {
             $err = $this->_document->setValue($attrid, $value);
@@ -50,22 +54,20 @@ class FamilyDocumentCollection extends DocumentCollection
                 throw new Exception("CRUD0205", $this->_family->name, $attrid, $err);
             }
         }
-
+        
         $err = $this->_document->store($info);
         if ($err) {
             $exception = new Exception("CRUD0206", $this->_family->name, $err);
             $exception->setData($info);
             throw $exception;
         }
-        $this->_document->addHistoryEntry(___("Create by HTTP API", "HTTPAPI_V1"), \DocHisto::NOTICE);
+        $this->_document->addHistoryEntry(___("Create by HTTP API", "HTTPAPI_V1") , \DocHisto::NOTICE);
         DocManager::cache()->addDocument($this->_document);
-
+        
         $familyDocument = new FamilyDocument();
-
+        
         return $familyDocument->getInternal($this->_document);
     }
-
-
     /**
      * Set the family of the current request
      *
@@ -84,13 +86,12 @@ class FamilyDocumentCollection extends DocumentCollection
             throw $exception;
         }
     }
-
+    
     protected function prepareSearchDoc()
     {
         $this->_searchDoc = new \SearchDoc("", $this->_family->name);
         $this->_searchDoc->setObjectReturn();
     }
-
     /**
      * Analyze JSON string and extract update values
      *
@@ -102,7 +103,6 @@ class FamilyDocumentCollection extends DocumentCollection
     {
         return DocumentUtils::analyzeDocumentJSON($jsonString);
     }
-
     /**
      * Get the restricted attributes
      *
@@ -118,7 +118,7 @@ class FamilyDocumentCollection extends DocumentCollection
         }
         return array();
     }
-
+    
     public function generateURL($path, $query = null)
     {
         if ($path === "documents/") {
@@ -126,10 +126,16 @@ class FamilyDocumentCollection extends DocumentCollection
         }
         return parent::generateURL($path, $query);
     }
-
+    
     protected function extractOrderBy()
     {
         $orderBy = isset($this->contentParameters["orderBy"]) ? $this->contentParameters["orderBy"] : "title:asc";
         return DocumentUtils::extractOrderBy($orderBy, $this->_family);
     }
-} 
+    protected function getCollectionProperties()
+    {
+        return array(
+            "title" => sprintf(___("%s Documents", "ddui") , $this->_family->getTitle())
+        );
+    }
+}

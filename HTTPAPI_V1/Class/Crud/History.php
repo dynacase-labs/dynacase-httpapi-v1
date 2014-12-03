@@ -62,7 +62,7 @@ class History extends Crud
         $documentList = $search->getDocumentList();
         
         $info["uri"] = $this->generateURL(sprintf("%s/%s/history/", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid));
-        $info["filters"] = array(
+        $info["requestParameters"] = array(
             "slice" => $this->slice,
             "offset" => $this->offset,
             "revision" => $this->revisionFilter
@@ -101,24 +101,26 @@ class History extends Crud
                 }
             }
             $revisionHistory[] = array(
-                "documentId" => intval($revision->id) ,
                 "uri" => $this->generateURL(sprintf("%s/%s/revisions/%d.json", $this->baseURL, ($revision->name ? $revision->name : $revision->initid) , $revision->revision)) ,
-                "title" => $revision->getTitle() ,
-                "fixed" => ($revision->locked == - 1) ,
-                "revision" => intval($revision->revision) ,
-                "owner" => array(
-                    "id" => $revision->owner,
-                    "title" => \Account::getDisplayName($revision->owner)
+                "properties" => array(
+                    "id" => intval($revision->initid) ,
+                    "title" => $revision->getTitle() ,
+                    "status" => ($revision->doctype == "Z") ? "deleted" : (($revision->locked == - 1) ? "fixed" : "alive") ,
+                    "revision" => intval($revision->revision) ,
+                    "owner" => array(
+                        "id" => $revision->owner,
+                        "title" => \Account::getDisplayName($revision->owner)
+                    ) ,
+                    "state" => array(
+                        "reference" => $revision->getState() ,
+                        "stateLabel" => ($revision->state) ? _($revision->state) : '',
+                        "activity" => ($revision->getStateActivity() ? _($revision->getStateActivity()) : ($revision->state ? _($revision->state) : '')) ,
+                        "color" => ($revision->state) ? _($revision->getStateColor()) : ''
+                    ) ,
+                    
+                    "version" => $revision->version,
+                    "revisionDate" => strftime("%Y-%m-%d %T", $revision->revdate)
                 ) ,
-                "state" => array(
-                    "reference" => $revision->getState() ,
-                    "stateLabel" => ($revision->state) ? _($revision->state) : '',
-                    "activity" => ($revision->getStateActivity() ? _($revision->getStateActivity()) : ($revision->state ? _($revision->state) : '')) ,
-                    "color" => ($revision->state) ? _($revision->getStateColor()) : ''
-                ) ,
-                
-                "version" => $revision->version,
-                "revisionDate" => strftime("%Y-%m-%d %T", $revision->revdate) ,
                 "messages" => $history
             );
         }

@@ -7,15 +7,13 @@
 
 namespace Dcp\HttpApi\V1\Crud;
 
-
 use Dcp\HttpApi\V1\DocManager\DocManager;
 
-class RevisionCollection extends DocumentCollection {
-
-
+class RevisionCollection extends DocumentCollection
+{
+    
     protected $_document = null;
     protected $rootLevel = "documents";
-
     /**
      * Read a ressource
      * @param string|int $resourceId Resource identifier
@@ -28,22 +26,23 @@ class RevisionCollection extends DocumentCollection {
             "requestParameters" => array(
                 "slice" => $this->slice,
                 "offset" => $this->offset,
-                "length" => count($documentList),
+                "length" => count($documentList) ,
                 "orderBy" => $this->orderBy
             )
         );
         $return["uri"] = $this->generateURL(sprintf("%s/%s/revisions/", $this->rootLevel, $this->urlParameters["identifier"]));
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $documentFormatter->addProperty("revision");
+        $documentFormatter->addProperty("status");
         $data = $documentFormatter->format();
-        foreach ($data as &$currentData) {
+        foreach ($data as & $currentData) {
             $currentData["uri"] = $this->generateURL(sprintf("%s/%d/revisions/%d.json", $this->rootLevel, $currentData["properties"]["initid"], $currentData["properties"]["revision"]));
         }
         $return["revisions"] = $data;
-
+        
         return $return;
     }
-
+    
     protected function prepareSearchDoc()
     {
         $ressourceId = $this->urlParameters["identifier"];
@@ -60,7 +59,7 @@ class RevisionCollection extends DocumentCollection {
             $exception->setURI($this->generateURL(sprintf("trash/%d/revisions/", $this->_document->initid)));
             throw $exception;
         }
-
+        
         $this->_searchDoc = new \SearchDoc();
         $this->_searchDoc->setObjectReturn(true);
         $this->_searchDoc->addFilter("initid = %d", $this->_document->initid);
@@ -68,7 +67,6 @@ class RevisionCollection extends DocumentCollection {
         $this->_searchDoc->setOrder($this->orderBy);
         $this->_searchDoc->latest = false;
     }
-
     /**
      * Get the restricted attributes
      *
@@ -79,13 +77,15 @@ class RevisionCollection extends DocumentCollection {
     {
         $prefix = self::GET_ATTRIBUTE;
         $fields = $this->getFields();
-        return DocumentUtils::getAttributesFields($this->_document, $prefix, $fields);
+        if ($this->hasFields(self::GET_ATTRIBUTE) || $this->hasFields(self::GET_ATTRIBUTES)) {
+            return DocumentUtils::getAttributesFields($this->_document, $prefix, $fields);
+        }
+        return array();
     }
-
+    
     protected function extractOrderBy()
     {
         $orderBy = isset($this->contentParameters["orderBy"]) ? $this->contentParameters["orderBy"] : "revision:desc";
         return DocumentUtils::extractOrderBy($orderBy, $this->_document);
     }
-
-} 
+}

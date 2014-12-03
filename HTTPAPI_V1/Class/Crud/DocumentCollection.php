@@ -3,7 +3,7 @@
  * @author Anakeen
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FDL
- */
+*/
 /**
  * Created by PhpStorm.
  * User: charles
@@ -65,6 +65,7 @@ class DocumentCollection extends Crud
         );
         
         $return["uri"] = $this->generateURL("documents/");
+        $return["properties"] = $this->getCollectionProperties();
         $documentFormatter = $this->prepareDocumentFormatter($documentList);
         $data = $documentFormatter->format();
         $return["documents"] = $data;
@@ -176,7 +177,6 @@ class DocumentCollection extends Crud
         
         return false;
     }
-
     /**
      * Prepare the searchDoc
      * You can inherit of this function to make specialized collection (trash, search, etc...)
@@ -187,7 +187,6 @@ class DocumentCollection extends Crud
         $this->_searchDoc->setObjectReturn();
         $this->_searchDoc->excludeConfidential(true);
     }
-
     /**
      * Analyze the slice, offset and sortBy
      *
@@ -208,7 +207,13 @@ class DocumentCollection extends Crud
         $this->_searchDoc->setOrder($this->orderBy);
         return $this->_searchDoc->getDocumentList();
     }
-
+    
+    protected function getCollectionProperties()
+    {
+        return array(
+            "title" => ""
+        );
+    }
     /**
      * Extract orderBy
      *
@@ -234,12 +239,11 @@ class DocumentCollection extends Crud
         if ($this->hasFields(self::GET_PROPERTIES, true) && !$this->hasFields(self::GET_PROPERTY)) {
             $documentFormatter->useDefaultProperties();
         } else {
-            $documentFormatter->setProperties($this->_getPropertiesId(), $this->hasFields(self::GET_PROPERTIES, true));
+            $documentFormatter->setProperties($this->_getPropertiesId() , $this->hasFields(self::GET_PROPERTIES, true));
         }
         $documentFormatter->setAttributes($this->getAttributeFields());
         return $documentFormatter;
     }
-
     /**
      * Initialize the default fields
      *

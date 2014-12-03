@@ -11,7 +11,7 @@ use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
 class Enumerates extends Crud
 {
-
+    
     const startsOperator = "startswith";
     const containsOperator = "contains";
     /**
@@ -22,7 +22,7 @@ class Enumerates extends Crud
     protected $operatorFilter = self::containsOperator;
     protected $enumid = null;
     //region CRUD part
-
+    
     /**
      * Create new ressource
      * @throws Exception
@@ -34,7 +34,6 @@ class Enumerates extends Crud
         $exception->setHttpStatus("501", "No yet implemented");
         throw $exception;
     }
-
     /**
      * Get ressource
      *
@@ -46,18 +45,19 @@ class Enumerates extends Crud
     {
         if ($resourceId === "") {
             $result = array(
-                "uri" => $this->generateEnumUrl($this->family->name),
-                "enumerates" => array(),
+                "uri" => $this->generateEnumUrl($this->family->name) ,
+                "enumerates" => array() ,
             );
             $attributes = $this->family->getNormalAttributes();
-            $enums = array_filter($attributes, function ($currentAttribute) {
+            $enums = array_filter($attributes, function ($currentAttribute)
+            {
                 return $currentAttribute->type === "enum";
             });
             foreach ($enums as $currentEnum) {
                 /* @var \NormalAttribute $currentEnum */
                 $result["enumerates"][] = array(
                     "attributeId" => $currentEnum->id,
-                    "label" => $currentEnum->getLabel(),
+                    "label" => $currentEnum->getLabel() ,
                     "uri" => $this->generateEnumUrl($this->family->name, $currentEnum->id)
                 );
             }
@@ -79,10 +79,10 @@ class Enumerates extends Crud
          */
         $enums = $attribute->getEnumLabel();
         $info = array(
-            "uri" => $this->generateEnumUrl($this->family->name, $resourceId),
+            "uri" => $this->generateEnumUrl($this->family->name, $resourceId) ,
             "label" => $attribute->getLabel()
         );
-
+        
         $filterKeyword = $this->getFilterKeyword();
         $filterOperator = $this->getOperatorFilter();
         $pattern = '';
@@ -97,7 +97,7 @@ class Enumerates extends Crud
                     break;
             }
         }
-
+        
         $enumItems = array();
         foreach ($enums as $key => $label) {
             $good = true;
@@ -106,7 +106,7 @@ class Enumerates extends Crud
                     $good = false;
                 }
             }
-
+            
             if ($good && $key !== '' && $key !== ' ' && $key !== null) {
                 $enumItems[] = array(
                     "key" => (string)$key,
@@ -114,15 +114,14 @@ class Enumerates extends Crud
                 );
             }
         }
-        $info["filter"] = array(
+        $info["requestParameters"] = array(
             "operator" => $filterOperator,
             "keyword" => $filterKeyword
         );
         $info["enumItems"] = $enumItems;
-
+        
         return $info;
     }
-
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -135,7 +134,6 @@ class Enumerates extends Crud
         $exception->setHttpStatus("501", "No yet implemented");
         throw $exception;
     }
-
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -149,7 +147,7 @@ class Enumerates extends Crud
         throw $exception;
     }
     //endregion CRUD part
-
+    
     /**
      * Analyze the parameters of the request
      *
@@ -166,7 +164,6 @@ class Enumerates extends Crud
             $this->setOperatorFilter($this->contentParameters["operator"]);
         }
     }
-
     /**
      * Register the keyword
      *
@@ -179,7 +176,6 @@ class Enumerates extends Crud
         }
         $this->keywordFilter = $word;
     }
-
     /**
      * Return the operator filter
      *
@@ -189,7 +185,6 @@ class Enumerates extends Crud
     {
         return $this->operatorFilter;
     }
-
     /**
      * Set the operator filter
      *
@@ -207,7 +202,6 @@ class Enumerates extends Crud
         }
         $this->operatorFilter = $operatorFilter;
     }
-
     /**
      * Return the filter keyword
      *
@@ -217,7 +211,6 @@ class Enumerates extends Crud
     {
         return $this->keywordFilter;
     }
-
     /**
      * Initialize the current family
      *
@@ -236,11 +229,11 @@ class Enumerates extends Crud
         }
         $this->enumid = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : "";
     }
-
+    
     protected function generateEnumUrl($famId, $enumId = "")
     {
         if ($enumId !== "") {
-            $enumId .= ".json";
+            $enumId.= ".json";
         }
         return $this->generateURL("families/$famId/enumerates/$enumId");
     }

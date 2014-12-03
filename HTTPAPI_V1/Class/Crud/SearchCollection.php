@@ -7,18 +7,15 @@
 
 namespace Dcp\HttpApi\V1\Crud;
 
-
 use Dcp\HttpApi\V1\DocManager\DocManager;
 
 class SearchCollection extends DocumentCollection
 {
-
     /**
      * @var \Doc document instance
      */
     protected $_document = null;
-
-
+    
     protected function prepareSearchDoc()
     {
         $ressourceId = $this->urlParameters["identifier"];
@@ -45,8 +42,14 @@ class SearchCollection extends DocumentCollection
         $this->_searchDoc->setObjectReturn();
         $this->_searchDoc->useCollection($ressourceId);
     }
-
-
+    
+    protected function getCollectionProperties()
+    {
+        return array(
+            "title" => $this->_document->getTitle() ,
+            "uri" => $this->generateURL(sprintf("documents/%d.json", $this->_document->initid))
+        );
+    }
     /**
      * Get the restricted attributes
      *
@@ -67,18 +70,18 @@ class SearchCollection extends DocumentCollection
         }
         return array();
     }
-
+    
     public function generateURL($path, $query = null)
     {
         if ($path === "documents/") {
-            $path = sprintf("searches/%s/", $this->_document->id);
+            $path = sprintf("searches/%s/documents/", $this->_document->id);
         }
         return parent::generateURL($path, $query);
     }
-
+    
     protected function extractOrderBy()
     {
         $orderBy = isset($this->contentParameters["orderBy"]) ? $this->contentParameters["orderBy"] : "title:asc";
         return DocumentUtils::extractOrderBy($orderBy, $this->_document);
     }
-} 
+}

@@ -4,5 +4,5 @@
         "offset" :  0,
         "orderBy" : "title asc, id desc"
     },
-    "uri" :               "%baseURL%searches/%searchId%/"
+    "uri" :               "%baseURL%searches/%searchId%/documents/"
 }

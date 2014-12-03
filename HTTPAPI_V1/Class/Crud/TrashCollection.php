@@ -33,4 +33,10 @@ class TrashCollection extends DocumentCollection {
         return $documentFormatter;
     }
 
+    protected function getCollectionProperties()
+    {
+        return array(
+            "title" => ___("The trash", "ddui")
+        );
+    }
 } 
