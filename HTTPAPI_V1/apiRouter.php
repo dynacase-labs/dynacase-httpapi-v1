@@ -129,6 +129,7 @@ try {
 
     global $action;
     WhatInitialisation(AuthenticatorManager::$session);
+    initMainVolatileParam($action->parent);
     $action->name = "HTTPAPI_V1";
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
