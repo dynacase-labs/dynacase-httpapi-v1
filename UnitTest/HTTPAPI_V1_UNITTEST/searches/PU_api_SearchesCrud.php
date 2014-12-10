@@ -149,5 +149,16 @@ class TestSearchesCrud extends TestDocumentsCollectionCrud
         ));
     }
 
+    public function prepareData($data) {
+        $nbSearch = new \SearchDoc();
+        $nbSearch->addFilter("doctype = 'S'");
+        $nbSearch = $nbSearch->onlyCount();
+        if ($nbSearch > 10) {
+            $nbSearch = 10;
+        }
+        $data = str_replace('%nbSearch%', $nbSearch, $data);
+        return parent::prepareData($data);
+    }
+
 
 }

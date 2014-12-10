@@ -197,7 +197,7 @@ class TestDocumentCrud extends TestCaseApi
         $directory = DocManager::getDocument("DIR_TEST_API");
         $this->assertNotNull($directory, "Unable to find document directory");
         $search = DocManager::getDocument("TEST_SEARCH");
-        $this->assertNotNull($search, "Unable to find document searche");
+        $this->assertNotNull($search, "Unable to find document search");
 
         //Replace variant part
         $data = str_replace('%baseURL%', AnalyzeURL::getBaseURL(), $data);
