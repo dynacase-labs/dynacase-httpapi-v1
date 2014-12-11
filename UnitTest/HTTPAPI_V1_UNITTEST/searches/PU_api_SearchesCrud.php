@@ -26,43 +26,45 @@ class TestSearchesCrud extends TestDocumentsCollectionCrud
         try {
             $crud->create();
             $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
+        }
+        catch(DocumentException $exception) {
             $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
-
+    
     public function dataCreateDocument()
     {
-        return array(array(
-            "NO"
-        ));
+        return array(
+            array(
+                "NO"
+            )
+        );
     }
-
     /**
      * @param array $fields
      * @param array $expectedData
      * @dataProvider dataReadDocument
      */
-    public function testRead(array $modifiers, array $fields, $expectedData)
+    public function testRead($modifiers, $fields, $expectedData)
     {
         $crud = new Searches();
         $crud->setContentParameters($modifiers);
         if ($fields !== null) {
             $fieldsString = "";
             foreach ($fields as $currentFields) {
-                $fieldsString .= "document.properties.$currentFields,";
+                $fieldsString.= "document.properties.$currentFields,";
             }
             $crud->setDefaultFields($fieldsString);
         }
         $data = $crud->read(null);
-
-        $data = json_decode(json_encode($data), true);
-
+        
+        $data = json_decode(json_encode($data) , true);
+        
         $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
         $this->checkProperties($data["documents"], $fields);
     }
-
+    
     protected function checkProperties(Array $documents, array $propertiesName = array())
     {
         foreach ($documents as $currentDocument) {
@@ -75,30 +77,36 @@ class TestSearchesCrud extends TestDocumentsCollectionCrud
             }
         }
     }
-
-
+    
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/searches/searches.json");
         return array(
             array(
-                array(),
-                array(),
+                array() ,
+                array() ,
                 $collection
-            ),
+            ) ,
             array(
-                array(),
-                array("adate", "owner", "doctype"),
+                array() ,
+                array(
+                    "adate",
+                    "owner",
+                    "doctype"
+                ) ,
                 $collection
-            ),
+            ) ,
             array(
-                array("orderBy" => "adate", "slice" => "1", "offset" => "1"),
-                array(),
+                array(
+                    "orderBy" => "adate",
+                    "slice" => "1",
+                    "offset" => "1"
+                ) ,
+                array() ,
                 file_get_contents("HTTPAPI_V1_UNITTEST/searches/searches.custom.json")
             )
         );
     }
-
     /**
      * Test that unable to update document
      *
@@ -110,20 +118,22 @@ class TestSearchesCrud extends TestDocumentsCollectionCrud
         try {
             $crud->update(null);
             $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
+        }
+        catch(DocumentException $exception) {
             $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
-
+    
     public function dataUpdateDocument()
     {
-        return array(array(
-            null,
-            null,
-            array()
-        ));
+        return array(
+            array(
+                null,
+                null,
+                array()
+            )
+        );
     }
-
     /**
      * Test that unable to update document
      *
@@ -135,21 +145,25 @@ class TestSearchesCrud extends TestDocumentsCollectionCrud
         try {
             $crud->delete(null);
             $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
+        }
+        catch(DocumentException $exception) {
             $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
-
+    
     public function dataDeleteDocument()
     {
-        return array(array(
-            null,
-            null,
-            array()
-        ));
+        return array(
+            array(
+                null,
+                null,
+                array()
+            )
+        );
     }
-
-    public function prepareData($data) {
+    
+    public function prepareData($data)
+    {
         $nbSearch = new \SearchDoc();
         $nbSearch->addFilter("doctype = 'S'");
         $nbSearch = $nbSearch->onlyCount();
@@ -159,6 +173,4 @@ class TestSearchesCrud extends TestDocumentsCollectionCrud
         $data = str_replace('%nbSearch%', $nbSearch, $data);
         return parent::prepareData($data);
     }
-
-
 }

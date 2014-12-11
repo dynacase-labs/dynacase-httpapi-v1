@@ -26,18 +26,20 @@ class TestHistory extends TestDocumentCrud
         try {
             $crud->create();
             $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
+        }
+        catch(DocumentException $exception) {
             $this->assertEquals(501, $exception->getHttpStatus());
         }
     }
-
+    
     public function dataCreateDocument()
     {
-        return array(array(
-            "NO"
-        ));
+        return array(
+            array(
+                "NO"
+            )
+        );
     }
-
     /**
      * @param string $name
      * @param string $fields
@@ -50,17 +52,17 @@ class TestHistory extends TestDocumentCrud
     {
         $doc = DocManager::getDocument($name);
         $this->assertTrue($doc !== null, "Document $name not found");
-
+        
         $doc->addHistoryEntry("Test entry");
         $crud = new History();
         $data = $crud->read($name);
-
-        $data = json_decode(json_encode($data), true);
-
+        
+        $data = json_decode(json_encode($data) , true);
+        
         $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
-
+    
     public function dataReadDocument()
     {
         $collection = file_get_contents("HTTPAPI_V1_UNITTEST/documents/history/history.json");
@@ -72,7 +74,6 @@ class TestHistory extends TestDocumentCrud
             )
         );
     }
-
     /**
      * Test that unable to update document
      *
@@ -81,52 +82,53 @@ class TestHistory extends TestDocumentCrud
      * @param array $updateValues
      * @param array $expectedValues
      */
-    public function testUpdateDocument($name, $updateValues , array $expectedValues)
+    public function testUpdateDocument($name, $updateValues, $expectedValues)
     {
         $crud = new History();
         try {
             $crud->update(null);
             $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
+        }
+        catch(DocumentException $exception) {
             $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
-
+    
     public function dataUpdateDocument()
     {
-        return array(array(
-            null,
-            null,
-            array()
-        ));
+        return array(
+            array(
+                null,
+                null,
+                array()
+            )
+        );
     }
-
     /**
      * Test that unable to update document
      *
      * @dataProvider dataDeleteDocument
      */
-    public function testDeleteDocument($name, $fields, array $expectedValues)
+    public function testDeleteDocument($name, $fields, $expectedValues)
     {
         $crud = new History();
         try {
             $crud->delete(null);
             $this->assertFalse(true, "An exception must occur");
-        } catch (DocumentException $exception) {
+        }
+        catch(DocumentException $exception) {
             $this->assertEquals(405, $exception->getHttpStatus());
         }
     }
-
+    
     public function dataDeleteDocument()
     {
-        return array(array(
-            null,
-            null,
-            array()
-        ));
+        return array(
+            array(
+                null,
+                null,
+                array()
+            )
+        );
     }
-
-
-
-
 }
