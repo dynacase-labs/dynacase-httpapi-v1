@@ -161,4 +161,15 @@ class TestFoldersCrud extends TestDocumentsCollectionCrud
             )
         );
     }
+    public function prepareData($data)
+    {
+        $nbSearch = new \SearchDoc();
+        $nbSearch->addFilter("doctype = 'D'");
+        $nbSearch = $nbSearch->onlyCount();
+        if ($nbSearch > 10) {
+            $nbSearch = 10;
+        }
+        $data = str_replace('%nbFolder%', $nbSearch, $data);
+        return parent::prepareData($data);
+    }
 }
