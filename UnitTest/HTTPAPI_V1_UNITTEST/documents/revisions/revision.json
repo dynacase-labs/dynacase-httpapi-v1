@@ -137,16 +137,16 @@
                     "displayValue" : "42"
                 },
                 {
-                    "value" :        546546478845123,
-                    "displayValue" : "546546478845123"
+                    "value" :        987654,
+                    "displayValue" : "987654"
                 },
                 {
                     "value" :        0,
                     "displayValue" : ""
                 },
                 {
-                    "value" :        -546546478845123,
-                    "displayValue" : "-546546478845123"
+                    "value" :        -5637,
+                    "displayValue" : "-5637"
                 }
             ],
             "tst_apibase_longtext_array" :         [
