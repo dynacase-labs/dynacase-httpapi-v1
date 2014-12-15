@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-03 13:41+0100\n"
+"POT-Creation-Date: 2014-12-11 15:05+0100\n"
 "PO-Revision-Date: 2014-12-03 13:44+0100\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
@@ -89,7 +89,8 @@ msgid "HTTPAPI_V1:default logger class"
 msgstr "Classes de LOG par défaut"
 
 msgid "HTTPAPI_V1:default value of the slice for collection"
-msgstr "Valeur par défaut pour le nombre de résultats retourné pour une collection"
+msgstr ""
+"Valeur par défaut pour le nombre de résultats retourné pour une collection"
 
 msgid "HTTPAPI_V1_DEV:Basic ACL"
 msgstr "ACL Basic"
@@ -120,11 +121,11 @@ msgctxt "HTTPAPI_V1"
 msgid "Updated by HTTP API"
 msgstr "Mis à jour par l'API HTTP"
 
-msgid "api"
-msgstr "api"
-
 #~ msgid "HTTPAPI_V1:custom crud class"
 #~ msgstr "Classes de CRUD additionnelles"
 
 #~ msgid "HTTPAPI_V1:default crud class"
 #~ msgstr "Classes de CRUD par défaut"
+
+#~ msgid "api"
+#~ msgstr "api"
