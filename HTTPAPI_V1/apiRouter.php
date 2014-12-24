@@ -17,6 +17,7 @@ $jsonFatalShutdown = function () use (&$loggers)
     if ($error !== NULL) {
         if (in_array($error["type"], array(
             E_ERROR,
+            E_PARSE,
             E_COMPILE_ERROR,
             E_CORE_ERROR,
             E_USER_ERROR,
