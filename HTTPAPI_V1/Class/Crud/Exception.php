@@ -123,6 +123,18 @@ namespace {
          */
         const CRUD0222 = 'Redirect : the canonical URL is not here';
         /**
+         * @errorCode THe user tag not exists
+         */
+        const CRUD0223 = 'Tag "%s" not exists';
+        /**
+         * @errorCode The user tag is not created
+         */
+        const CRUD0224 = 'Cannot create tag "%s"  : %s';
+        /**
+         * @errorCode The user tag cannot be created
+         */
+        const CRUD0225 = 'Tag "%s" already exists';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const CRUD0300 = 'File Record fail.  : "%s"';

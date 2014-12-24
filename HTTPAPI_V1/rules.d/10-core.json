@@ -71,6 +71,20 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\UserTagCollection",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/usertags/$%",
+        "description" :  "User tags of the document <documentId>",
+        "canonicalURL" : "documents/<documentId>/usertags/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\UserTag",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/usertags/(?P<tagIdentifier>[^/]+)$%",
+        "description" :  "User tag <tag> of the document <documentId>",
+        "canonicalURL" : "documents/<documentId>/usertags/<tag>"
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashHistory",
         "regExp" :       "%^/trash/(?P<identifier>[^/]+)/history/$%",
         "description" :  "History of the document <documentId>",
@@ -82,6 +96,20 @@
         "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/history/$%",
         "description" :  "History of the document <documentId> of the family <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/history/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\UserTagCollection",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/usertags/$%",
+        "description" :  "User Tags of the document <documentId> of the family <familyId>",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/usertags/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\UserTag",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/usertags//(?P<tagIdentifier>[^/]+)$%",
+        "description" :  "User Tag <tag> of the document <documentId> of the family <familyId>",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/usertags/<tag>"
     },
     {
         "order" :        100,
