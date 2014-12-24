@@ -6,29 +6,35 @@
 */
 
 chdir('..'); // need to be in root directory to be authenticated
-require_once('WHAT/autoload.php');
-require_once('WHAT/Lib.Main.php');
-
+require_once ('WHAT/autoload.php');
+require_once ('WHAT/Lib.Main.php');
 //region initErrorHandling
 ini_set("display_error", "off");
 $loggers = array();
-$jsonFatalShutdown = function () use (&$loggers) {
+$jsonFatalShutdown = function () use (&$loggers)
+{
     $error = error_get_last();
     if ($error !== NULL) {
-        if ($error["type"] == E_ERROR) {
+        if (in_array($error["type"], array(
+            E_ERROR,
+            E_COMPILE_ERROR,
+            E_CORE_ERROR,
+            E_USER_ERROR,
+            E_RECOVERABLE_ERROR
+        ))) {
             ob_clean();
             $return = new \Dcp\HttpApi\V1\Api\RecordReturn();
             $return->setHttpStatusCode(500, "Dynacase Fatal Error");
             $message = new \Dcp\HttpApi\V1\Api\RecordReturnMessage();
-            $message->contentText = join(" ", $error);
+            $message->contentText = join(", ", $error);
             $message->type = $message::ERROR;
             $return->addMessage($message);
             $return->success = false;
+            $return->send();
             foreach ($loggers as $currentLogger) {
                 /* @var \Dcp\HttpApi\V1\Logger\Logger $currentLogger */
                 $currentLogger->writeError("PHP Error : " . $message->contentText);
             }
-            $return->send();
         }
     }
 };
@@ -38,24 +44,27 @@ register_shutdown_function($jsonFatalShutdown);
 $return = new Dcp\HttpApi\V1\Api\RecordReturn();
 //region initLogger
 try {
-    $loggerList = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_LOGGER"), true);
-    $customLogger = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CUSTOM_LOGGER"), true);
+    $loggerList = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "SYSTEM_LOGGER") , true);
+    $customLogger = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CUSTOM_LOGGER") , true);
     foreach ($loggerList as $currentLogger) {
         $loggers[] = new $currentLogger();
     }
-    $writeError = function ($message, $context = null, $stack = null) use (&$loggers) {
+    $writeError = function ($message, $context = null, $stack = null) use (&$loggers)
+    {
         foreach ($loggers as $currentLogger) {
             /* @var \Dcp\HttpApi\V1\Logger\Logger $currentLogger */
             $currentLogger->writeError($message, $context, $stack);
         }
     };
-    $writeWarning = function ($message, $context = null, $stack = null) use (&$loggers) {
+    $writeWarning = function ($message, $context = null, $stack = null) use (&$loggers)
+    {
         foreach ($loggers as $currentLogger) {
             /* @var \Dcp\HttpApi\V1\Logger\Logger $currentLogger */
             $currentLogger->writeWarning($message, $context, $stack);
         }
     };
-    $writeMessage = function ($message, $context = null, $stack = null) use (&$loggers) {
+    $writeMessage = function ($message, $context = null, $stack = null) use (&$loggers)
+    {
         foreach ($loggers as $currentLogger) {
             /* @var \Dcp\HttpApi\V1\Logger\Logger $currentLogger */
             $currentLogger->writeMessage($message, $context, $stack);
@@ -71,7 +80,8 @@ try {
     } else {
         throw new Dcp\HttpApi\V1\Api\Exception("Unable to read custom logger, you should check the custom logger conf.");
     }
-    $defaultPageMessage = function () {
+    $defaultPageMessage = function ()
+    {
         $coreURL = \ApplicationParameterManager::getScopedParameterValue("CORE_URLINDEX");
         $defaultURL = $coreURL . \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "DEFAULT_PAGE");
         $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
@@ -79,18 +89,17 @@ try {
         $message->contentHtml = sprintf('You can consult <a href="%s">the REST page</a> to have info on the API', $defaultURL);
         return $message;
     };
-//endRegion initLogger
-
-//region Authentification
+    //endRegion initLogger
+    //region Authentification
     if (file_exists('maintenance.lock')) {
         $exception = new Dcp\HttpApi\V1\Api\Exception("Maintenance in progress");
         $exception->setHttpStatus(503, "Service Unavailable");
         $exception->setUserMessage("Maintenance in progress");
         throw $exception;
     }
-
+    
     $authtype = getAuthType();
-
+    
     if ($authtype == 'apache') {
         // Apache has already handled the authentication
         global $_SERVER;
@@ -100,9 +109,9 @@ try {
             throw $exception;
         }
     } else {
-
+        
         $status = AuthenticatorManager::checkAccess(null, true);
-
+        
         switch ($status) {
             case 0: // it'good, user is authentified
                 break;
@@ -118,15 +127,14 @@ try {
         }
         $_SERVER['PHP_AUTH_USER'] = AuthenticatorManager::$auth->getAuthUser();
     }
-// First control
+    // First control
     if (empty($_SERVER['PHP_AUTH_USER'])) {
         $exception = new Dcp\HttpApi\V1\Api\Exception("User must be authenticated");
         $exception->setHttpStatus("403", "Forbidden");
         throw $exception;
     }
-//endregion Authentification
-//Initialize return object
-
+    //endregion Authentification
+    //Initialize return object
     global $action;
     WhatInitialisation(AuthenticatorManager::$session);
     initMainVolatileParam($action->parent);
@@ -135,7 +143,7 @@ try {
     $messages = array();
     //Routing
     $data = Dcp\HttpApi\V1\Api\Router::execute($messages);
-
+    
     $return->setData($data);
     foreach ($messages as $message) {
         $return->addMessage($message);
@@ -159,12 +167,13 @@ try {
     }
     $action->parent->clearLogMsg();
 } //region ErrorCatching
-catch (Dcp\HttpApi\V1\Etag\Exception $exception) {
+catch(Dcp\HttpApi\V1\Etag\Exception $exception) {
     header("Cache-Control: private, no-cache, must-revalidate", true);
     return;
-} catch (Dcp\HttpApi\V1\Crud\Exception $exception) {
-
-    $return->setHttpStatusCode($exception->getHttpStatus(), $exception->getHttpMessage());
+}
+catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
+    
+    $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
@@ -183,9 +192,9 @@ catch (Dcp\HttpApi\V1\Etag\Exception $exception) {
     $return->addMessage($defaultPageMessage());
 }
 
-catch (Dcp\HttpApi\V1\Api\Exception $exception) {
-
-    $return->setHttpStatusCode($exception->getHttpStatus(), $exception->getHttpMessage());
+catch(Dcp\HttpApi\V1\Api\Exception $exception) {
+    
+    $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
@@ -202,7 +211,8 @@ catch (Dcp\HttpApi\V1\Api\Exception $exception) {
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);
     $return->addMessage($defaultPageMessage());
-} catch (\Dcp\Exception $exception) {
+}
+catch(\Dcp\Exception $exception) {
     $return = new Dcp\HttpApi\V1\Api\RecordReturn();
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
@@ -213,7 +223,8 @@ catch (Dcp\HttpApi\V1\Api\Exception $exception) {
     $return->addMessage($message);
     $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($defaultPageMessage());
-} catch (\Exception $exception) {
+}
+catch(\Exception $exception) {
     $return = new Dcp\HttpApi\V1\Api\RecordReturn();
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
@@ -228,7 +239,7 @@ catch (Dcp\HttpApi\V1\Api\Exception $exception) {
 //endregion ErrorCatching
 //Send the HTTP return
 $headers = headers_list();
-foreach($headers as $currentHeader) {
+foreach ($headers as $currentHeader) {
     if (mb_strpos($currentHeader, "ETag") === 0) {
         header("Cache-Control: private, no-cache, must-revalidate", true);
         header_remove("Pragma");
