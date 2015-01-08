@@ -88,12 +88,21 @@ class UserTag extends Crud
      */
     public function delete($resourceId)
     {
-        $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("405", "You cannot delete history");
-        throw $exception;
+        $this->setDocument($resourceId);
+        
+        $userTag = $this->_document->getUTag($this->tagIdentifier, false);
+        if (!$userTag) {
+            $exception = new Exception("CRUD0223", $this->tagIdentifier);
+            throw $exception;
+        }
+        $err = $this->_document->delUTag(getCurrentUser()->id, $this->tagIdentifier);
+        if ($err) {
+            $exception = new Exception("CRUD0224", $this->tagIdentifier, $err);
+            throw $exception;
+        }
+        return null;
     }
     //endregion CRUD part
-    
     protected function getUserTagInfo()
     {
         $info = array();
@@ -110,7 +119,7 @@ class UserTag extends Crud
          * @var \DocUTag $userTag
          */
         
-        $value = true;
+        $value = '';
         if ($userTag->comment) {
             if ($json = json_decode($userTag->comment)) {
                 $value = $json;
@@ -122,11 +131,10 @@ class UserTag extends Crud
         $tags = array(
             "id" => $userTag->tag,
             "date" => $userTag->date,
-            "uri" => $this->generateURL(sprintf("%s/%s/usertags/%s", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid, $userTag->tag)) ,
             "value" => $value
         );
         
-        $info["uri"] = $this->generateURL(sprintf("%s/%s/usertags/", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid));
+        $info["uri"] = $this->generateURL(sprintf("%s/%s/usertags/%s", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid, $userTag->tag));
         
         $info["userTag"] = $tags;
         return $info;

@@ -135,6 +135,10 @@ namespace {
          */
         const CRUD0225 = 'Tag "%s" already exists';
         /**
+         * @errorCode The user tag cannot be created
+         */
+        const CRUD0226 = 'Cannot delete tag "%s"  : %s';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const CRUD0300 = 'File Record fail.  : "%s"';
