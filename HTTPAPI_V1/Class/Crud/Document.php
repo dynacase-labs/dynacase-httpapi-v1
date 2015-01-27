@@ -478,7 +478,7 @@ class Document extends Crud
                 $enumItems = array();
                 foreach ($enums as $key => $label) {
                     $enumItems[] = array(
-                        "key" => $key,
+                        "key" => (string)$key,
                         "label" => $label
                     );
                 }
