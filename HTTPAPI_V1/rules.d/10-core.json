@@ -78,6 +78,34 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowStateCollection",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/workflows/states/$%",
+        "description" :  "Workflow state list for <documentId> document",
+        "canonicalURL" : "documents/<documentId>/workflows/states/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowState",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/workflows/states/(?P<state>[^/]+)$%",
+        "description" :  "Workflow state for  <documentId> document",
+        "canonicalURL" : "documents/<documentId>/workflows/states/<state>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowTransitionCollection",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/workflows/transitions/$%",
+        "description" :  "Workflow transition list for <documentId> document",
+        "canonicalURL" : "documents/<documentId>/workflows/transitions/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowTransition",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/workflows/transitions/(?P<transition>[^/]+)$%",
+        "description" :  "Workflow transition properties for <documentId> document",
+        "canonicalURL" : "documents/<documentId>/workflows/transitions/<transition>"
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\UserTag",
         "regExp" :       "%^/documents/(?P<identifier>[^/]+)/usertags/(?P<tagIdentifier>[^/]+)$%",
         "description" :  "User tag <tag> of the document <documentId>",
@@ -96,6 +124,34 @@
         "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/history/$%",
         "description" :  "History of the document <documentId> of the family <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/history/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowStateCollection",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/workflows/states/$%",
+        "description" :  "Workflow state list for <documentId> document",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/workflows/states/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowState",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/workflows/states/(?P<state>[^/]+)$%",
+        "description" :  "Workflow state for  <documentId> document",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/workflows/states/<state>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowTransitionCollection",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/workflows/transitions/$%",
+        "description" :  "Workflow transition list for <documentId> document",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/workflows/transitions/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\WorkflowTransition",
+        "regExp" :       "%/families/(?P<familyId>[^/]+)^/documents/(?P<identifier>[^/]+)/workflows/transitions/(?P<transition>[^/]+)$%",
+        "description" :  "Workflow transition properties for <documentId> document",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/workflows/transitions/<transition>"
     },
     {
         "order" :        100,
