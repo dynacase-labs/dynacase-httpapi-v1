@@ -35,9 +35,12 @@ class Document extends Crud
      */
     public $iconSize = 32;
     
-    public function __construct()
+    public function __construct(\Doc $document = null)
     {
         parent::__construct();
+        if ($document !== null) {
+            $this->_document = $document;
+        }
         $this->defaultFields = self::GET_PROPERTIES . "," . self::GET_ATTRIBUTES;
     }
     //region CRUD part
@@ -414,11 +417,11 @@ class Document extends Crud
      * @param int $order
      * @return array
      */
-    protected function getAttributeInfo(\BasicAttribute $attribute, $order = 0)
+    public function getAttributeInfo(\BasicAttribute $attribute, $order = 0)
     {
         $info = array(
             "id" => $attribute->id,
-            "visibility" => $attribute->mvisibility,
+            "visibility" => ($attribute->mvisibility) ? $attribute->mvisibility : $attribute->visibility,
             "label" => $attribute->getLabel() ,
             "type" => $attribute->type,
             "logicalOrder" => $order,

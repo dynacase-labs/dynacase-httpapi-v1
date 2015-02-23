@@ -5,7 +5,7 @@
     <description>Dynacase HTTP Api v1 : sandbox</description>
 
     <requires>
-        <module comp="ge" name="dynacase-httpapi-v1" version="1.0.0"/>
+        <module  name="dynacase-httpapi-v1" />
         <module comp="ge" name="dynacase-core" version="3.2"/>
     </requires>
 

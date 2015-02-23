@@ -162,7 +162,7 @@ try {
     $warnings = $action->parent->getLogMsg();
     foreach ($warnings as $warning) {
         $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
-        $message->contentText = $warning;
+        $message->contentText = stripslashes($warning);
         $message->type = $message::NOTICE;
         $return->addMessage($message);
     }

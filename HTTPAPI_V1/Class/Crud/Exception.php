@@ -139,6 +139,22 @@ namespace {
          */
         const CRUD0226 = 'Cannot delete tag "%s"  : %s';
         /**
+         * @errorCode A workflow must be set to get state list
+         */
+        const CRUD0227 = 'No associated workflow for document "%s"';
+        /**
+         * @errorCode The state is not defined in the workflow
+         */
+        const CRUD0228 = 'State "%s" no available for  workflow "%s" (%d)';
+        /**
+         * @errorCode The transition is not defined in the workflow
+         */
+        const CRUD0229 = 'transition "%s" no available for  workflow "%s" (%d)';
+        /**
+         * @errorCode Need transition acl
+         */
+        const CRUD0230 = 'Cannot use transition "%s" ';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const CRUD0300 = 'File Record fail.  : "%s"';
