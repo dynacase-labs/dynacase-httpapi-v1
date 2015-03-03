@@ -16,8 +16,11 @@ class Manager {
      */
     public function verifyCache($etag)
     {
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            return trim($_SERVER['HTTP_IF_NONE_MATCH']) === "\"$etag\"";
+        $etagFromClient = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : "";
+        if ($etagFromClient) {
+            //Handle add of -gzip to etag by apache in mode deflate
+            $etagFromClient = str_replace("-gzip", "", $etagFromClient);
+            return $etagFromClient === "\"$etag\"";
         } else {
             return false;
         }
