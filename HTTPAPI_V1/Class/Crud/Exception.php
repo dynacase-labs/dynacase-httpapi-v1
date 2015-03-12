@@ -155,6 +155,22 @@ namespace {
          */
         const CRUD0230 = 'Cannot use transition "%s" ';
         /**
+         * @errorCode Lock is not granted
+         */
+        const CRUD0231 = 'Cannot lock document : "%s" ';
+        /**
+         * @errorCode UnLock is not granted
+         */
+        const CRUD0232 = 'Cannot unlock document : "%s" ';
+        /**
+         * @errorCode Temporary UnLock is not granted if a permanent lock is set
+         */
+        const CRUD0233 = 'Cannot unlock temporary lock. A permanent lock is set  : "%s" ';
+        /**
+         * @errorCode Permanent UnLock is not possible only temporary lock is set
+         */
+        const CRUD0234 = 'Cannot unlock permanent lock. A temporary lock is set (use DELETE locks/ to delete all locks) : "%s" ';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const CRUD0300 = 'File Record fail.  : "%s"';
