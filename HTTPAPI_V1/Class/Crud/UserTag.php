@@ -229,7 +229,7 @@ class UserTag extends Crud
     public function analyseJSON($jsonString)
     {
         return array(
-            "tagValue" => $jsonString
+            "tagValue" => json_decode($jsonString)
         );
     }
     /**
