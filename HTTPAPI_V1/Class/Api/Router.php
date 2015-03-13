@@ -143,7 +143,7 @@ class Router
         if ($method === Crud::READ) {
             return $_GET;
         }
-        if ($method === Crud::UPDATE || $method === Crud::CREATE || $method === Crud::DELETE) {
+        if ($method === Crud::UPDATE || $method === Crud::CREATE) {
             return static::getHttpAttributeValues($crudElement);
         }
         return array();

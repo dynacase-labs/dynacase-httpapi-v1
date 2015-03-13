@@ -68,14 +68,7 @@ class Lock extends Crud
      */
     public function update($resourceId)
     {
-        $this->setDocument($resourceId);
-        
-        $err = $this->_document->addUTag(getCurrentUser()->id, $this->tagIdentifier, trim($this->contentParameters["tagValue"], '"'));
-        if ($err) {
-            $exception = new Exception("CRUD0224", $this->tagIdentifier, $err);
-            throw $exception;
-        }
-        return $this->getLockInfo();
+        return $this->create();
     }
     /**
      * Delete ressource
