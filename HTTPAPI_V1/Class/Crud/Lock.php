@@ -9,7 +9,7 @@ namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\HttpApi\V1\DocManager\DocManager as DocManager;
 
-class UserTag extends Crud
+class Lock extends Crud
 {
     protected $baseURL = "documents";
     /**
@@ -25,7 +25,8 @@ class UserTag extends Crud
     
     protected $offset = 0;
     
-    protected $tagIdentifier = "";
+    protected $temporaryLock = false;
+    protected $lockType = "permanent";
     //region CRUD part
     
     /**
@@ -37,18 +38,14 @@ class UserTag extends Crud
     {
         $resourceId = $this->urlParameters["identifier"];
         $this->setDocument($resourceId);
-        $userTag = $this->_document->getUTag($this->tagIdentifier, false);
-        if ($userTag) {
-            $exception = new Exception("CRUD0225", $this->tagIdentifier);
+        $err = $this->_document->lock($this->temporaryLock);
+        
+        if ($err) {
+            $exception = new Exception("CRUD0231", $err);
             throw $exception;
         }
         
-        $err = $this->_document->addUTag(getCurrentUser()->id, $this->tagIdentifier, $this->contentParameters["tagValue"]);
-        if ($err) {
-            $exception = new Exception("CRUD0224", $this->tagIdentifier, $err);
-            throw $exception;
-        }
-        return $this->getUserTagInfo();
+        return $this->getLockInfo();
     }
     /**
      * Gettag ressource
@@ -61,7 +58,7 @@ class UserTag extends Crud
     {
         $this->setDocument($resourceId);
         
-        return $this->getUserTagInfo();
+        return $this->getLockInfo();
     }
     /**
      * Update or create a tag  ressource
@@ -71,14 +68,7 @@ class UserTag extends Crud
      */
     public function update($resourceId)
     {
-        $this->setDocument($resourceId);
-        
-        $err = $this->_document->addUTag(getCurrentUser()->id, $this->tagIdentifier, $this->contentParameters["tagValue"]);
-        if ($err) {
-            $exception = new Exception("CRUD0224", $this->tagIdentifier, $err);
-            throw $exception;
-        }
-        return $this->getUserTagInfo();
+        return $this->create();
     }
     /**
      * Delete ressource
@@ -90,53 +80,54 @@ class UserTag extends Crud
     {
         $this->setDocument($resourceId);
         
-        $userTag = $this->_document->getUTag($this->tagIdentifier, false);
-        if (!$userTag) {
-            $exception = new Exception("CRUD0223", $this->tagIdentifier);
+        if ($this->temporaryLock && $this->_document->locked > 0) {
+            
+            $exception = new Exception("CRUD0233", $this->_document->getTitle());
             throw $exception;
         }
-        $err = $this->_document->delUTag(getCurrentUser()->id, $this->tagIdentifier);
+        if (!$this->temporaryLock && $this->hasTemporaryLock()) {
+            $exception = new Exception("CRUD0234", $this->_document->getTitle());
+            throw $exception;
+        }
+        
+        $err = $this->_document->unlock($this->temporaryLock);
+        
         if ($err) {
-            $exception = new Exception("CRUD0224", $this->tagIdentifier, $err);
+            $exception = new Exception("CRUD0232", $err);
             throw $exception;
         }
-        return null;
+        
+        return $this->getLockInfo();
     }
     //endregion CRUD part
-    protected function getUserTagInfo()
+    protected function hasTemporaryLock()
+    {
+        return ($this->_document->locked < - 1);
+    }
+    
+    protected function getLockInfo()
     {
         $info = array();
         
-        $userTag = $this->_document->getUTag($this->tagIdentifier, false);
-        
-        if (!$userTag) {
-            
-            $exception = new Exception("CRUD0223", $this->tagIdentifier);
-            $exception->setHttpStatus("404", "Not found");
-            throw $exception;
+        if ($this->_document->locked == - 1) {
+            $lock = null;
+        } elseif ($this->_document->locked == 0) {
+            $lock = null;
+        } else {
+            $lock = array(
+                
+                "lockedBy" => array(
+                    "id" => abs($this->_document->locked) ,
+                    "title" => \Account::getDisplayName(abs($this->_document->locked))
+                ) ,
+                "isMyLock" => (abs($this->_document->locked) == getCurrentUser()->id) ,
+                "temporary" => $this->hasTemporaryLock() ,
+                "fixed" => false
+            );
         }
-        /**
-         * @var \DocUTag $userTag
-         */
+        $info["uri"] = $this->generateURL(sprintf("%s/%s/locks/%s", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid, ($this->hasTemporaryLock()) ? "temporary" : "permanent"));
         
-        $value = '';
-        if ($userTag->comment) {
-            if ($json = json_decode($userTag->comment)) {
-                $value = $json;
-            } else {
-                $value = $userTag->comment;
-            }
-        }
-        
-        $tags = array(
-            "id" => $userTag->tag,
-            "date" => $userTag->date,
-            "value" => $value
-        );
-        
-        $info["uri"] = $this->generateURL(sprintf("%s/%s/usertags/%s", $this->baseURL, $this->_document->name ? $this->_document->name : $this->_document->initid, $userTag->tag));
-        
-        $info["userTag"] = $tags;
+        $info["lock"] = $lock;
         return $info;
     }
     /**
@@ -191,46 +182,8 @@ class UserTag extends Crud
                 throw $exception;
             }
         }
-        $this->tagIdentifier = $this->urlParameters["tagIdentifier"];
-    }
-    /**
-     * Set limit of revision to send
-     * @param int $slice
-     */
-    public function setSlice($slice)
-    {
-        $this->slice = intval($slice);
-    }
-    /**
-     * Set offset of revision to send
-     * @param int $offset
-     */
-    public function setOffset($offset)
-    {
-        $this->offset = intval($offset);
-    }
-    /**
-     * Analyze the parameters of the request
-     *
-     * @param array $parameters
-     */
-    public function setContentParameters(array $parameters)
-    {
-        parent::setContentParameters($parameters);
-        
-        if (isset($this->contentParameters["slice"])) {
-            $this->setSlice($this->contentParameters["slice"]);
-        }
-        if (isset($this->contentParameters["offset"])) {
-            $this->setOffset($this->contentParameters["offset"]);
-        }
-    }
-    
-    public function analyseJSON($jsonString)
-    {
-        return array(
-            "tagValue" => json_decode($jsonString)
-        );
+        $this->lockType = isset($this->urlParameters["lockType"]) ? $this->urlParameters["lockType"] : null;
+        $this->temporaryLock = ($this->lockType === "temporary");
     }
     /**
      * Generate the etag info for the current ressource
@@ -243,8 +196,10 @@ class UserTag extends Crud
         if (isset($this->urlParameters["identifier"])) {
             $id = $this->urlParameters["identifier"];
             $id = DocManager::getIdentifier($id, true);
-            $sql = sprintf("select id, date, comment from docutag where id = %d order by date desc limit 1", $id);
+            $sql = sprintf("select id, locked from docread where id = %d", $id);
             simpleQuery(getDbAccess() , $sql, $result, false, true);
+            $result[] = getCurrentUser()->id;
+            
             return join("", $result);
         }
         return null;

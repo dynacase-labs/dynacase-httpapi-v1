@@ -113,6 +113,20 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\LockCollection",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/locks/$%",
+        "description" :  "Information about lock of the document <documentId>",
+        "canonicalURL" : "documents/<documentId>/locks/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Lock",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/locks/(?P<lockType>(temporary|permanent))$%",
+        "description" :  "Lock of the document <documentId>",
+        "canonicalURL" : "documents/<documentId>/locks/<temporary|permanent>"
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashHistory",
         "regExp" :       "%^/trash/(?P<identifier>[^/]+)/history/$%",
         "description" :  "History of the document <documentId>",
@@ -167,6 +181,23 @@
         "description" :  "User Tag <tag> of the document <documentId> of the family <familyId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/usertags/<tag>"
     },
+
+
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\LockCollection",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/locks/$%",
+        "description" :  "Information about lock of the document <documentId>",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/locks/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Lock",
+        "regExp" :       "%^/families/(?P<familyId>[^/]+)/documents/(?P<identifier>[^/]+)/locks/(?P<lockType>(temporary|permanent))$%",
+        "description" :  "Lock of the document <documentId>",
+        "canonicalURL" : "families/<familyId>/documents/<documentId>/locks/<temporary|permanent>"
+    },
+
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",

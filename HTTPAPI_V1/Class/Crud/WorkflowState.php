@@ -242,8 +242,10 @@ class WorkflowState extends Crud
             $id = $this->urlParameters["identifier"];
             $doc = DocManager::getDocument($id);
             if ($doc->wid > 0) {
-                $sql = sprintf("select id, revdate from docread where id = %d", $doc->wid);
-                simpleQuery(getDbAccess() , $sql, $result, false, true);
+                $sql = sprintf("select id, revdate from docread where id = %d or id = %d", $doc->wid, $doc->id);
+                simpleQuery(getDbAccess() , $sql, $results, false, false);
+                $result = array_merge(array_values($results[0]) , array_values($results[1]));
+                
                 $user = getCurrentUser();
                 $result[] = $user->id;
                 $result[] = $user->memberof;
