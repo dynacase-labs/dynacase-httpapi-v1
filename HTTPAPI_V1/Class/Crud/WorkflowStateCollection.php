@@ -17,9 +17,17 @@ class WorkflowStateCollection extends Crud
      */
     protected $_document = null;
     /**
+     * @var \WDoc
+     */
+    protected $workflow = null;
+    /**
      * @var \DocFam
      */
     protected $_family = null;
+    /**
+     * @var bool if true return all states else only followings
+     */
+    protected $allStates = false;
     //region CRUD part
     
     /**
@@ -43,12 +51,7 @@ class WorkflowStateCollection extends Crud
     public function read($resourceId)
     {
         $this->setDocument($resourceId);
-        $err = $this->_document->control("view");
-        if ($err) {
-            $exception = new Exception("CRUD0201", $resourceId, $err);
-            $exception->setHttpStatus("403", "Forbidden");
-            throw $exception;
-        }
+
         
         $info = array();
         
@@ -56,15 +59,14 @@ class WorkflowStateCollection extends Crud
         $info["uri"] = $baseUrl . "states/";
         
         $states = array();
-        /**
-         * @var \WDoc $workflow
-         */
-        $workflow = DocManager::getDocument($this->_document->wid);
-        $workflow->set($this->_document);
-        $wStates = $workflow->getFollowingStates();
-        
+
+        if ($this->allStates) {
+            $wStates = $this->workflow->getStates();
+        } else {
+            $wStates = $this->workflow->getFollowingStates();
+        }
         foreach ($wStates as $aState) {
-            $transition = $workflow->getTransition($this->_document->state, $aState);
+            $transition = $this->workflow->getTransition($this->_document->state, $aState);
             if ($transition) {
                 $transitionData = array(
                     "uri" => sprintf("%stransitions/%s", $baseUrl, $transition["id"]) ,
@@ -73,11 +75,14 @@ class WorkflowStateCollection extends Crud
             } else {
                 $transitionData = null;
             }
-            
-            $states[] = array(
-                "uri" => sprintf("%s%s", $info["uri"], $aState) ,
-                "transition" => $transitionData
-            );
+
+            $state=$this->getStateInfo($aState);
+            $state["uri"] =  sprintf("%s%s", $info["uri"], $aState) ;
+
+            $state["transition"] =
+                 $transitionData;
+
+            $states[] = $state;
         }
         /**
          * @var \Doc $revision
@@ -132,7 +137,12 @@ class WorkflowStateCollection extends Crud
             $exception->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $exception;
         }
-        
+        $err = $this->_document->control("view");
+        if ($err) {
+            $exception = new Exception("CRUD0201", $resourceId, $err);
+            $exception->setHttpStatus("403", "Forbidden");
+            throw $exception;
+        }
         if ($this->_document->wid == 0) {
             $exception = new Exception("CRUD0227", $resourceId);
             $exception->setHttpStatus("404", "No workflow detected");
@@ -144,6 +154,12 @@ class WorkflowStateCollection extends Crud
             $exception->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
             throw $exception;
         }
+
+        /**
+         * @var \WDoc $workflow
+         */
+        $this->workflow = DocManager::getDocument($this->_document->wid);
+        $this->workflow->set($this->_document);
     }
     /**
      * Set the family of the current request
@@ -163,6 +179,7 @@ class WorkflowStateCollection extends Crud
                 throw $exception;
             }
         }
+
     }
     /**
      * Set limit of revision to send
@@ -195,6 +212,8 @@ class WorkflowStateCollection extends Crud
         if (isset($this->contentParameters["offset"])) {
             $this->setOffset($this->contentParameters["offset"]);
         }
+
+        $this->allStates=!(empty($this->contentParameters["allStates"]));
     }
     /**
      * Generate the etag info for the current ressource
@@ -219,5 +238,18 @@ class WorkflowStateCollection extends Crud
             }
         }
         return null;
+    }
+    protected function getStateInfo($state)
+    {
+        if (empty($state)) {
+            return null;
+        }
+        return array(
+            "id" => $state,
+            "label" => _($state) ,
+            "activity" => $this->workflow->getActivity($state) ,
+            "displayValue" => ($this->workflow->getActivity($state)) ? $this->workflow->getActivity($state) : _($state) ,
+            "color" => $this->workflow->getColor($state)
+        );
     }
 }

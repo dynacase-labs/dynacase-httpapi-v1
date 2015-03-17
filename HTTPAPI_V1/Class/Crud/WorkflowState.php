@@ -44,10 +44,12 @@ class WorkflowState extends Crud
         $this->setDocument($this->documentId);
         $this->workflow = DocManager::getDocument($this->_document->wid);
         $this->workflow->set($this->_document);
-        
+
+        $this->workflow->disableEditControl();
         foreach ($this->contentParameters["parameters"] as $aid => $value) {
             $this->workflow->setAttributeValue($aid, $value);
         }
+        $this->workflow->enableEditControl();
         
         $err = $this->workflow->changeState($this->getState() , $this->contentParameters["comment"], $force = false, true, true, true, true, true, true, $message);
         if ($err) {
