@@ -51,7 +51,6 @@ class WorkflowStateCollection extends Crud
     public function read($resourceId)
     {
         $this->setDocument($resourceId);
-
         
         $info = array();
         
@@ -59,7 +58,7 @@ class WorkflowStateCollection extends Crud
         $info["uri"] = $baseUrl . "states/";
         
         $states = array();
-
+        
         if ($this->allStates) {
             $wStates = $this->workflow->getStates();
         } else {
@@ -70,18 +69,18 @@ class WorkflowStateCollection extends Crud
             if ($transition) {
                 $transitionData = array(
                     "uri" => sprintf("%stransitions/%s", $baseUrl, $transition["id"]) ,
-                    "label" => _($transition["id"])
+                    "label" => _($transition["id"]) ,
+                    "error" => $this->getM0($transition, $aState)
                 );
             } else {
                 $transitionData = null;
             }
-
-            $state=$this->getStateInfo($aState);
-            $state["uri"] =  sprintf("%s%s", $info["uri"], $aState) ;
-
-            $state["transition"] =
-                 $transitionData;
-
+            
+            $state = $this->getStateInfo($aState);
+            $state["uri"] = sprintf("%s%s", $info["uri"], $aState);
+            
+            $state["transition"] = $transitionData;
+            
             $states[] = $state;
         }
         /**
@@ -90,6 +89,18 @@ class WorkflowStateCollection extends Crud
         
         $info["states"] = $states;
         return $info;
+    }
+    
+    protected function getM0($tr, $state)
+    {
+        if ($tr && (!empty($tr["m0"]))) {
+            // verify m0
+            return call_user_func(array(
+                $this->workflow,
+                $tr["m0"],
+            ) , $state, $this->workflow->doc->state);
+        }
+        return null;
     }
     /**
      * Update the ressource
@@ -154,7 +165,6 @@ class WorkflowStateCollection extends Crud
             $exception->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->id)));
             throw $exception;
         }
-
         /**
          * @var \WDoc $workflow
          */
@@ -179,7 +189,6 @@ class WorkflowStateCollection extends Crud
                 throw $exception;
             }
         }
-
     }
     /**
      * Set limit of revision to send
@@ -212,8 +221,8 @@ class WorkflowStateCollection extends Crud
         if (isset($this->contentParameters["offset"])) {
             $this->setOffset($this->contentParameters["offset"]);
         }
-
-        $this->allStates=!(empty($this->contentParameters["allStates"]));
+        
+        $this->allStates = !(empty($this->contentParameters["allStates"]));
     }
     /**
      * Generate the etag info for the current ressource
