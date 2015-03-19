@@ -249,6 +249,7 @@ class WorkflowState extends Crud
                 $result = array_merge(array_values($results[0]) , array_values($results[1]));
                 
                 $user = getCurrentUser();
+                $result[] = $doc->state;
                 $result[] = $user->id;
                 $result[] = $user->memberof;
                 // Necessary for localized state label

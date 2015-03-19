@@ -239,6 +239,7 @@ class WorkflowStateCollection extends Crud
                 $sql = sprintf("select id, revdate from docread where id = %d", $doc->wid);
                 simpleQuery(getDbAccess() , $sql, $result, false, true);
                 $user = getCurrentUser();
+                $result[] = $doc->state;
                 $result[] = $user->id;
                 $result[] = $user->memberof;
                 // Necessary for localized state label
