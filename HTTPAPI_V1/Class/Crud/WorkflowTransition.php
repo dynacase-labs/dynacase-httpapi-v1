@@ -62,8 +62,8 @@ class WorkflowTransition extends WorkflowState
         
         $info["transition"] = array(
             "id" => $this->transition,
-            "currentState" => $this->getStateInfo($this->_document->state) ,
-            "nextState" => $this->getStateInfo($nextState) ,
+            "beginState" => $this->getStateInfo($this->_document->state) ,
+            "endState" => $this->getStateInfo($nextState) ,
             "label" => _($this->transition) ,
             "askComment" => empty($transition["nr"]) ,
             "askAttributes" => $this->getAskAttributes(isset($transition["ask"]) ? $transition["ask"] : array())

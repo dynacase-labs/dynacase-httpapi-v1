@@ -145,11 +145,11 @@ namespace {
         /**
          * @errorCode The state is not defined in the workflow
          */
-        const CRUD0228 = 'State "%s" no available for  workflow "%s" (%d)';
+        const CRUD0228 = 'State "%s" is not available for  workflow "%s" (%d)';
         /**
          * @errorCode The transition is not defined in the workflow
          */
-        const CRUD0229 = 'transition "%s" no available for  workflow "%s" (%d)';
+        const CRUD0229 = 'transition "%s" is not available for  workflow "%s" (%d)';
         /**
          * @errorCode Need transition acl
          */
@@ -170,6 +170,11 @@ namespace {
          * @errorCode Permanent UnLock is not possible only temporary lock is set
          */
         const CRUD0234 = 'Cannot unlock permanent lock. A temporary lock is set (use DELETE locks/ to delete all locks) : "%s" ';
+
+        /**
+         * @errorCode The transition is not valid in the workflow
+         */
+        const CRUD0235 = 'Destination state is not defined for workflow "%s" (%d)';
         /**
          * @errorCode The file cannot be saved to vaulft
          */
