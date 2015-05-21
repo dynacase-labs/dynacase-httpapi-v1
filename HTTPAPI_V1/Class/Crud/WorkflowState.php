@@ -44,14 +44,21 @@ class WorkflowState extends Crud
         $this->setDocument($this->documentId);
         $this->workflow = DocManager::getDocument($this->_document->wid);
         $this->workflow->set($this->_document);
-
+        
         $this->workflow->disableEditControl();
         foreach ($this->contentParameters["parameters"] as $aid => $value) {
             $this->workflow->setAttributeValue($aid, $value);
         }
         $this->workflow->enableEditControl();
         
-        $err = $this->workflow->changeState($this->getState() , $this->contentParameters["comment"], $force = false, true, true, true, true, true, true, $message);
+        $state = $this->getState();
+        if (!$state) {
+            $exception = new Exception("CRUD0235", $this->workflow->title, $this->workflow->id);
+            $exception->setHttpStatus("404", "Invalid transition");
+            throw $exception;
+        }
+        
+        $err = $this->workflow->changeState($state, $this->contentParameters["comment"], $force = false, true, true, true, true, true, true, $message);
         if ($err) {
             $exception = new Exception("CRUD0230", $err);
             $exception->setHttpStatus("403", "Forbidden");
@@ -66,7 +73,7 @@ class WorkflowState extends Crud
             
             $this->addMessage($msg);
         }
-        $info["state"] = $this->getStateInfo($this->state);
+        $info["state"] = $this->getStateInfo($this->_document->state);
         return $info;
     }
     /**
@@ -146,7 +153,7 @@ class WorkflowState extends Crud
     public function update($resourceId)
     {
         $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("405", "You cannot change state list");
+        $exception->setHttpStatus("405", "You cannot change state");
         throw $exception;
     }
     /**
@@ -158,7 +165,7 @@ class WorkflowState extends Crud
     public function delete($resourceId)
     {
         $exception = new Exception("CRUD0103", __METHOD__);
-        $exception->setHttpStatus("405", "You cannot delete state list");
+        $exception->setHttpStatus("405", "You cannot delete state");
         throw $exception;
     }
     //endregion CRUD part
