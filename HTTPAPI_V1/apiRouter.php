@@ -143,9 +143,10 @@ try {
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
     //Routing
-    $data = Dcp\HttpApi\V1\Api\Router::execute($messages);
+    $data = Dcp\HttpApi\V1\Api\Router::execute($messages, $httpStatus);
     
     $return->setData($data);
+    $return->setHttpStatusHeader($httpStatus);
     foreach ($messages as $message) {
         $return->addMessage($message);
     }
@@ -173,7 +174,6 @@ catch(Dcp\HttpApi\V1\Etag\Exception $exception) {
     return;
 }
 catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
-    
     $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
@@ -188,6 +188,7 @@ catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
     $message->data = $exception->getData();
     $message->uri = $exception->getURI();
     $return->setHeaders($exception->getHeaders());
+    
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);
     $return->addMessage($defaultPageMessage());
@@ -208,6 +209,7 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     $message->code = $exception->getDcpCode();
     $message->data = $exception->getData();
     $message->uri = $exception->getURI();
+    
     $return->setHeaders($exception->getHeaders());
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);

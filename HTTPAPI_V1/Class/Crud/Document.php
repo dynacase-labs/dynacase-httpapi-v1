@@ -185,11 +185,11 @@ class Document extends Crud
         return $this->getDocumentData();
     }
     //endregion CRUD part
-    public function execute($method, array & $messages = array())
+    public function execute($method, array & $messages = array() , &$httpStatus = "")
     {
         $identifier = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : null;
         $this->checkId($identifier);
-        return parent::execute($method, $messages);
+        return parent::execute($method, $messages, $httpStatus);
     }
     /**
      * Find the current document and set it in the internal options

@@ -32,6 +32,8 @@ class RecordReturn implements \JsonSerializable
      * http headers
      */
     public $headers = array();
+    
+    protected $httpStatusHeader = "200 OK";
     /**
      * Set the http status code
      *
@@ -42,6 +44,12 @@ class RecordReturn implements \JsonSerializable
     {
         $this->httpMessage = $message;
         $this->httpStatus = (int)$code;
+        $this->httpStatusHeader = sprintf("%d %s", $code, $message);
+    }
+    
+    public function setHttpStatusHeader($statusHeader)
+    {
+        $this->httpStatusHeader = $statusHeader;
     }
     /**
      * Add new message to return structure
@@ -76,18 +84,18 @@ class RecordReturn implements \JsonSerializable
      */
     public function send()
     {
-        header(sprintf('HTTP/1.1 %d %s', $this->httpStatus, str_replace(array(
+        header(sprintf('HTTP/1.1 %s', str_replace(array(
             "\n",
             "\r"
-        ) , "", $this->httpMessage)));
+        ) , "", $this->httpStatusHeader)));
         header('Content-Type: application/json');
         foreach ($this->headers as $key => $currentHeader) {
             header(sprintf("%s: %s", $key, $currentHeader));
         }
-
+        
         print json_encode($this);
     }
-
+    
     public function jsonSerialize()
     {
         $values = array(
@@ -101,6 +109,4 @@ class RecordReturn implements \JsonSerializable
         return $values;
     }
 }
-
-
 
