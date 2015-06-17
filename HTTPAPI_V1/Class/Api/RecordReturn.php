@@ -73,7 +73,6 @@ class RecordReturn implements \JsonSerializable
      * Add http headers
      *
      * @param array $headers
-     * @internal param mixed $data
      */
     public function setHeaders(array $headers)
     {
