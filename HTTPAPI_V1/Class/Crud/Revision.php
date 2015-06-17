@@ -15,14 +15,14 @@ class Revision extends Document
      * @var \DocFam
      */
     protected $_family = null;
-
-    protected $slice = -1;
-
+    
+    protected $slice = - 1;
+    
     protected $offset = 0;
-
+    
     protected $revisionIdentifier = null;
     //region CRUD part
-
+    
     /**
      * Create new ressource
      * @throws Exception
@@ -34,7 +34,6 @@ class Revision extends Document
         $exception->setHttpStatus("405", "You cannot create a new revision with the API");
         throw $exception;
     }
-
     /**
      * Get ressource
      *
@@ -50,7 +49,6 @@ class Revision extends Document
         unset($info["document"]);
         return $info;
     }
-
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -63,7 +61,6 @@ class Revision extends Document
         $exception->setHttpStatus("405", "You cannot change a revision");
         throw $exception;
     }
-
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -76,15 +73,12 @@ class Revision extends Document
         $exception->setHttpStatus("405", "You cannot delete a revision");
         throw $exception;
     }
-
     //endregion CRUD part
-
-    public function execute($method, array & $messages = array())
+    public function execute($method, array & $messages = array() , &$httpStatus)
     {
         $this->initCrudParam();
-        return parent::execute($method, $messages);
+        return parent::execute($method, $messages, $httpStatus);
     }
-
     /**
      * Generate the default URI of the current ressource
      *
@@ -111,7 +105,6 @@ class Revision extends Document
         }
         return null;
     }
-
     /**
      * Find the current document and set it in the internal options
      *
@@ -120,24 +113,24 @@ class Revision extends Document
      */
     protected function setDocument($resourceId)
     {
-
+        
         if ($this->_document->revision !== "" && $this->_document->revision != $this->revisionIdentifier) {
             $revisedId = DocManager::getRevisedDocumentId($this->_document->initid, $this->revisionIdentifier);
             $this->_document = DocManager::getDocument($revisedId, false);
         }
-
+        
         if (!$this->_document) {
             $exception = new Exception("CRUD0221", $this->revisionIdentifier, $resourceId);
             $exception->setHttpStatus("404", "Document not found");
             throw $exception;
         }
-
+        
         if ($this->_family && !is_a($this->_document, sprintf("\\Dcp\\Family\\%s", $this->_family->name))) {
             $exception = new Exception("CRUD0220", $resourceId, $this->_family->name);
             $exception->setHttpStatus("404", "Document is not a document of the family " . $this->_family->name);
             throw $exception;
         }
-
+        
         if ($this->_document->doctype === "Z") {
             $exception = new Exception("CRUD0219", $resourceId);
             $exception->setHttpStatus("404", "Document deleted");
@@ -145,7 +138,6 @@ class Revision extends Document
             throw $exception;
         }
     }
-
     /**
      * Init some internal params with extracted params
      *
@@ -162,12 +154,11 @@ class Revision extends Document
                 throw $exception;
             }
         }
-
+        
         if ($this->urlParameters["revision"] !== "") {
             $this->revisionIdentifier = intval($this->urlParameters["revision"]);
         }
     }
-
     /**
      * Generate Etag for the current revision
      *
@@ -175,11 +166,7 @@ class Revision extends Document
      */
     public function getEtagInfo()
     {
-        if (isset($this->urlParameters["revision"])
-            && isset($this->urlParameters["identifier"])
-            && $this->urlParameters["revision"] !== ""
-            && $this->urlParameters["identifier"] !== ""
-        ) {
+        if (isset($this->urlParameters["revision"]) && isset($this->urlParameters["identifier"]) && $this->urlParameters["revision"] !== "" && $this->urlParameters["identifier"] !== "") {
             $id = $this->urlParameters["identifier"];
             if (!is_numeric($id)) {
                 $id = DocManager::getIdFromName($this->urlParameters["identifier"]);
@@ -191,7 +178,7 @@ class Revision extends Document
             return parent::getEtagInfo();
         }
     }
-
+    
     public function checkId($identifier)
     {
         $initid = $identifier;
@@ -203,11 +190,10 @@ class Revision extends Document
             $query = parse_url($pathInfo, PHP_URL_QUERY);
             $exception = new Exception("CRUD0222");
             $exception->setHttpStatus("307", "This is a revision");
-            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"]), $query));
+            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"]) , $query));
             $exception->setURI($this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"])));
             throw $exception;
         }
         return true;
     }
-
 }

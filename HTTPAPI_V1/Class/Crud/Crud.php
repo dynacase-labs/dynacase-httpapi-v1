@@ -8,7 +8,6 @@
 namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\HttpApi\V1\Api\RecordReturnMessage as RecordReturnMessage;
-use Dcp\HttpApi\V1\Api\AnalyzeURL as AnalyzeURL;
 
 abstract class Crud
 {
@@ -31,6 +30,8 @@ abstract class Crud
      * @var array
      */
     protected $contentParameters = array();
+    
+    protected $httpStatus = "";
     
     public function __construct()
     {
@@ -71,7 +72,7 @@ abstract class Crud
      * @return mixed data of process
      * @throws Exception
      */
-    public function execute($method, array & $messages = array())
+    public function execute($method, array & $messages = array() , &$httpStatus = "")
     {
         
         switch ($method) {
@@ -80,6 +81,7 @@ abstract class Crud
                     throw new Exception("CRUD0105", "POST");
                 }
                 $data = $this->create();
+                $httpStatus = "201 Created";
                 break;
 
             case "READ":
@@ -107,8 +109,26 @@ abstract class Crud
             default:
                 throw new Exception("CRUD0102", $method);
         }
+        $crudHttpStatus = $this->getHttpStatus();
+        if ($crudHttpStatus) {
+            $httpStatus = $crudHttpStatus;
+        }
         $messages = $this->getMessages();
         return $data;
+    }
+    /**
+     * @return string
+     */
+    public function getHttpStatus()
+    {
+        return $this->httpStatus;
+    }
+    /**
+     * @param string $httpStatus
+     */
+    public function setHttpStatus($httpStatus)
+    {
+        $this->httpStatus = $httpStatus;
     }
     /**
      * Add a message to be sended with the response
@@ -133,7 +153,7 @@ abstract class Crud
      *
      * @param array $parameters
      */
-    public function setUrlParameters(Array $parameters)
+    public function setUrlParameters(array $parameters)
     {
         $this->urlParameters = $parameters;
     }
@@ -142,7 +162,7 @@ abstract class Crud
      *
      * @param array $parameters
      */
-    public function setContentParameters(Array $parameters)
+    public function setContentParameters(array $parameters)
     {
         $this->contentParameters = $parameters;
     }

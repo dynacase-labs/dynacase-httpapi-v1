@@ -4,10 +4,13 @@
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FDL
 */
-
 chdir('..'); // need to be in root directory to be authenticated
 require_once ('WHAT/autoload.php');
 require_once ('WHAT/Lib.Main.php');
+
+$tracing = \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "ACTIVATE_TRACE");
+\Dcp\ConsoleTime::activate($tracing === "TRUE");
+\Dcp\ConsoleTime::begin();
 //region initErrorHandling
 ini_set("display_error", "off");
 $loggers = array();
@@ -40,6 +43,7 @@ $jsonFatalShutdown = function () use (&$loggers)
     }
 };
 
+\Dcp\ConsoleTime::step("Include");
 register_shutdown_function($jsonFatalShutdown);
 //endregion initErrorHandling
 $return = new Dcp\HttpApi\V1\Api\RecordReturn();
@@ -99,6 +103,7 @@ try {
         throw $exception;
     }
     
+    \Dcp\ConsoleTime::step("Init");
     $authtype = getAuthType();
     
     if ($authtype == 'apache') {
@@ -134,6 +139,8 @@ try {
         $exception->setHttpStatus("403", "Forbidden");
         throw $exception;
     }
+    
+    \Dcp\ConsoleTime::step("Auth");
     //endregion Authentification
     //Initialize return object
     global $action;
@@ -143,9 +150,11 @@ try {
     setSystemLogin($_SERVER['PHP_AUTH_USER']);
     $messages = array();
     //Routing
-    $data = Dcp\HttpApi\V1\Api\Router::execute($messages);
+    \Dcp\ConsoleTime::step("Init action");
+    $data = Dcp\HttpApi\V1\Api\Router::execute($messages, $httpStatus);
     
     $return->setData($data);
+    $return->setHttpStatusHeader($httpStatus);
     foreach ($messages as $message) {
         $return->addMessage($message);
     }
@@ -173,7 +182,6 @@ catch(Dcp\HttpApi\V1\Etag\Exception $exception) {
     return;
 }
 catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
-    
     $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
@@ -188,6 +196,7 @@ catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
     $message->data = $exception->getData();
     $message->uri = $exception->getURI();
     $return->setHeaders($exception->getHeaders());
+    
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);
     $return->addMessage($defaultPageMessage());
@@ -208,6 +217,7 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     $message->code = $exception->getDcpCode();
     $message->data = $exception->getData();
     $message->uri = $exception->getURI();
+    
     $return->setHeaders($exception->getHeaders());
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);
@@ -247,5 +257,12 @@ foreach ($headers as $currentHeader) {
         header_remove("Expires");
     }
 }
-$return->send();
+\Dcp\ConsoleTime::step("complete");
+if ($tracing === "TRUE") {
+    $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
+    $message->contentText = \Dcp\ConsoleTime::getDisplay();
+    $message->type = $message::NOTICE;
+    $return->addMessage($message);
+}
 
+$return->send();

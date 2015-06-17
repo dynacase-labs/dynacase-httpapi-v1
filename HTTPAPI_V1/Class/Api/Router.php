@@ -20,12 +20,15 @@ class Router
      * Execute the request
      *
      * @param array $messages
-     * @throws \Dcp\HttpApi\V1\Etag\Exception
+     * @param string $httpStatus http Status code "200 OK" by example
+     * @throws EtagException
      * @throws Exception
+     * @throws \Dcp\HttpApi\V1\Crud\Exception
      * @return mixed
      */
-    public static function execute(array & $messages = array())
+    public static function execute(array & $messages = array() , &$httpStatus = "")
     {
+        $httpStatus = "200 OK";
         $etagManager = false;
         $etag = null;
         $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
@@ -52,7 +55,7 @@ class Router
                 }
             }
         }
-        $return = $crud->execute($method, $messages);
+        $return = $crud->execute($method, $messages, $httpStatus);
         if ($etagManager !== false && $etag !== false) {
             $etagManager->generateResponseHeader($etag);
         }

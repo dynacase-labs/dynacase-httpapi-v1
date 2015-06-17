@@ -44,7 +44,7 @@ class Lock extends Crud
             $exception = new Exception("CRUD0231", $err);
             throw $exception;
         }
-        
+        $this->setHttpStatus("201 Lock Created");
         return $this->getLockInfo();
     }
     /**
