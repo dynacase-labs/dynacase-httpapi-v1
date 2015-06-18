@@ -74,7 +74,7 @@ class Revision extends Document
         throw $exception;
     }
     //endregion CRUD part
-    public function execute($method, array & $messages = array() , &$httpStatus)
+    public function execute($method, array & $messages = array() , &$httpStatus = "")
     {
         $this->initCrudParam();
         return parent::execute($method, $messages, $httpStatus);
