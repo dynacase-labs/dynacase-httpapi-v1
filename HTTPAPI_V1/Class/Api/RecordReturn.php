@@ -87,12 +87,23 @@ class RecordReturn implements \JsonSerializable
             "\n",
             "\r"
         ) , "", $this->httpStatusHeader)));
-        header('Content-Type: application/json');
+        $needHtmlResponse = (isset($_GET["alt"]) && $_GET["alt"] === "html");
+        
+        if ($needHtmlResponse) {
+            header('Content-Type: text/html');
+        } else {
+            header('Content-Type: application/json');
+        }
+        
         foreach ($this->headers as $key => $currentHeader) {
             header(sprintf("%s: %s", $key, $currentHeader));
         }
         
-        print json_encode($this);
+        if ($needHtmlResponse) {
+            printf("<html><body><textarea>%s</textarea></body></html>", htmlspecialchars(json_encode($this)));
+        } else {
+            print json_encode($this);
+        }
     }
     
     public function jsonSerialize()
