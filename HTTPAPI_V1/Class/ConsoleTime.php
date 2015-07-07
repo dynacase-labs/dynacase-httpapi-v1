@@ -56,10 +56,16 @@ class ConsoleTime
         if (self::$activated !== true) {
             return;
         }
+
+        $record = & self::$records;
+            foreach (self::$partial as $aPartial) {
+                $record = & $record[$aPartial];
+            }
+            $record[$text] = array(
+                "__startPartial" => self::memory()
+            );
+
         self::$partial[] = $text;
-        self::$records[$text] = array(
-            "__startPartial" => self::memory()
-        );
     }
     
     public static function stopPartial()
