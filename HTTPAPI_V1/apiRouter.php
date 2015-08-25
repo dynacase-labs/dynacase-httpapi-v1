@@ -68,11 +68,11 @@ try {
             $currentLogger->writeWarning($message, $context, $stack);
         }
     };
-    $writeMessage = function ($message, $context = null, $stack = null) use (&$loggers)
+    $writeMessage = function ($message, $context = null) use (&$loggers)
     {
         foreach ($loggers as $currentLogger) {
             /* @var \Dcp\HttpApi\V1\Logger\Logger $currentLogger */
-            $currentLogger->writeMessage($message, $context, $stack);
+            $currentLogger->writeMessage($message, $context);
         }
     };
     if (is_array($customLogger)) {
@@ -83,7 +83,7 @@ try {
             }
         }
     } else {
-        throw new Dcp\HttpApi\V1\Api\Exception("Unable to read custom logger, you should check the custom logger conf.");
+        throw new \Dcp\HttpApi\V1\Api\Exception("Unable to read custom logger, you should check the custom logger conf.");
     }
     $defaultPageMessage = function ()
     {
@@ -92,6 +92,7 @@ try {
         $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
         $message->contentText = sprintf("You can consult %s to have info on the API", $defaultURL);
         $message->contentHtml = sprintf('You can consult <a href="%s">the REST page</a> to have info on the API', $defaultURL);
+        $message->type = Dcp\HttpApi\V1\Api\RecordReturnMessage::DEBUG;
         return $message;
     };
     //endRegion initLogger
@@ -199,7 +200,6 @@ catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
     
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);
-    $return->addMessage($defaultPageMessage());
 }
 
 catch(Dcp\HttpApi\V1\Api\Exception $exception) {
@@ -233,7 +233,6 @@ catch(\Dcp\Exception $exception) {
     $message->code = $exception->getDcpCode();
     $return->addMessage($message);
     $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString());
-    $return->addMessage($defaultPageMessage());
 }
 catch(\Exception $exception) {
     $return = new Dcp\HttpApi\V1\Api\RecordReturn();
@@ -245,7 +244,6 @@ catch(\Exception $exception) {
     $message->code = "API0001";
     $return->addMessage($message);
     $writeError("PHP Exception " . $message->contentText, null, $exception->getTraceAsString());
-    $return->addMessage($defaultPageMessage());
 }
 //endregion ErrorCatching
 //Send the HTTP return
