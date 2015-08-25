@@ -14,14 +14,15 @@ class RecordReturnMessage implements \JsonSerializable
     const NOTIFICATION = "notification";
     const WARNING = "warning";
     const NOTICE = "notice";
-
+    const DEBUG = "debug";
+    
     public $type = self::MESSAGE;
     public $contentText = '';
     public $contentHtml = '';
     public $code = '';
     public $uri = '';
     public $data = null;
-
+    
     public function jsonSerialize()
     {
         $values = array(
