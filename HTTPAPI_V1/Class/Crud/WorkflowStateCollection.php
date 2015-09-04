@@ -68,6 +68,7 @@ class WorkflowStateCollection extends Crud
             $transition = $this->workflow->getTransition($this->_document->state, $aState);
             if ($transition) {
                 $transitionData = array(
+                    "id" => $transition["id"],
                     "uri" => sprintf("%stransitions/%s", $baseUrl, $transition["id"]) ,
                     "label" => _($transition["id"]) ,
                     "error" => $this->getM0($transition, $aState)
