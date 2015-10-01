@@ -32,6 +32,9 @@ class Cache
             if (!self::getLocalCache()->set($document->id, $document)) {
                 throw new Exception("APIDM0201", $document->getTitle() , $document->id);
             }
+            // Add Core cache compatibility
+            global $gdocs;
+            $gdocs[$document->id] = & $document;
         }
         
         return $document;
@@ -122,7 +125,6 @@ class Cache
     {
         return self::getLocalCache()->isInCache($document->id, $document);
     }
-
     /**
      * Get local cache object
      * @return MemoryCache
