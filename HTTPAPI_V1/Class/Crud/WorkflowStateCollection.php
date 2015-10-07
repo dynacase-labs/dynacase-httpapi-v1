@@ -32,6 +32,7 @@ class WorkflowStateCollection extends Crud
     
     /**
      * Create new ressource
+     *
      * @throws Exception
      * @return mixed
      */
@@ -45,6 +46,7 @@ class WorkflowStateCollection extends Crud
      * Get ressource
      *
      * @param string $resourceId Resource identifier
+     *
      * @throws Exception
      * @return mixed
      */
@@ -71,7 +73,8 @@ class WorkflowStateCollection extends Crud
                     "id" => $transition["id"],
                     "uri" => sprintf("%stransitions/%s", $baseUrl, $transition["id"]) ,
                     "label" => _($transition["id"]) ,
-                    "error" => $this->getM0($transition, $aState)
+                    "error" => $this->getM0($transition, $aState) ,
+                    "authorized" => empty($this->workflow->control($transition["id"]))
                 );
             } else {
                 $transitionData = null;
@@ -105,7 +108,9 @@ class WorkflowStateCollection extends Crud
     }
     /**
      * Update the ressource
+     *
      * @param string $resourceId Resource identifier
+     *
      * @throws Exception
      * @return mixed
      */
@@ -117,7 +122,9 @@ class WorkflowStateCollection extends Crud
     }
     /**
      * Delete ressource
+     *
      * @param string $resourceId Resource identifier
+     *
      * @throws Exception
      * @return mixed
      */
@@ -133,6 +140,7 @@ class WorkflowStateCollection extends Crud
      * Find the current document and set it in the internal options
      *
      * @param $resourceId
+     *
      * @throws Exception
      */
     protected function setDocument($resourceId)
@@ -176,6 +184,7 @@ class WorkflowStateCollection extends Crud
      * Set the family of the current request
      *
      * @param array $array
+     *
      * @throws Exception
      */
     public function setUrlParameters(Array $array)
@@ -193,6 +202,7 @@ class WorkflowStateCollection extends Crud
     }
     /**
      * Set limit of revision to send
+     *
      * @param int $slice
      */
     public function setSlice($slice)
@@ -201,6 +211,7 @@ class WorkflowStateCollection extends Crud
     }
     /**
      * Set offset of revision to send
+     *
      * @param int $offset
      */
     public function setOffset($offset)
@@ -250,6 +261,7 @@ class WorkflowStateCollection extends Crud
         }
         return null;
     }
+    
     protected function getStateInfo($state)
     {
         if (empty($state)) {
