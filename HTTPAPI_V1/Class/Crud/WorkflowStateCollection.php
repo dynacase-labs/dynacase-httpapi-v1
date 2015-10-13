@@ -69,12 +69,13 @@ class WorkflowStateCollection extends Crud
         foreach ($wStates as $aState) {
             $transition = $this->workflow->getTransition($this->_document->state, $aState);
             if ($transition) {
+                $controlTransitionError=$this->workflow->control($transition["id"]);
                 $transitionData = array(
                     "id" => $transition["id"],
                     "uri" => sprintf("%stransitions/%s", $baseUrl, $transition["id"]) ,
                     "label" => _($transition["id"]) ,
                     "error" => $this->getM0($transition, $aState) ,
-                    "authorized" => empty($this->workflow->control($transition["id"]))
+                    "authorized" => empty($controlTransitionError)
                 );
             } else {
                 $transitionData = null;
