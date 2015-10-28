@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-11 15:05+0100\n"
+"POT-Creation-Date: 2015-10-28 09:46+0100\n"
 "PO-Revision-Date: 2014-12-03 13:44+0100\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
@@ -75,6 +75,9 @@ msgstr "API HTTP"
 
 msgid "HTTPAPI_V1:INIT_RULES"
 msgstr "Compilation des règles de routage"
+
+msgid "HTTPAPI_V1:activate memory/time tracing"
+msgstr "Activer les traces temps et mémoire"
 
 msgid "HTTPAPI_V1:activate the etag cache for the request that handle it"
 msgstr "Activer les etag http pour les requêtes GET"
