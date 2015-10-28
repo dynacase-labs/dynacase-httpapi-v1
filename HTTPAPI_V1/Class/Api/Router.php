@@ -118,7 +118,7 @@ class Router
         $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CRUD_CLASS") , true);
         usort($systemCrud, function ($value1, $value2)
         {
-            return $value1["order"] < $value2["order"];
+            return $value1["order"] > $value2["order"];
         });
         
         $crudFound = false;
