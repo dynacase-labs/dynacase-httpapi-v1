@@ -51,7 +51,7 @@ $app_const = array(
     "ACTIVATE_TRACE" => array(
         "val" => "FALSE",
         "descr" => N_("HTTPAPI_V1:activate memory/time tracing"),
-        "kind" => "enum(TRUE|FALSE)"
+        "kind" => "static"
     ),
     "COLLECTION_DEFAULT_SLICE" => array(
         "val" => "10",
