@@ -210,7 +210,7 @@ namespace {
         /**
          * @errorCode The sort direction must be desc or asc (not %s)
          */
-        const CRUD0502 = 'The orderBy must be an attribute or a property (not %s)';
+        const CRUD0502 = 'The element must be an attribute or a property (not %s)';
         /**
          * @errorCode The collection must be a search
          */
