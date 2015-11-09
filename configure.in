@@ -12,6 +12,9 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 AC_PREREQ(2.13)
 AC_INIT(./Makefile.in)
+
+AC_SUBST(LICENSE)
+LICENSE="http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License"
 AC_SUBST(VERSION)
 VERSION=`cat VERSION`
 AC_SUBST(RELEASE)
