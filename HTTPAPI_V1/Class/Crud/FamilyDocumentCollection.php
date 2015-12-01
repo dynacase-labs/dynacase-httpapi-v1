@@ -3,7 +3,7 @@
  * @author Anakeen
  * @license http://www.fsf.org/licensing/licenses/agpl-3.0.html GNU Affero General Public License
  * @package FDL
- */
+*/
 /**
  * Created by PhpStorm.
  * User: charles
@@ -49,9 +49,25 @@ class FamilyDocumentCollection extends DocumentCollection
         
         $newValues = $this->contentParameters;
         foreach ($newValues as $attrid => $value) {
-            $err = $this->_document->setValue($attrid, $value);
-            if ($err) {
-                throw new Exception("CRUD0205", $this->_family->name, $attrid, $err);
+            try {
+                if ($value === null or $value === '') {
+                    $this->_document->setAttributeValue($attrid, null);
+                } else {
+                    $this->_document->setAttributeValue($attrid, $value);
+                }
+            }
+            catch(\Dcp\AttributeValue\Exception $e) {
+                $exception = new Exception("CRUD0205", $this->_family->name, $attrid, $e->getDcpMessage());
+                $exception->setHttpStatus("500", "Unable to create the document");
+                $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
+                $info = array(
+                    "id" => $attrid,
+                    "index" => $e->index,
+                    "err" => $e->originalError ? $e->originalError : $e->getDcpMessage()
+                );
+                
+                $exception->setData($info);
+                throw $exception;
             }
         }
         

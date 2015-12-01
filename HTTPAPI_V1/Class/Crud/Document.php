@@ -115,7 +115,7 @@ class Document extends Crud
                 }
             }
             catch(\Dcp\AttributeValue\Exception $e) {
-                $exception = new Exception("CRUD0211", $this->_document->id, $aid, $err);
+                $exception = new Exception("CRUD0211", $this->_document->id, $aid, $e->getDcpMessage());
                 $exception->setHttpStatus("500", "Unable to modify the document");
                 $exception->setUserMEssage(___("Update failed", "HTTPAPI_V1"));
                 $info = array(
