@@ -165,8 +165,12 @@ class DocumentUtils
                 }
             }
         } else {
-            // if we don't have a ref doc just return the asked attributes list (I will be empty by render doc)
-            $attributes = $restrictedAttributes;
+            // if we don't have a ref doc just return the asked attributes list
+            $attributes = array_map(function ($currentField) use ($prefix, &$currentDoc, &$falseAttribute)
+            {
+                return str_replace($prefix, "", $currentField);
+            }
+                , $restrictedAttributes);
         }
         return $attributes;
     }
