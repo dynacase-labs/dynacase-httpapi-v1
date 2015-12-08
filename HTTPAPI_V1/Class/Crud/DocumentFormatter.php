@@ -7,7 +7,6 @@
 namespace Dcp\HttpApi\V1\Crud;
 
 use Dcp\HttpApi\V1\DocManager\Exception as DocumentException;
-
 /**
  * Class DocumentFormatter
  * This class is a facade of FormatCollection (had format for REST collection)
@@ -16,7 +15,7 @@ use Dcp\HttpApi\V1\DocManager\Exception as DocumentException;
  */
 class DocumentFormatter
 {
-
+    
     static protected $uselessProperties = array(
         "lockdomainid",
         "domainid",
@@ -37,7 +36,7 @@ class DocumentFormatter
     );
     protected $properties = array();
     protected $generateUrl = null;
-
+    
     public function __construct($source)
     {
         if (is_a($source, "Doc")) {
@@ -59,7 +58,8 @@ class DocumentFormatter
             throw new Exception("CRUD0500");
         }
         /* init the standard generator of url (redirect to the documents collection */
-        $this->generateUrl = function ($document) {
+        $this->generateUrl = function ($document)
+        {
             if ($document) {
                 if ($document->defDoctype === "C") {
                     return URLUtils::generateURL(sprintf("families/%s.json", $document->name));
@@ -67,13 +67,17 @@ class DocumentFormatter
                     if ($document->doctype === "Z") {
                         return URLUtils::generateURL(sprintf("trash/%s.json", $document->initid));
                     } else {
-                        return URLUtils::generateURL(sprintf("documents/%s.json", $document->initid));
+                        if ($document->locked == - 1) {
+                            return URLUtils::generateURL(sprintf("documents/%s/revisions/%d.json", $document->initid, $document->revision));
+                        } else {
+                            return URLUtils::generateURL(sprintf("documents/%s.json", $document->initid));
+                        }
                     }
                 }
             }
+            return "";
         };
     }
-
     /**
      * Add a callable function that generate the document uri propertie
      * The callable take a Doc $document and return the uri
@@ -84,7 +88,6 @@ class DocumentFormatter
     {
         $this->generateUrl = $callable;
     }
-
     /**
      * add a set of attributes
      * Attributes that not part of the documents can be added
@@ -97,7 +100,6 @@ class DocumentFormatter
             $this->formatCollection->addAttribute($currentAttribute);
         }
     }
-
     /**
      * Add properties
      *
@@ -119,8 +121,9 @@ class DocumentFormatter
     /**
      * Add a property
      *
-     * @param $propertyId
-     * @throws Exception
+     * @param string $propertyId
+     *
+     * @throws DocumentException
      */
     public function addProperty($propertyId)
     {
@@ -139,7 +142,6 @@ class DocumentFormatter
             $this->properties[] = $propertyId;
         }
     }
-
     /**
      * Add the default properties
      */
@@ -147,7 +149,6 @@ class DocumentFormatter
     {
         $this->properties = $this->defaultProperties;
     }
-
     /**
      * Format the collection and return the array of result
      *
@@ -167,7 +168,8 @@ class DocumentFormatter
         $this->formatCollection->useShowEmptyOption = false;
         $this->formatCollection->setPropDateStyle(\DateAttributeValue::isoWTStyle);
         /** Format uniformly the void multiple values */
-        $this->formatCollection->setAttributeRenderHook(function ($info, $attribute) {
+        $this->formatCollection->setAttributeRenderHook(function ($info, $attribute)
+        {
             if ($info === null) {
                 /**
                  * @var \NormalAttribute $attribute
@@ -182,17 +184,17 @@ class DocumentFormatter
         });
         $generateUrl = $this->generateUrl;
         /** Add uri property and suppress state if no state **/
-        $this->formatCollection->setDocumentRenderHook(function ($values, \Doc $document) use ($generateUrl) {
+        $this->formatCollection->setDocumentRenderHook(function ($values, \Doc $document) use ($generateUrl)
+        {
             $values["uri"] = $generateUrl($document);
             if (isset($values["properties"]["state"]) && !$values["properties"]["state"]->reference) {
                 unset($values["properties"]["state"]);
             }
             return $values;
         });
-
+        
         return $this->formatCollection->render();
     }
-
     /**
      * Return the format collection
      *

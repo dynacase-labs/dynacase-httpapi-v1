@@ -77,14 +77,14 @@ class DocManager
             $traceIds[$docid]++;
             error_log(sprintf("Double set for %d (%s)\n", $docid, self::getTitle($docid)) , 3, $traceFile);
             
-            error_log(sprintf("Call log : %s\n", print_r(getDebugStack(2, 0, true) , true)) , 3, $traceFile);
+            error_log(sprintf("Call log : %s\n", print_r(getDebugStack(2) , true)) , 3, $traceFile);
             
             error_log(sprintf("Previous call : %s\n============\n", print_r($traceLog[$docid], true)) , 3, $traceFile);
             
             addWarningMsg("DM double detected");
         } else {
             $traceIds[$docid] = 1;
-            $traceLog[$docid] = getDebugStack(2, 0, true);
+            $traceLog[$docid] = getDebugStack(2);
         }
     }
     /**
@@ -142,7 +142,6 @@ class DocManager
         if ($id > 0) return intval($id);
         return null;
     }
-
     /**
      * return latest id of document from its initid or other id
      *
@@ -158,7 +157,7 @@ class DocManager
             $id = static::getIdFromName($name);
         }
         $dbaccess = self::getDbAccess();
-        simpleQuery($dbaccess, sprintf("select initid from docread where id='%d' limit 1;", $id), $initid, true, true);
+        simpleQuery($dbaccess, sprintf("select initid from docread where id='%d' limit 1;", $id) , $initid, true, true);
         if ($id > 0) {
             return intval($initid);
         }
@@ -178,12 +177,24 @@ class DocManager
             throw new Exception("APIDM0100", print_r($initid, true));
         }
         $dbaccess = self::getDbAccess();
-        // first more quick if alive
-        simpleQuery($dbaccess, sprintf("select id from docread where initid='%d' and revision = %d", $initid, $revision) , $id, true, true);
-        if ($id > 0) return intval($id);
-        // it is not really on initid
-        simpleQuery($dbaccess, sprintf("select id from docread where initid=(select initid from docread where id=%d) and revision = %d", $initid, $revision) , $id, true, true);
-        if ($id > 0) return intval($id);
+        if (is_numeric($revision) && $revision >= 0) {
+            // first more quick if alive
+            simpleQuery($dbaccess, sprintf("select id from docread where initid='%d' and revision = %d", $initid, $revision) , $id, true, true);
+            if ($id > 0) return intval($id);
+            // it is not really on initid
+            simpleQuery($dbaccess, sprintf("select id from docread where initid=(select initid from docread where id=%d) and revision = %d", $initid, $revision) , $id, true, true);
+            
+            if ($id > 0) return intval($id);
+        } else {
+            if (preg_match('/^state:(.+)$/', $revision, $regStates)) {
+                simpleQuery($dbaccess, sprintf("select id from docread where initid='%d' and state = '%s' and locked = -1 order by id desc", $initid, pg_escape_string($regStates[1])) , $id, true, true);
+                if ($id > 0) return intval($id);
+                // it is not really on initid
+                simpleQuery($dbaccess, sprintf("select id from docread where initid=(select initid from docread where id=%d) and state = '%s' and locked = -1 order by id desc", $initid, pg_escape_string($regStates[1])) , $id, true, true);
+                
+                if ($id > 0) return intval($id);
+            }
+        }
         return null;
     }
     /**
