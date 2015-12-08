@@ -43,7 +43,6 @@ class Revision extends Document
      */
     public function read($resourceId)
     {
-        parent::setDocument($resourceId);
         $info = parent::read($resourceId);
         $info["revision"] = $info["document"];
         unset($info["document"]);
@@ -79,32 +78,7 @@ class Revision extends Document
         $this->initCrudParam();
         return parent::execute($method, $messages, $httpStatus);
     }
-    /**
-     * Generate the default URI of the current ressource
-     *
-     * @param null $document
-     * @param null $revisionIdentifier identifier of the revision
-     *
-     * @return null|string
-     */
-    protected function getUri($document = null, $revisionIdentifier = null)
-    {
-        if ($document === null) {
-            $document = $this->_document;
-        }
-        if ($revisionIdentifier === null) {
-            $revisionIdentifier = $this->revisionIdentifier;
-        }
-        $id = $document->name ? $document->name : $document->initid;
-        if ($document) {
-            if ($document->doctype === "Z") {
-                return $this->generateURL(sprintf("trash/%s/revisions/%d.json", $id, $revisionIdentifier));
-            } else {
-                return $this->generateURL(sprintf("documents/%s/revisions/%d.json", $id, $revisionIdentifier));
-            }
-        }
-        return null;
-    }
+
     /**
      * Find the current document and set it in the internal options
      *
@@ -113,11 +87,8 @@ class Revision extends Document
      */
     protected function setDocument($resourceId)
     {
-        
-        if ($this->_document->revision !== "" && $this->_document->revision != $this->revisionIdentifier) {
-            $revisedId = DocManager::getRevisedDocumentId($this->_document->initid, $this->revisionIdentifier);
-            $this->_document = DocManager::getDocument($revisedId, false);
-        }
+        $revisedId = DocManager::getRevisedDocumentId($resourceId, $this->revisionIdentifier);
+        $this->_document = DocManager::getDocument($revisedId, false);
         
         if (!$this->_document) {
             $exception = new Exception("CRUD0221", $this->revisionIdentifier, $resourceId);
@@ -154,9 +125,8 @@ class Revision extends Document
                 throw $exception;
             }
         }
-        
         if ($this->urlParameters["revision"] !== "") {
-            $this->revisionIdentifier = intval($this->urlParameters["revision"]);
+            $this->revisionIdentifier = $this->urlParameters["revision"];
         }
     }
     /**
@@ -190,8 +160,8 @@ class Revision extends Document
             $query = parse_url($pathInfo, PHP_URL_QUERY);
             $exception = new Exception("CRUD0222");
             $exception->setHttpStatus("307", "This is a revision");
-            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"]) , $query));
-            $exception->setURI($this->generateURL(sprintf("documents/%d/revisions/%d.json", $initid, $this->urlParameters["revision"])));
+            $exception->addHeader("Location", $this->generateURL(sprintf("documents/%d/revisions/%s.json", $initid, $this->urlParameters["revision"]) , $query));
+            $exception->setURI($this->generateURL(sprintf("documents/%d/revisions/%s.json", $initid, $this->urlParameters["revision"])));
             throw $exception;
         }
         return true;

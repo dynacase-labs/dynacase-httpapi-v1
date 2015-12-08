@@ -117,7 +117,7 @@ namespace {
         /**
          * @errorCode The ressource is not found
          */
-        const CRUD0221 = 'The revision "%d" of document "%s" is not found';
+        const CRUD0221 = 'The revision "%s" of document "%s" is not found';
         /**
          * @errorCode Redirect : the canonical URL is not here
          */
@@ -322,7 +322,6 @@ namespace Dcp\HttpApi\V1\Crud {
          *
          * @param $key
          * @param $value
-         * @internal param $uri
          */
         public function addHeader($key, $value)
         {

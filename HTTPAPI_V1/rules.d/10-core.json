@@ -207,6 +207,13 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/revisions/(?P<revision>state:.+)$%",
+        "description" :  "Revision latest <state> of the document <documentId>",
+        "canonicalURL" : "documents/<documentId>/revisions/state:<state>"
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RevisionCollection",
         "regExp" :       "%^/documents/(?P<identifier>[^/]+)/revisions/$%",
         "description" :  "List of revisions of the document <documentId>",
