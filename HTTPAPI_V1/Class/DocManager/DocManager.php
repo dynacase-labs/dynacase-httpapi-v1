@@ -174,7 +174,12 @@ class DocManager
     static public function getRevisedDocumentId($initid, $revision)
     {
         if (!is_numeric($initid)) {
-            throw new Exception("APIDM0100", print_r($initid, true));
+            $id = static::getIdFromName($initid);
+            if ($id === null) {
+                throw new Exception("APIDM0100", print_r($initid, true));
+            } else {
+                $initid = $id;
+            }
         }
         $dbaccess = self::getDbAccess();
         if (is_numeric($revision) && $revision >= 0) {
