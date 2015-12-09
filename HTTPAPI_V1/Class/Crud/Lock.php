@@ -199,6 +199,7 @@ class Lock extends Crud
             $sql = sprintf("select id, locked from docread where id = %d", $id);
             simpleQuery(getDbAccess() , $sql, $result, false, true);
             $result[] = getCurrentUser()->id;
+            $result[] = \ApplicationParameterManager::getScopedParameterValue("WVERSION");
             
             return join("", $result);
         }

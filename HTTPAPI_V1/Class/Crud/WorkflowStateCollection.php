@@ -69,7 +69,7 @@ class WorkflowStateCollection extends Crud
         foreach ($wStates as $aState) {
             $transition = $this->workflow->getTransition($this->_document->state, $aState);
             if ($transition) {
-                $controlTransitionError=$this->workflow->control($transition["id"]);
+                $controlTransitionError = $this->workflow->control($transition["id"]);
                 $transitionData = array(
                     "id" => $transition["id"],
                     "uri" => sprintf("%stransitions/%s", $baseUrl, $transition["id"]) ,
@@ -257,6 +257,7 @@ class WorkflowStateCollection extends Crud
                 $result[] = $user->memberof;
                 // Necessary for localized state label
                 $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
+                $result[] = \ApplicationParameterManager::getScopedParameterValue("WVERSION");
                 return join("", $result);
             }
         }

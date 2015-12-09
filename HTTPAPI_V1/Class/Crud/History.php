@@ -261,6 +261,7 @@ class History extends Crud
             $result[] = $user->memberof;
             // Necessary for localized state label
             $result[] = \ApplicationParameterManager::getScopedParameterValue("CORE_LANG");
+            $result[] = \ApplicationParameterManager::getScopedParameterValue("WVERSION");
             return join("", $result);
         }
         return null;

@@ -245,6 +245,7 @@ class UserTag extends Crud
             $id = DocManager::getIdentifier($id, true);
             $sql = sprintf("select id, date, comment from docutag where id = %d order by date desc limit 1", $id);
             simpleQuery(getDbAccess() , $sql, $result, false, true);
+            $result[] = \ApplicationParameterManager::getScopedParameterValue("WVERSION");
             return join("", $result);
         }
         return null;
