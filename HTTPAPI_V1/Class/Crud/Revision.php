@@ -38,11 +38,16 @@ class Revision extends Document
      * Get ressource
      *
      * @param string $resourceId Resource identifier
-     * @throws Exception
+     * @param int    $revision revision number to get : Necessary if revisionIdentifier not set by crud execute
+     *
      * @return mixed
+     * @throws Exception
      */
-    public function read($resourceId)
+    public function read($resourceId, $revision = - 1)
     {
+        if ($revision !== - 1) {
+            $this->revisionIdentifier = $revision;
+        }
         $info = parent::read($resourceId);
         $info["revision"] = $info["document"];
         unset($info["document"]);
@@ -78,7 +83,6 @@ class Revision extends Document
         $this->initCrudParam();
         return parent::execute($method, $messages, $httpStatus);
     }
-
     /**
      * Find the current document and set it in the internal options
      *
