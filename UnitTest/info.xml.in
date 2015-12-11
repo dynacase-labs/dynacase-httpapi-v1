@@ -5,7 +5,7 @@
 
     <requires>
         <module name="@PACKAGE@"/>
-        <module name="dynacase-core-test"/>
+        <module name="dynacase-core-test" version="3.2.21" comp="ge"/>
     </requires>
 
     <pre-install>

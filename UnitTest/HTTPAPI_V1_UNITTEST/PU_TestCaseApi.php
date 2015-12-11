@@ -16,7 +16,7 @@ class TestCaseApi extends \Dcp\Pu\TestCaseDcpCommonFamily
     
     protected static $testDirectory = "HTTPAPI_V1_UNITTEST";
 
-    protected function resetDocumentCache() {
+    protected static function resetDocumentCache() {
         parent::resetDocumentCache();
         DocManager::cache()->clear();
     }
