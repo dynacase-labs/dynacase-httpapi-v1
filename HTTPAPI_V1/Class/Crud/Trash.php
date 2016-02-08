@@ -30,6 +30,20 @@ class Trash extends Document {
      * @return mixed
      */
     public function update($resourceId) {
+        if (isset($this->contentParameters["document"]["properties"]["status"]) &&
+            $this->contentParameters["document"]["properties"]["status"] === "alive") {
+            $this->setDocument($resourceId);
+            $err = $this->_document->undelete();
+            $err .= $this->_document->store();
+            if ($err) {
+                $exception = new Exception("CRUD0505", $err);
+                $exception->setHttpStatus("500", "Unable to restore the document");
+                throw $exception;
+            }
+
+            $documentCRUD = new Document($this->_document);
+            return $documentCRUD->read($resourceId);
+        }
         $exception = new Exception("CRUD0103", "update");
         $exception->setHttpStatus("405", "You cannot update a document in the trash");
         throw $exception;
@@ -62,7 +76,7 @@ class Trash extends Document {
             throw $e;
         }
         if ($this->_document->doctype !== "Z") {
-            $e = new Exception("CRUD0219", $resourceId);
+            $e = new Exception("CRUD0236", $resourceId);
             $e->setHttpStatus("404", "Document not in the trash");
             throw $e;
         }
@@ -84,5 +98,27 @@ class Trash extends Document {
             throw $exception;
         }
         return true;
+    }
+
+    /**
+     * Analyze JSON string and extract update values
+     *
+     * @param $jsonString
+     * @return array
+     * @throws Exception
+     */
+    public function analyseJSON($jsonString)
+    {
+        $dataDocument = json_decode($jsonString, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("CRUD0208", "Unable to json decode " . $jsonString);
+        }
+        if ($dataDocument === null) {
+            throw new Exception("CRUD0208", $jsonString);
+        }
+        if (!isset($dataDocument["document"]["properties"]["status"]) && $dataDocument["document"]["properties"]["status"] !== "alive") {
+            throw new Exception("CRUD0236", $jsonString);
+        }
+        return $dataDocument;
     }
 } 

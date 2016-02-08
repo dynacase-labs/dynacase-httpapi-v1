@@ -176,6 +176,14 @@ namespace {
          */
         const CRUD0235 = 'Destination state is not defined for workflow "%s" (%d)';
         /**
+         * @errorCode The restoration elements are not valid
+         */
+        const CRUD0236 = 'The restoration must be initialized with {"document" : { "properties" : { "status" : "alive" } } }';
+        /**
+         * @errorCode Document "%s" deleted
+         */
+        const CRUD0237 = 'Document "%s" is not deleted';
+        /**
          * @errorCode The file cannot be saved to vaulft
          */
         const CRUD0300 = 'File Record fail.  : "%s"';
@@ -219,6 +227,10 @@ namespace {
          * @errorCode The collection must be a folder
          */
         const CRUD0504 = 'The collection must be a folder';
+        /**
+         * @errorCode Unable to restore the document
+         */
+        const CRUD0505 = 'Unable to restore the document, error : %s';
     }
 }
 
