@@ -31,7 +31,15 @@ class Router
         $httpStatus = "200 OK";
         $etagManager = false;
         $etag = null;
+
         $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+        if (empty($pathInfo)) {
+            if (!empty($_SERVER['REDIRECT_URL'])) {
+                if (preg_match("@.*/api/v1/(.*)@", $_SERVER["REDIRECT_URL"], $reg)) {
+                    $pathInfo='/'.$reg[1];
+                }
+            }
+        }
         static::$path = $pathInfo;
         static::$returnType = static::extractExtension();
         if (static::$returnType === false) {
@@ -110,7 +118,7 @@ class Router
     /**
      * Identify the CRUD class
      *
-     * @return Array crud identified and url request
+     * @return array crud identified and url request
      * @throws Exception
      */
     protected static function identifyCRUD()
@@ -154,7 +162,7 @@ class Router
     /**
      * Analyze the content type and return the values
      *
-     * @return Array
+     * @return array
      * @throws Exception
      */
     protected static function getHttpAttributeValues(Crud $crudElement)

@@ -6,4 +6,9 @@
 AddType application/x-httpd-php .php
 AddType application/json .php
 
-Options +MultiViews
+Options -MultiViews
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^/]+)(/.*)?$ $1.php [L]
