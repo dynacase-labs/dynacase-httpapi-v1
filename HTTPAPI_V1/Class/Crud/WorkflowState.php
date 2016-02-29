@@ -46,8 +46,10 @@ class WorkflowState extends Crud
         $this->workflow->set($this->_document);
         
         $this->workflow->disableEditControl();
-        foreach ($this->contentParameters["parameters"] as $aid => $value) {
-            $this->workflow->setAttributeValue($aid, $value);
+        if (isset($this->contentParameters["parameters"]) && is_array($this->contentParameters["parameters"])) {
+            foreach ($this->contentParameters["parameters"] as $aid => $value) {
+                $this->workflow->setAttributeValue($aid, $value);
+            }
         }
         $this->workflow->enableEditControl();
         
