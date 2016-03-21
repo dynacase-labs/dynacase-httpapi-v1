@@ -6,7 +6,7 @@
 */
 
 namespace {
-
+    
     class ErrorCodeApi
     {
         /**
@@ -29,8 +29,10 @@ namespace {
          * @errorCode in case of accept unknown
          */
         const API0005 = 'Unable to return the type %s';
-
-
+        /**
+         * @errorCode when extract return type from http header
+         */
+        const API0006 = 'Unable to return the type from http headers %s';
         /**
          * for beautifier
          */
@@ -43,14 +45,13 @@ namespace {
 namespace Dcp\HttpApi\V1\Api {
     class Exception extends \Dcp\Exception
     {
-
+        
         protected $httpStatus = 400;
         protected $httpMessage = "Dcp Exception";
         protected $data = null;
         protected $userMessage = '';
         protected $uri = "";
         protected $headers = array();
-
         /**
          * @param string $userMessage
          */
@@ -58,7 +59,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             $this->userMessage = $userMessage;
         }
-
         /**
          * @return string
          */
@@ -66,7 +66,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             return $this->userMessage;
         }
-
         /**
          * @return null
          */
@@ -74,7 +73,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             return $this->data;
         }
-
         /**
          * Add
          *
@@ -84,7 +82,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             $this->data = $data;
         }
-
         /**
          * Return the http message
          *
@@ -94,7 +91,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             return $this->httpMessage;
         }
-
         /**
          * Return the http status
          *
@@ -104,7 +100,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             return $this->httpStatus;
         }
-
         /**
          *
          * @param int $httpStatus
@@ -115,7 +110,6 @@ namespace Dcp\HttpApi\V1\Api {
             $this->httpStatus = $httpStatus;
             $this->httpMessage = $httpMessage;
         }
-
         /**
          * Add an URI indication
          *
@@ -125,7 +119,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             $this->uri = $uri;
         }
-
         /**
          * Return the URI indication
          *
@@ -134,7 +127,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             return $this->uri;
         }
-
         /**
          * Add an header
          *
@@ -146,7 +138,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             $this->headers[$key] = $value;
         }
-
         /**
          * Return the URI indication
          *
@@ -155,7 +146,6 @@ namespace Dcp\HttpApi\V1\Api {
         {
             return $this->headers;
         }
-
         /**
          * for beautifier
          */

@@ -15,7 +15,17 @@ use Dcp\HttpApi\V1\Etag\Exception as EtagException;
 class Router
 {
     protected static $path = null;
+    /**
+     * @var string default extension
+     */
+    protected static $extension = null;
+    
     protected static $returnType = null;
+    
+    protected static $availableExtension = array(
+        "json" => "application/json",
+        "html" => "text/html"
+    );
     /**
      * Execute the request
      *
@@ -31,12 +41,12 @@ class Router
         $httpStatus = "200 OK";
         $etagManager = false;
         $etag = null;
-
+        
         $pathInfo = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
         if (empty($pathInfo)) {
             if (!empty($_SERVER['REDIRECT_URL'])) {
                 if (preg_match("@.*/api/v1/(.*)@", $_SERVER["REDIRECT_URL"], $reg)) {
-                    $pathInfo='/'.$reg[1];
+                    $pathInfo = '/' . $reg[1];
                 }
             }
         }
@@ -70,6 +80,16 @@ class Router
         return $return;
     }
     /**
+     * @return null
+     */
+    public static function getExtension()
+    {
+        if (self::$extension === null) {
+            self::extractExtension();
+        }
+        return self::$extension;
+    }
+    /**
      * Extract the extension of the current request path
      *
      * Remove the extension of the path
@@ -79,18 +99,22 @@ class Router
      */
     protected static function extractExtension()
     {
-        $extension = false;
-        
         $pathInfo = static::$path;
         /* Extract extension for format */
         if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
-            $extension = $matches['ext'];
+            static::$extension = $matches['ext'];
             static::$path = $matches['path'];
         }
-        if ($extension === "json" || $extension === false || $extension === "") {
+        
+        if (static::$extension === null || static::$extension === "") {
             $format = "application/json";
         } else {
-            throw new Exception("API0005", $extension);
+            $availableExtension = array_keys(self::$availableExtension);
+            if (!in_array(static::$extension, $availableExtension)) {
+                throw new Exception("API0005", static::$extension);
+            } else {
+                $format = self::$availableExtension[static::$extension];
+            }
         }
         return $format;
     }
@@ -109,9 +133,9 @@ class Router
             return preg_replace("/;.*/", "", $header);
         }
         , $accept);
-        
+        // @TODO : NEVER USED MUST BE REWRITE FOR ACCEPT HTML ALSO : MAY BE UNNECESSARY
         if (!in_array("application/json", $accept) && !in_array("*/*", $accept)) {
-            throw new Exception("API0005", join(",", $accept));
+            throw new Exception("API0006", join(",", $accept));
         }
         return "application/json";
     }
@@ -130,9 +154,14 @@ class Router
         });
         
         $crudFound = false;
+        if (static::$extension && static::$extension !== "json") {
+            $searchPath = static::$path . "." . static::$extension;
+        } else {
+            $searchPath = static::$path;
+        }
         foreach ($systemCrud as $currentCrud) {
             $param = array();
-            if (preg_match($currentCrud["regExp"], static::$path, $param) === 1) {
+            if (preg_match($currentCrud["regExp"], $searchPath, $param) === 1) {
                 $currentCrud["param"] = $param;
                 $crudFound = $currentCrud;
             }
