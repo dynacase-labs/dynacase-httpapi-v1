@@ -12,6 +12,7 @@ class RecordReturn implements \JsonSerializable
     
     protected $httpStatus = 200;
     protected $httpMessage = "OK";
+    protected $returnMode = "json";
     /**
      * @var bool indicate if method succeed
      */
@@ -21,7 +22,7 @@ class RecordReturn implements \JsonSerializable
      */
     public $messages = array();
     /**
-     * @var \stdClass misc data
+     * @var \stdClass|string misc data
      */
     public $data = null;
     /**
@@ -46,7 +47,13 @@ class RecordReturn implements \JsonSerializable
         $this->httpStatus = (int)$code;
         $this->httpStatusHeader = sprintf("%d %s", $code, $message);
     }
-    
+    /**
+     * @param string $mode
+     */
+    public function setReturnMode($mode)
+    {
+        $this->returnMode = $mode;
+    }
     public function setHttpStatusHeader($statusHeader)
     {
         $this->httpStatusHeader = $statusHeader;
@@ -78,10 +85,22 @@ class RecordReturn implements \JsonSerializable
     {
         $this->headers = $headers;
     }
+    
+    public function send()
+    {
+        switch ($this->returnMode) {
+            case "json":
+                return $this->sendJson();
+            case "html":
+                return $this->sendHtml();
+            default:
+                return $this->sendJson();
+        }
+    }
     /**
      * Send the message
      */
-    public function send()
+    protected function sendJson()
     {
         header(sprintf('HTTP/1.1 %s', str_replace(array(
             "\n",
@@ -105,6 +124,48 @@ class RecordReturn implements \JsonSerializable
             print json_encode($this);
         }
     }
+    /**
+     * Print data directly
+     */
+    protected function sendHtml()
+    {
+        $hasError = false;
+        header(sprintf('HTTP/1.1 %s', str_replace(array(
+            "\n",
+            "\r"
+        ) , "", $this->httpStatusHeader)));
+        
+        header('Content-Type: text/html');
+        
+        foreach ($this->headers as $key => $currentHeader) {
+            header(sprintf("%s: %s", $key, $currentHeader));
+        }
+        
+        if ($this->messages) {
+            foreach ($this->messages as $message) {
+                if ($message->type === $message::ERROR) {
+                    if ($hasError === false) {
+                        $hasError = true;
+                        print "<!DOCTYPE html>\n";
+                        print "<html><body>\n"; #a94442
+                        print "<style>.error {color:#a94442;text-align:center;border:solid 1px #FB657D;margin:0 30%;padding:1em}\n";
+                        print "body {background-color:#f2dede;}\n";
+                        print "</style>\n";
+                    }
+                    print '<div class="error">';
+                    print htmlspecialchars($message->contentText);
+                    print $message->contentHtml;
+                    print "</div>\n";
+                }
+            }
+            if ($hasError === true) {
+                print "</body></html>";
+            }
+        }
+        if ($hasError === false) {
+            print $this->data;
+        }
+    }
     
     public function jsonSerialize()
     {
@@ -116,6 +177,7 @@ class RecordReturn implements \JsonSerializable
         if (!empty($this->exceptionMessage)) {
             $values["exceptionMessage"] = $this->exceptionMessage;
         }
+        
         return $values;
     }
 }

@@ -116,8 +116,9 @@ try {
             throw $exception;
         }
     } else {
-        
-        $status = AuthenticatorManager::checkAccess(null, true);
+        // Ask authentification if HTML required
+        $noAskAuthent = (preg_match("/\\.html$/", $_SERVER["REQUEST_URI"]) === 0);
+        $status = AuthenticatorManager::checkAccess(null, $noAskAuthent);
         
         switch ($status) {
             case 0: // it'good, user is authentified
@@ -224,7 +225,6 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     $return->addMessage($defaultPageMessage());
 }
 catch(\Dcp\Exception $exception) {
-    $return = new Dcp\HttpApi\V1\Api\RecordReturn();
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
@@ -235,7 +235,6 @@ catch(\Dcp\Exception $exception) {
     $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString());
 }
 catch(\Exception $exception) {
-    $return = new Dcp\HttpApi\V1\Api\RecordReturn();
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
@@ -262,4 +261,6 @@ if ($tracing === "TRUE") {
     $message->type = $message::NOTICE;
     $return->addMessage($message);
 }
+
+$return->setReturnMode(\Dcp\HttpApi\V1\Api\Router::getExtension());
 $return->send();

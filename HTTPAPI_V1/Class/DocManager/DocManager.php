@@ -270,7 +270,7 @@ class DocManager
         /**
          * @var \DocFam $family
          */
-        $family = self::getDocument($doc->fromid, false);
+        $family = self::getFamily($doc->fromid);
         
         if ($control) {
             $err = $family->control('create');
