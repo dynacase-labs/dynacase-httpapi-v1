@@ -11,6 +11,7 @@ use Dcp\HttpApi\V1\Api\AnalyzeURL;
 use Dcp\HttpApi\V1\Crud\Exception as DocumentException;
 use Dcp\HttpApi\V1\DocManager\DocManager;
 use Dcp\HttpApi\V1\Crud\Enumerates as Enumerates;
+use Dcp\HttpApi\V1\Crud\Exception as CrudException;
 use Dcp\Pu\HttpApi\V1\Test\Documents\TestDocumentCrud;
 
 require_once 'HTTPAPI_V1_UNITTEST/PU_TestCaseApi.php';
@@ -36,7 +37,7 @@ class TestFamilyEnumerateCrud extends TestDocumentCrud
             $this->assertEquals(501, $exception->getHttpStatus());
         }
     }
-    
+
     public function dataCreateDocument()
     {
         return array(
@@ -53,19 +54,18 @@ class TestFamilyEnumerateCrud extends TestDocumentCrud
      */
     public function testRead($name, $fields, $expectedData)
     {
-        
         $crud = new Enumerates();
         $crud->setUrlParameters(array(
             "familyId" => "TST_APIBASE"
         ));
         $data = $crud->read($name);
-        
+
         $data = json_decode(json_encode($data) , true);
-        
+
         $expectedData = $this->prepareData($expectedData);
         $this->verifyData($data, $expectedData);
     }
-    
+
     public function dataReadDocument()
     {
         return array(
@@ -81,6 +81,111 @@ class TestFamilyEnumerateCrud extends TestDocumentCrud
             )
         );
     }
+
+    /**
+     * @dataProvider datasortBy
+     *
+     * @param $name
+     * @param $sortBy
+     * @param $expectedData
+     */
+    public function testSortBy($name, $sortBy, $expectedData)
+    {
+        $crud = new Enumerates();
+        if(!is_null($sortBy))
+        {
+            $crud->setContentParameters(
+                array(
+                    "sortBy" => $sortBy
+                )
+            );
+        }
+        $crud->setUrlParameters(
+            array(
+                "familyId" => "TST_APIBASE"
+            )
+        );
+        $data = $crud->read($name);
+
+        $data = json_decode(json_encode($data), true);
+
+        $expectedData = $this->prepareData($expectedData);
+        $this->verifyData($data, $expectedData);
+    }
+
+    public function dataSortBy()
+    {
+        return array(
+            array(
+                "TST_APIBASE_ENUM",
+                null,
+                file_get_contents(
+                    "HTTPAPI_V1_UNITTEST/families/enumerates/enumerate_sortBy_null.json"
+                )
+            ),
+            array(
+                "TST_APIBASE_ENUM",
+                "none",
+                file_get_contents(
+                    "HTTPAPI_V1_UNITTEST/families/enumerates/enumerate_sortBy_none.json"
+                )
+            ),
+            array(
+                "TST_APIBASE_ENUM",
+                "key",
+                file_get_contents(
+                    "HTTPAPI_V1_UNITTEST/families/enumerates/enumerate_sortBy_key.json"
+                )
+            ),
+            array(
+                "TST_APIBASE_ENUM",
+                "label",
+                file_get_contents(
+                    "HTTPAPI_V1_UNITTEST/families/enumerates/enumerate_sortBy_label.json"
+                )
+            )
+        );
+    }
+
+    /**
+     * @dataProvider dataSortByInvalid
+     *
+     * @param $sortBy
+     * @param $expectedExceptionCode
+     */
+    public function testSortByInvalid($sortBy, $expectedStatus, $expectedExceptionCode)
+    {
+        $crud = new Enumerates();
+        try {
+            if (!is_null($sortBy)) {
+                $crud->setContentParameters(
+                    array(
+                        "sortBy" => $sortBy
+                    )
+                );
+                $this->assertFalse(true, "An exception must occur");
+            }
+        } catch (CrudException $exception) {
+            $this->assertEquals(
+                $expectedStatus, $exception->getHttpStatus()
+            );
+            $this->assertEquals(
+                $expectedExceptionCode, $exception->getDcpCode()
+            );
+        }
+    }
+
+    public function dataSortByInvalid()
+    {
+        return array(
+            array(
+                "invalid",
+                "400",
+                "CRUD0403"
+            )
+        );
+    }
+    
     /**
      * Test that unable to update document
      *
