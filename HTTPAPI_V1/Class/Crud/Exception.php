@@ -208,6 +208,10 @@ namespace {
          */
         const CRUD0402 = 'Filter operateur "%s" not available. Availables are "%s"';
         /**
+         * @errorCode invalid sortBy operator
+         */
+        const CRUD0403 = 'sortBy operateur "%s" not available. Availables are "%s"';
+        /**
          * @errorCode Only operators startsWith and contains are allowed
          */
         const CRUD0500 = 'Unable to format, the input is not in kown type';

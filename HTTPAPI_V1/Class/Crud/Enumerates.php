@@ -14,12 +14,17 @@ class Enumerates extends Crud
     
     const startsOperator = "startswith";
     const containsOperator = "contains";
+    const sortByKeyword = "sortBy";
+    const sortByKeyOption = "key";
+    const sortByValueOption = "label";
+    const sortByOrderOption = "none";
     /**
      * @var \DocFam
      */
     protected $family = null;
     protected $keywordFilter = '';
     protected $operatorFilter = self::containsOperator;
+    protected $sortBy = self::sortByOrderOption;
     protected $enumid = null;
     //region CRUD part
     
@@ -100,23 +105,44 @@ class Enumerates extends Crud
         
         $enumItems = array();
         foreach ($enums as $key => $label) {
-            $good = true;
-            if ($filterKeyword !== "") {
-                if (!preg_match($pattern, $label, $reg)) {
-                    $good = false;
+            if ($key !== '' && $key !== ' ' && $key !== null) {
+                if ($filterKeyword === ""
+                    || preg_match(
+                        $pattern, $label
+                    )
+                ) {
+                    $enumItems[] = array(
+                        "key" => (string)$key,
+                        "label" => $label
+                    );
                 }
             }
-            
-            if ($good && $key !== '' && $key !== ' ' && $key !== null) {
-                $enumItems[] = array(
-                    "key" => (string)$key,
-                    "label" => $label
+        }
+        switch ($this->getSortBy()) {
+            case self::sortByKeyOption:
+                usort($enumItems, function($a, $b) {
+                    if ($a['key'] == $b['key']) {
+                        return 0;
+                    }
+                    return ($a['key'] < $b['key']) ? -1 : 1;
+                });
+                break;
+            case self::sortByValueOption:
+                $collator = new \Collator(
+                    \ApplicationParameterManager::getScopedParameterValue(
+                        'CORE_LANG', 'fr_FR'
+                    )
                 );
-            }
+                usort(
+                    $enumItems, function ($a, $b) use ($collator){
+                    return $collator->compare($a['label'], $b['label']);
+                });
+                break;
         }
         $info["requestParameters"] = array(
             "operator" => $filterOperator,
-            "keyword" => $filterKeyword
+            "keyword" => $filterKeyword,
+            self::sortByKeyword => $this->getSortBy()
         );
         $info["enumItems"] = $enumItems;
         
@@ -162,6 +188,9 @@ class Enumerates extends Crud
         }
         if (isset($this->contentParameters["operator"])) {
             $this->setOperatorFilter($this->contentParameters["operator"]);
+        }
+        if (isset($this->contentParameters[self::sortByKeyword])) {
+            $this->setSortBy($this->contentParameters[self::sortByKeyword]);
         }
     }
     /**
@@ -236,5 +265,33 @@ class Enumerates extends Crud
             $enumId.= ".json";
         }
         return $this->generateURL("families/$famId/enumerates/$enumId");
+    }
+
+    /**
+     * @return string
+     */
+    public function getSortBy()
+    {
+        return $this->sortBy;
+    }
+
+    /**
+     * @param string $sortBy
+     *
+     * @throws Exception
+     */
+    protected function setSortBy($sortBy)
+    {
+        $availables = array(
+            self::sortByOrderOption,
+            self::sortByKeyOption,
+            self::sortByValueOption
+        );
+        if (!in_array($sortBy, $availables)) {
+            throw new Exception(
+                "CRUD0403", $sortBy, implode(", ", $availables)
+            );
+        }
+        $this->sortBy = $sortBy;
     }
 }
