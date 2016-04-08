@@ -89,11 +89,15 @@ class RecordReturn implements \JsonSerializable
     {
         switch ($this->returnMode) {
             case "json":
-                return $this->sendJson();
+                $this->sendJson();
+                break;
+
             case "html":
-                return $this->sendHtml();
+                $this->sendHtml();
+                break;
+
             default:
-                return $this->sendJson();
+                $this->sendJson();
         }
     }
     /**
@@ -146,10 +150,15 @@ class RecordReturn implements \JsonSerializable
                     if ($hasError === false) {
                         $hasError = true;
                         print "<!DOCTYPE html>\n";
-                        print "<html><body>\n"; #a94442
-                        print "<style>.error {color:#a94442;text-align:center;border:solid 1px #FB657D;margin:0 30%;padding:1em}\n";
-                        print "body {background-color:#f2dede;}\n";
-                        print "</style>\n";
+                        print <<< 'HTML'
+                    <html><head><title>ERROR</title>
+                         <style>
+                         html, body {height:100%;} 
+                         body {display: flex;  margin: 0;   align-items: center; justify-content: center;background-color:#fafafa;} 
+                         .error {color:#a94442;border:solid 0.5em #FB657D;margin:1em;padding:1em}                      
+                         </style></head><body>
+HTML;
+                        
                     }
                     print '<div class="error">';
                     print htmlspecialchars($message->contentText);
