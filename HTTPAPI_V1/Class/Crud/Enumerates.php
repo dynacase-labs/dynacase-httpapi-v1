@@ -13,17 +13,17 @@ class Enumerates extends Crud
     
     const startsOperator = "startswith";
     const containsOperator = "contains";
-    const sortByKeyword = "sortBy";
-    const sortByKeyOption = "key";
-    const sortByValueOption = "label";
-    const sortByOrderOption = "none";
+    const orderByKeyword = "orderBy";
+    const orderByKeyOption = "key";
+    const orderByValueOption = "label";
+    const orderByOrderOption = "none";
     /**
      * @var \DocFam
      */
     protected $family = null;
     protected $keywordFilter = '';
     protected $operatorFilter = self::containsOperator;
-    protected $sortBy = self::sortByOrderOption;
+    protected $orderBy = self::orderByOrderOption;
     protected $enumid = null;
     //region CRUD part
     
@@ -101,15 +101,10 @@ class Enumerates extends Crud
                     break;
             }
         }
-        
         $enumItems = array();
         foreach ($enums as $key => $label) {
             if ($key !== '' && $key !== ' ' && $key !== null) {
-                if ($filterKeyword === ""
-                    || preg_match(
-                        $pattern, $label
-                    )
-                ) {
+                if ($filterKeyword === "" || preg_match($pattern, $label)) {
                     $enumItems[] = array(
                         "key" => (string)$key,
                         "label" => $label
@@ -117,23 +112,23 @@ class Enumerates extends Crud
                 }
             }
         }
-        switch ($this->getSortBy()) {
-            case self::sortByKeyOption:
-                usort($enumItems, function($a, $b) {
+        switch ($this->getOrderBy()) {
+            case self::orderByKeyOption:
+                usort($enumItems, function ($a, $b)
+                {
                     if ($a['key'] == $b['key']) {
                         return 0;
                     }
                     return ($a['key'] < $b['key']) ? -1 : 1;
                 });
                 break;
-            case self::sortByValueOption:
-                $collator = new \Collator(
-                    \ApplicationParameterManager::getScopedParameterValue(
-                        'CORE_LANG', 'fr_FR'
-                    )
-                );
-                usort(
-                    $enumItems, function ($a, $b) use ($collator){
+
+            case self::orderByValueOption:
+                $locale = \ApplicationParameterManager::getScopedParameterValue('CORE_LANG');
+                $collator = new \Collator($locale);
+                
+                usort($enumItems, function ($a, $b) use ($collator)
+                {
                     return $collator->compare($a['label'], $b['label']);
                 });
                 break;
@@ -141,7 +136,7 @@ class Enumerates extends Crud
         $info["requestParameters"] = array(
             "operator" => $filterOperator,
             "keyword" => $filterKeyword,
-            self::sortByKeyword => $this->getSortBy()
+            self::orderByKeyword => $this->getOrderBy()
         );
         $info["enumItems"] = $enumItems;
         
@@ -188,8 +183,8 @@ class Enumerates extends Crud
         if (isset($this->contentParameters["operator"])) {
             $this->setOperatorFilter($this->contentParameters["operator"]);
         }
-        if (isset($this->contentParameters[self::sortByKeyword])) {
-            $this->setSortBy($this->contentParameters[self::sortByKeyword]);
+        if (isset($this->contentParameters[self::orderByKeyword])) {
+            $this->setOrderBy($this->contentParameters[self::orderByKeyword]);
         }
     }
     /**
@@ -265,32 +260,28 @@ class Enumerates extends Crud
         }
         return $this->generateURL("families/$famId/enumerates/$enumId");
     }
-
     /**
      * @return string
      */
-    public function getSortBy()
+    public function getOrderBy()
     {
-        return $this->sortBy;
+        return $this->orderBy;
     }
-
     /**
-     * @param string $sortBy
+     * @param string $orderBy
      *
      * @throws Exception
      */
-    protected function setSortBy($sortBy)
+    protected function setOrderBy($orderBy)
     {
         $availables = array(
-            self::sortByOrderOption,
-            self::sortByKeyOption,
-            self::sortByValueOption
+            self::orderByOrderOption,
+            self::orderByKeyOption,
+            self::orderByValueOption
         );
-        if (!in_array($sortBy, $availables)) {
-            throw new Exception(
-                "CRUD0403", $sortBy, implode(", ", $availables)
-            );
+        if (!in_array($orderBy, $availables)) {
+            throw new Exception("CRUD0403", $orderBy, implode(", ", $availables));
         }
-        $this->sortBy = $sortBy;
+        $this->orderBy = $orderBy;
     }
 }
