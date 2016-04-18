@@ -95,7 +95,7 @@ class TestFamilyEnumerateCrud extends TestDocumentCrud
         {
             $crud->setContentParameters(
                 array(
-                    "sortBy" => $sortBy
+                    "orderBy" => $sortBy
                 )
             );
         }
@@ -159,7 +159,7 @@ class TestFamilyEnumerateCrud extends TestDocumentCrud
             if (!is_null($sortBy)) {
                 $crud->setContentParameters(
                     array(
-                        "sortBy" => $sortBy
+                        "orderBy" => $sortBy
                     )
                 );
                 $this->assertFalse(true, "An exception must occur");
