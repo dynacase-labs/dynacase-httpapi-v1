@@ -172,11 +172,11 @@ class WorkflowState extends Crud
     //endregion CRUD part
     public function analyseJSON($jsonString)
     {
-        $data = json_decode($jsonString);
+        $data = json_decode($jsonString, true);
         
         return array(
-            "comment" => isset($data->comment) ? $data->comment : null,
-            "parameters" => isset($data->parameters) ? $data->parameters : array()
+            "comment" => isset($data["comment"]) ? $data["comment"] : null,
+            "parameters" => isset($data["parameters"]) ? $data["parameters"] : array()
         );
     }
     /**
