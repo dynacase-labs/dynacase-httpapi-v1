@@ -127,6 +127,8 @@ class Document extends Crud
                 throw $exception;
             }
         }
+        
+        $this->renameFileNames();
         /**
          * @var \storeInfo $info
          */
@@ -234,6 +236,22 @@ class Document extends Crud
     {
         $this->_document = $document;
         return $this->getDocumentData();
+    }
+    /**
+     * Honor "rn" file option
+     * Rename file names if a new file is loaded.
+     */
+    protected function renameFileNames()
+    {
+        $fa = $this->_document->GetFileAttributes();
+        foreach ($fa as $aid => $oa) {
+            $rn = $oa->getOption("rn");
+            $ov = $this->_document->getOldRawValue($aid);
+            if ($rn && $ov !== false && $ov !== $this->_document->getRawValue($aid)) {
+                $this->_document->refreshRn();
+                return;
+            }
+        }
     }
     /**
      * Get the list of the properties required
