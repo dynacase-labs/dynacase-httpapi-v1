@@ -234,6 +234,26 @@ namespace {
          * @errorCode Unable to restore the document
          */
         const CRUD0505 = 'Unable to restore the document, error : %s';
+        /**
+         * @errorCode The image file must be in "Images" directory
+         */
+        const CRUD0600 = 'Asset Image file "%s" not found';
+        /**
+         * @errorCode The image file must be an real image
+         */
+        const CRUD0601 = 'Asset Image file "%s" is not an image';
+        /**
+         * @errorCode The image file cannot be converted
+         */
+        const CRUD0602 = 'Cannot resize image "%s" for "%s" size';
+        /**
+         * @errorCode The size must be a number or 2 numbers seperate by x
+         */
+        const CRUD0603 = 'Cannot resize image "%s" : incorrect size "%s"';
+        /**
+         * @errorCode The file extension asked must be correct
+         */
+        const CRUD0604 = 'Cannot get original recorded image "%s" : extension "%s" not correct';
     }
 }
 

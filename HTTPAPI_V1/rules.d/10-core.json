@@ -274,5 +274,33 @@
         "regExp" :       "%^/searches/$%",
         "description" :  "List of the searches",
         "canonicalURL" : "searches/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\ImageAsset",
+        "regExp" :       "%^/images/assets/original/(?P<identifier>.+)$%",
+        "description" :  "Download file image",
+        "canonicalURL" : "images/assets/original/<fileImageName>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\ImageAsset",
+        "regExp" :       "%^/images/assets/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>.+)$%",
+        "description" :  "Download resized file image",
+        "canonicalURL" : "images/assets/sizes/<width>x<height>/<fileImageName>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
+        "regExp" :       "%^/images/recorded/original/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
+        "description" :  "Download file image",
+        "canonicalURL" : "images/recorded/original/<fileImageName>"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
+        "regExp" :       "%^/images/recorded/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
+        "description" :  "Download resized file image",
+        "canonicalURL" : "images/recorded/sizes/<width>x<height>/<fileImageName>"
     }
 ]

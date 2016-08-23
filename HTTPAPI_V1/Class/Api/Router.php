@@ -23,7 +23,11 @@ class Router
     
     protected static $availableExtension = array(
         "json" => "application/json",
-        "html" => "text/html"
+        "html" => "text/html",
+        "png" => "image/png", // @TODO must define another way to accept any extension on a special rules
+        "jpg" => "image/jpeg"
+        // @TODO must define another way to accept any extension on a special rules
+        
     );
     /**
      * Execute the request
