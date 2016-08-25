@@ -6,7 +6,6 @@
 
 namespace Dcp\HttpApi\V1\Api;
 
-use \ApplicationParameterManager as AppParam;
 use Dcp\HttpApi\V1\Crud\Crud as Crud;
 use Dcp\HttpApi\V1\Etag\Manager as EtagManager;
 use Dcp\HttpApi\V1\Etag\Exception as EtagException;
@@ -23,12 +22,9 @@ class Router
     
     protected static $availableExtension = array(
         "json" => "application/json",
-        "html" => "text/html",
-        "png" => "image/png", // @TODO must define another way to accept any extension on a special rules
-        "jpg" => "image/jpeg"
-        // @TODO must define another way to accept any extension on a special rules
-        
+        "html" => "text/html"
     );
+    protected static $httpApiParameters = [];
     /**
      * Execute the request
      *
@@ -54,18 +50,32 @@ class Router
             }
         }
         static::$path = $pathInfo;
-        static::$returnType = static::extractExtension();
-        if (static::$returnType === false) {
-            static::$returnType = static::parseAcceptHeader();
-        }
         $method = static::convertActionToCrud();
         $identifiedCrud = self::identifyCRUD();
         $crud = new $identifiedCrud["class"]();
         /* @var Crud $crud */
+        if (!empty($identifiedCrud["acceptExtensions"])) {
+            foreach ($identifiedCrud["acceptExtensions"] as $extension) {
+                static::$availableExtension[$extension] = "*/*";
+            }
+        }
+        
+        static::$returnType = static::extractExtension();
+        if (static::$returnType === false) {
+            static::$returnType = static::parseAcceptHeader();
+        }
+        
+        if (isset($identifiedCrud["standalone"]) && $identifiedCrud["standalone"] === true) {
+            $crud->setControlAcl(false);
+        } else {
+            \Dcp\HttpApi\V1\ContextManager::controlAuthent();
+            \Dcp\HttpApi\V1\ContextManager::initCoreApplication();
+        }
+        
         $crud->setUrlParameters($identifiedCrud["param"]);
         $crud->setContentParameters(static::extractContentParameters($method, $crud));
         $cacheControl = isset($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : false;
-        if ($cacheControl !== "no-cache" && $method === Crud::READ && AppParam::getParameterValue("HTTPAPI_V1", "ACTIVATE_CACHE") === "TRUE") {
+        if ($cacheControl !== "no-cache" && $method === Crud::READ && self::getHttpApiParameter("ACTIVATE_CACHE") === "TRUE") {
             $etag = $crud->getEtagInfo();
             if ($etag !== null) {
                 $etag = sha1($etag);
@@ -114,7 +124,12 @@ class Router
         } else {
             $availableExtension = array_keys(self::$availableExtension);
             if (!in_array(static::$extension, $availableExtension)) {
-                throw new Exception("API0005", static::$extension);
+                // if acceptExtension as "*" so router accept any
+                if (!array_search("*", $availableExtension)) {
+                    throw new Exception("API0005", static::$extension);
+                } else {
+                    return "*/*";
+                }
             } else {
                 $format = self::$availableExtension[static::$extension];
             }
@@ -150,12 +165,8 @@ class Router
      */
     protected static function identifyCRUD()
     {
-        $systemCrud = json_decode(\ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "CRUD_CLASS") , true);
-        usort($systemCrud, function ($value1, $value2)
-        {
-            return $value1["order"] > $value2["order"];
-        });
-        
+        $systemCrud = json_decode(self::getHttpApiParameter("CRUD_CLASS") , true);
+        // rules are already ordered
         $crudFound = false;
         if (static::$extension && static::$extension !== "json") {
             $searchPath = static::$path . "." . static::$extension;
@@ -177,9 +188,10 @@ class Router
     /**
      * Extract the content of the request
      *
-     * @param $method
+     * @param      $method
+     * @param Crud $crudElement
+     *
      * @return array
-     * @throws Exception
      */
     public static function extractContentParameters($method, Crud $crudElement)
     {
@@ -193,6 +205,8 @@ class Router
     }
     /**
      * Analyze the content type and return the values
+     *
+     * @param Crud $crudElement
      *
      * @return array
      * @throws Exception
@@ -210,8 +224,9 @@ class Router
     /**
      * Analyze the json content of the current request and extract values
      *
+     * @param Crud $crudElement
+     *
      * @return array
-     * @throws Exception
      */
     protected static function getJSONAttributeValues(Crud $crudElement)
     {
@@ -251,5 +266,24 @@ class Router
         }
         $exception = new Exception("Unable to find the CRUD method");
         throw new $exception;
+    }
+    /**
+     * Retrieve all application parameters in once time
+     * @param $name
+     *
+     * @return mixed|string
+     */
+    public static function getHttpApiParameter($name)
+    {
+        if (!self::$httpApiParameters) {
+            simpleQuery("", "select paramv.name, paramv.val from paramv, application where paramv.appid=application.id and application.name = 'HTTPAPI_V1'", $params);
+            foreach ($params as $appParam) {
+                self::$httpApiParameters[$appParam["name"]] = $appParam["val"];
+            }
+        }
+        if (isset(self::$httpApiParameters[$name])) {
+            return self::$httpApiParameters[$name];
+        }
+        return \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", $name);
     }
 }

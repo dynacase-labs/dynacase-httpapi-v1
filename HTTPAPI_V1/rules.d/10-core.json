@@ -280,27 +280,35 @@
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\ImageAsset",
         "regExp" :       "%^/images/assets/original/(?P<identifier>.+)$%",
         "description" :  "Download file image",
-        "canonicalURL" : "images/assets/original/<fileImageName>"
+        "canonicalURL" : "images/assets/original/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","jpeg","png","gif"]
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\ImageAsset",
         "regExp" :       "%^/images/assets/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>.+)$%",
         "description" :  "Download resized file image",
-        "canonicalURL" : "images/assets/sizes/<width>x<height>/<fileImageName>"
+        "canonicalURL" : "images/assets/sizes/<width>x<height>/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","jpeg","png","gif"]
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
         "regExp" :       "%^/images/recorded/original/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
         "description" :  "Download file image",
-        "canonicalURL" : "images/recorded/original/<fileImageName>"
+        "canonicalURL" : "images/recorded/original/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","jpeg","png","gif"]
     },
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
         "regExp" :       "%^/images/recorded/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
         "description" :  "Download resized file image",
-        "canonicalURL" : "images/recorded/sizes/<width>x<height>/<fileImageName>"
+        "canonicalURL" : "images/recorded/sizes/<width>x<height>/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","jpeg","png","gif"]
     }
 ]

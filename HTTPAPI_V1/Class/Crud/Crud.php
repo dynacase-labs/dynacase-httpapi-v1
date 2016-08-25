@@ -32,6 +32,8 @@ abstract class Crud
     
     protected $httpStatus = "";
     
+    protected $controlAcl = true;
+    
     public function __construct()
     {
     }
@@ -168,9 +170,10 @@ abstract class Crud
     
     public function getEtagInfo()
     {
-        if (!$this->checkCrudPermission("GET")) {
+        // No need to test GET permission here : no data will be sended
+        /*if (!$this->checkCrudPermission("GET")) {
             throw new Exception("CRUD0105", "GET");
-        }
+        }*/
         return null;
     }
     
@@ -187,6 +190,13 @@ abstract class Crud
         return array();
     }
     /**
+     * @param boolean $controlAcl
+     */
+    public function setControlAcl($controlAcl)
+    {
+        $this->controlAcl = $controlAcl;
+    }
+    /**
      * Check the current user have a permission
      *
      * @param $aclName
@@ -195,6 +205,10 @@ abstract class Crud
      */
     public function checkCrudPermission($aclName)
     {
+        if (!$this->controlAcl) {
+            // No control if access free is set
+            return true;
+        }
         $dbAccess = getDbAccess();
         $applicationId = null;
         try {

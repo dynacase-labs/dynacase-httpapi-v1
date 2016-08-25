@@ -47,4 +47,13 @@ class RecordReturnMessage implements \JsonSerializable
         }
         return $values;
     }
+    
+    public function __toString()
+    {
+        $msg = $this->contentText;
+        if ($this->contentHtml) {
+            $msg.= "<p>" . $this->contentHtml . "</p>";
+        }
+        return sprintf("%s (%s): %s", $this->type, $this->code, $msg);
+    }
 }

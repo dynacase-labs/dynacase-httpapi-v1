@@ -36,7 +36,7 @@ class ImageAsset extends Crud
         if ($this->size !== null) {
             $location = $this->resizeLocalImage($location, $this->size, $tsize[0], $tsize[1]);
         }
-        
+        require_once ("WHAT/Lib.Http.php");
         Http_DownloadFile($location, basename($location) , "", true, true);
     }
     /**
@@ -74,6 +74,10 @@ class ImageAsset extends Crud
         $exception->setHttpStatus("405", "You cannot delete image");
         throw $exception;
     }
+    public function getEtagInfo()
+    {
+        return null;
+    }
     /**
      * Set the family of the current request
      *
@@ -92,7 +96,6 @@ class ImageAsset extends Crud
         
         return $basedest;
     }
-
     /**
      * Get images from "Images" folder
      * @return string
@@ -116,31 +119,27 @@ class ImageAsset extends Crud
         if (preg_match("/([0-9]*)x?([0-9]*)/", $size, $reg)) {
             $width = intval($reg[1]);
             $height = intval($reg[2]);
-
-            $maxWidthSet=0;
-            $maxHeigthSet=0;
+            
+            $maxWidthSet = 0;
+            $maxHeigthSet = 0;
             if ($width && $maxWidth > 0 && $width > $maxWidth) {
-                $maxWidthSet=$maxWidth;
+                $maxWidthSet = $maxWidth;
                 if ($height) {
-                    $size=preg_replace("/^([0-9]+)/",$maxWidthSet,$size );
+                    $size = preg_replace("/^([0-9]+)/", $maxWidthSet, $size);
                 }
             }
             if ($height && $maxHeight > 0 && $height > $maxHeight) {
-                $maxHeigthSet=$maxHeight;
+                $maxHeigthSet = $maxHeight;
                 if ($width) {
-                    $size=preg_replace("/x([0-9]+)/","x".$maxHeight,$size );
+                    $size = preg_replace("/x([0-9]+)/", "x" . $maxHeight, $size);
                 }
             }
-
-            if (($maxWidthSet && $height && $maxHeigthSet && $width) ||
-                ($maxWidthSet && !$height) ||
-                ($maxHeigthSet && !$width)
-            ) {
+            
+            if (($maxWidthSet && $height && $maxHeigthSet && $width) || ($maxWidthSet && !$height) || ($maxHeigthSet && !$width)) {
                 return $location;
             }
-
         }
-
+        
         $dest = $this->getDestinationCacheImage($this->imageFileName, $size);
         if (file_exists($dest)) {
             return $dest;
