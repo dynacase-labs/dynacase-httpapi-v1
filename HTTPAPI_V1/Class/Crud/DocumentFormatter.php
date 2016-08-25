@@ -35,6 +35,7 @@ class DocumentFormatter
     );
     protected $properties = array();
     protected $generateUrl = null;
+    protected $rootPath;
     
     public function __construct($source)
     {
@@ -56,6 +57,7 @@ class DocumentFormatter
             /* the source is not a handled kind of source */
             throw new Exception("CRUD0500");
         }
+        $this->rootPath = \Dcp\HttpApi\V1\Api\Router::getHttpApiParameter("REST_BASE_URL");
         /* init the standard generator of url (redirect to the documents collection */
         $this->generateUrl = function ($document)
         {
@@ -116,7 +118,6 @@ class DocumentFormatter
             $this->properties = array_merge($this->properties, $this->defaultProperties);
         }
     }
-
     /**
      * Add a property
      *
@@ -167,16 +168,32 @@ class DocumentFormatter
         $this->formatCollection->useShowEmptyOption = false;
         $this->formatCollection->setPropDateStyle(\DateAttributeValue::isoWTStyle);
         /** Format uniformly the void multiple values */
+        
         $this->formatCollection->setAttributeRenderHook(function ($info, $attribute)
         {
+            /**
+             * @var \NormalAttribute $attribute
+             */
             if ($info === null) {
-                /**
-                 * @var \NormalAttribute $attribute
-                 */
                 if ($attribute->isMultiple()) {
                     $info = array();
                 } else {
                     $info = new \StandardAttributeValue($attribute, null);
+                }
+            } elseif ($attribute->type === "docid" || $attribute->type === "account" || $attribute->type === "file" || $attribute->type === "image") {
+                /**
+                 * @var \DocidAttributeValue $info
+                 */
+                if (is_array($info)) {
+                    foreach ($info as & $oneInfo) {
+                        if (!empty($oneInfo->icon)) {
+                            $this->rewriteImageUrl($oneInfo->icon);
+                        }
+                    }
+                } else {
+                    if (!empty($info->icon)) {
+                        $this->rewriteImageUrl($info->icon);
+                    }
                 }
             }
             return $info;
@@ -189,10 +206,22 @@ class DocumentFormatter
             if (isset($values["properties"]["state"]) && !$values["properties"]["state"]->reference) {
                 unset($values["properties"]["state"]);
             }
+
+            if (isset($values["properties"]["icon"])) {
+                $this->rewriteImageUrl($values["properties"]["icon"]);
+            }
             return $values;
         });
         
         return $this->formatCollection->render();
+    }
+    
+    protected function rewriteImageUrl(&$imgUrl)
+    {
+        $pattern = "/resizeimg.php\\?img=(?:CORE%2F)?Images%2F([^&]+)&size=([0-9]+)/";
+        if (preg_match($pattern, $imgUrl, $reg)) {
+            $imgUrl = sprintf("%simages/assets/sizes/%s/%s", $this->rootPath, $reg[2], $reg[1]);
+        }
     }
     /**
      * Return the format collection
