@@ -16,7 +16,7 @@ class RecordedImage extends ImageAsset
             throw new Exception("CRUD0600", $this->imageFileName);
         }
         
-        if (basename($location) !== sprintf("%s%s", $this->imageFileName, $this->urlParameters["extension"])) {
+        if (!$this->size && basename($location) !== sprintf("%s%s", $this->imageFileName, $this->urlParameters["extension"])) {
             throw new Exception("CRUD0604", $this->imageFileName, $this->urlParameters["extension"]);
         }
         
@@ -37,7 +37,7 @@ class RecordedImage extends ImageAsset
         $dbaccess = getDbAccess();
         $rcore = pg_connect($dbaccess);
         if ($rcore) {
-            $result = pg_query(sprintf("select id_dir,name,public_access from vaultdiskstorage where id_file = %s and (public_access or id_tmp is null)", pg_escape_literal($vid)));
+            $result = pg_query(sprintf("select id_dir,name,public_access,id_tmp from vaultdiskstorage where id_file = %s and (public_access or id_tmp is null)", pg_escape_literal($vid)));
             if ($result) {
                 $row = pg_fetch_assoc($result);
                 if ($row) {

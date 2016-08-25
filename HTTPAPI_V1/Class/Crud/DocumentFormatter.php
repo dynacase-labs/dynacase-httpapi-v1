@@ -222,6 +222,12 @@ class DocumentFormatter
         if (preg_match($pattern, $imgUrl, $reg)) {
             $imgUrl = sprintf("%simages/assets/sizes/%s/%s", $this->rootPath, $reg[2], $reg[1]);
         }
+        //http://localhost/tmp32/resizeimg.php?vid=3865333998465762597&size=24
+        $pattern = "/resizeimg.php\\?vid=([0-9]+)&size=([0-9]+)/";
+        if (preg_match($pattern, $imgUrl, $reg)) {
+            $imgUrl = sprintf("%simages/recorded/sizes/%s/%s.png", $this->rootPath, $reg[2], $reg[1]);
+        }
+
     }
     /**
      * Return the format collection
