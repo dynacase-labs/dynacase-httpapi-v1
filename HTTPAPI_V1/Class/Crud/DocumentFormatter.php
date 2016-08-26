@@ -181,18 +181,32 @@ class DocumentFormatter
                     $info = new \StandardAttributeValue($attribute, null);
                 }
             } elseif ($attribute->type === "docid" || $attribute->type === "account" || $attribute->type === "file" || $attribute->type === "image") {
-                /**
-                 * @var \DocidAttributeValue $info
-                 */
+                
                 if (is_array($info)) {
                     foreach ($info as & $oneInfo) {
+                        /**
+                         * @var \DocidAttributeValue|\ImageAttributeValue $oneInfo
+                         */
                         if (!empty($oneInfo->icon)) {
                             $this->rewriteImageUrl($oneInfo->icon);
+                        }
+                        
+                        if ($attribute->type === "image" && !empty($oneInfo->thumbnail)) {
+                            $this->rewriteThumbUrl($oneInfo->thumbnail);
+                        }
+                        if (($attribute->type === "image" || $attribute->type === "file") && !empty($oneInfo->url)) {
+                            $this->rewriteFileUrl($oneInfo->url);
                         }
                     }
                 } else {
                     if (!empty($info->icon)) {
                         $this->rewriteImageUrl($info->icon);
+                    }
+                    if ($attribute->type === "image" && !empty($info->thumbnail)) {
+                        $this->rewriteThumbUrl($info->thumbnail);
+                    }
+                    if (($attribute->type === "image" || $attribute->type === "file") && !empty($info->url)) {
+                        $this->rewriteFileUrl($info->url);
                     }
                 }
             }
@@ -206,7 +220,7 @@ class DocumentFormatter
             if (isset($values["properties"]["state"]) && !$values["properties"]["state"]->reference) {
                 unset($values["properties"]["state"]);
             }
-
+            
             if (isset($values["properties"]["icon"])) {
                 $this->rewriteImageUrl($values["properties"]["icon"]);
             }
@@ -227,7 +241,24 @@ class DocumentFormatter
         if (preg_match($pattern, $imgUrl, $reg)) {
             $imgUrl = sprintf("%simages/recorded/sizes/%s/%s.png", $this->rootPath, $reg[2], $reg[1]);
         }
-
+    }
+    protected function rewriteThumbUrl(&$imgUrl)
+    {
+        //http://localhost/tmp32/file/66519/0/en_photo/0/Migaloo-Baleine-04.jpg?cache=no&inline=yes&width=48&size=48&width=48
+        //file/66519/0/en_photo/4/faisan4.gif?cache=no&inline=yes&width=48
+        $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)/.*&width=(?P<size>[0-9]+)%";
+        if (preg_match($pattern, $imgUrl, $reg)) {
+            $imgUrl = sprintf("%sdocuments/%d/images/%s/%s/sizes/%s.png", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"], $reg["size"]);
+        }
+    }
+    
+    protected function rewriteFileUrl(&$fileUrl)
+    {
+        //file/66519/1461587595/en_photo/5/Agouti-Animals-Photos.JPG?cache=no&inline=yes
+        $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)%";
+        if (preg_match($pattern, $fileUrl, $reg)) {
+            $fileUrl = sprintf("%sdocuments/%d/files/%s/%s", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"]);
+        }
     }
     /**
      * Return the format collection

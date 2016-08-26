@@ -60,7 +60,7 @@ class Router
             }
         }
         
-        static::$returnType = static::extractExtension();
+        static::$returnType = static::verifyExtension();
         if (static::$returnType === false) {
             static::$returnType = static::parseAcceptHeader();
         }
@@ -71,7 +71,6 @@ class Router
             \Dcp\HttpApi\V1\ContextManager::controlAuthent();
             \Dcp\HttpApi\V1\ContextManager::initCoreApplication();
         }
-        
         $crud->setUrlParameters($identifiedCrud["param"]);
         $crud->setContentParameters(static::extractContentParameters($method, $crud));
         $cacheControl = isset($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : false;
@@ -98,7 +97,7 @@ class Router
     public static function getExtension()
     {
         if (self::$extension === null) {
-            self::extractExtension();
+            self::verifyExtension();
         }
         return self::$extension;
     }
@@ -110,14 +109,8 @@ class Router
      * @return string
      * @throws Exception
      */
-    protected static function extractExtension()
+    protected static function verifyExtension()
     {
-        $pathInfo = static::$path;
-        /* Extract extension for format */
-        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
-            static::$extension = $matches['ext'];
-            static::$path = $matches['path'];
-        }
         
         if (static::$extension === null || static::$extension === "") {
             $format = "application/json";
@@ -165,6 +158,13 @@ class Router
      */
     protected static function identifyCRUD()
     {
+        $pathInfo = static::$path;
+        /* Extract extension for format */
+        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
+            static::$extension = $matches['ext'];
+            static::$path = $matches['path'];
+        }
+        
         $systemCrud = json_decode(self::getHttpApiParameter("CRUD_CLASS") , true);
         // rules are already ordered
         $crudFound = false;

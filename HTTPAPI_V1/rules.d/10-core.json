@@ -127,6 +127,21 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentImage",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/images/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)/sizes/(?P<size>[0-9x]+[cfs]?)(?P<extension>\\.[a-z]+)?$%",
+        "description" :  "Download resized file image included in document",
+        "canonicalURL" : "documents/<documentId>/images/<attrid>/<index>/sizes/<width>x<height>",
+        "acceptExtensions" : ["jpg","png","gif"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentFile",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/files/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)$%",
+        "description" :  "Download file included in document",
+        "canonicalURL" : "documents/<documentId>/files/<attrid>/<index>"
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashHistory",
         "regExp" :       "%^/trash/(?P<identifier>[^/]+)/history/$%",
         "description" :  "History of the document <documentId>",
@@ -197,7 +212,6 @@
         "description" :  "Lock of the document <documentId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/locks/<temporary|permanent>"
     },
-
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",
@@ -246,6 +260,21 @@
         "regExp" :       "%^/trash/(?P<identifier>[^/]+)/revisions/$%",
         "description" :  "Revision of deleted document <documentId>",
         "canonicalURL" : "trash/<documentId>/revisions/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentImage",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/revisions/(?P<revision>[0-9]+)/images/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)/sizes/(?P<size>[0-9x]+[cfs]?)(?P<extension>\\.[a-z]+)?$%",
+        "description" :  "Download resized file image included in document",
+        "canonicalURL" : "documents/<documentId>/revisions/<revisionId>/images/<attrid>/<index>/sizes/<width>x<height>",
+        "acceptExtensions" : ["jpg","png","gif"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentFile",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/revisions/(?P<revision>[0-9]+)/files/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)$%",
+        "description" :  "Download resized file image included in document",
+        "canonicalURL" : "documents/<documentId>/revisions/<revisionId>/files/<attrid>/<index>"
     },
     {
         "order" :        100,
@@ -300,7 +329,7 @@
         "description" :  "Download file image",
         "canonicalURL" : "images/recorded/original/<fileImageName>",
         "standalone" :    true,
-        "acceptExtensions" : ["jpg","jpeg","png","gif"]
+        "acceptExtensions" : ["jpg","png","gif"]
     },
     {
         "order" :        100,
@@ -309,6 +338,6 @@
         "description" :  "Download resized file image",
         "canonicalURL" : "images/recorded/sizes/<width>x<height>/<fileImageName>",
         "standalone" :    true,
-        "acceptExtensions" : ["jpg","jpeg","png","gif"]
+        "acceptExtensions" : ["jpg","png","gif"]
     }
 ]

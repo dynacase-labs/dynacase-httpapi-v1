@@ -254,6 +254,38 @@ namespace {
          * @errorCode The file extension asked must be correct
          */
         const CRUD0604 = 'Cannot get original recorded image "%s" : extension "%s" not correct';
+        /**
+         * @errorCode The attribute set in url is not part of document
+         */
+        const CRUD0605 = 'Cannot download image : Attribut "%s" of document "%s" not exists';
+        /**
+         * @errorCode The attribute as an "I" visibility
+         */
+        const CRUD0606 = 'Access denied to download image : Attribut "%s" of document "%s" is protected';
+        /**
+         * @errorCode The attribute value is empty
+         */
+        const CRUD0607 = 'No image in attribute "%s" (index "%s") in document "%s"';
+        /**
+         * @errorCode The vault id set in attribute not exists
+         */
+        const CRUD0608 = 'Image id not exists in attribute "%s" (index "%s") in document "%s"';
+        /**
+         * @errorCode The attribute value is malformed
+         */
+        const CRUD0609 = 'Incorrect value in file/image in attribute "%s" (index "%s") in document "%s"';
+        /**
+         * @errorCode The index must be greater or equal to 0
+         */
+        const CRUD0610 = 'Incorrect index "%s" attribute "%s" is multiple in document "%s"';
+        /**
+         * @errorCode The index for a single value must be -1
+         */
+        const CRUD0611 = 'Incorrect index "%s" (must be -1) attribute "%s" is not multiple in document "%s"';
+        /**
+         * @errorCode The index to select attribute value is -1 for single value or >=0 for multiple values
+         */
+        const CRUD0612 = 'Incorrect index "%s" (must be >= -1) attribute "%s" in document "%s"';
     }
 }
 
