@@ -6,14 +6,14 @@
 
 namespace Dcp\HttpApi\V1\Etag;
 
-class Manager {
-
+class Manager
+{
     /**
      * Verify the etag validity against the If-None-Match header
      * @param $etag
      * @return bool
      */
-    public function verifyCache($etag)
+    public static function verifyCache($etag)
     {
         $etagFromClient = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : "";
         if ($etagFromClient) {
@@ -24,27 +24,30 @@ class Manager {
             return false;
         }
     }
-
     /**
      * Generate the header for the etag response
      *
      * @param $etag
      */
-    function generateResponseHeader($etag)
+    public static function generateResponseHeader($etag)
     {
         header("Cache-Control: private");
         header("ETag: \"$etag\"");
     }
-
     /**
      * Generate the header for the static response
      */
-    function generateNotModifiedResponse($etag)
+    public static function generateNotModifiedResponse($etag)
     {
         header('Not Modified', true, 304);
         header("ETag: \"$etag\"");
         header('Connection: close');
     }
-
-
-} 
+    
+    public static function setEtagHeaders()
+    {
+        header("Cache-Control: private, no-cache, must-revalidate", true);
+        header_remove("Pragma");
+        header_remove("Expires");
+    }
+}

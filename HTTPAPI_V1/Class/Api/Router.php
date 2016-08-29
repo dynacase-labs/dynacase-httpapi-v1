@@ -85,10 +85,10 @@ class Router
                 }
             }
         }
-        $return = $crud->execute($method, $messages, $httpStatus);
         if ($etagManager !== false && $etag !== false) {
             $etagManager->generateResponseHeader($etag);
         }
+        $return = $crud->execute($method, $messages, $httpStatus);
         return $return;
     }
     /**

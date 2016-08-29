@@ -33,10 +33,10 @@ class DocumentFile extends Crud
      */
     public function read($resourceId)
     {
-        
         $fileInfo = $this->getFileInfo($resourceId);
-        
-        UtilImage::downloadFile($fileInfo->path, $fileInfo->name, $this->inline);
+        $cache = false;
+        // No use cache when download original file from document
+        FileUtils::downloadFile($fileInfo->path, $fileInfo->name, $fileInfo->mime_s, $this->inline, $cache);
     }
     /**
      * Create new tag ressource
@@ -139,8 +139,8 @@ class DocumentFile extends Crud
             throw $exception;
         }
         
-        $inline = $this->contentParameters["inline"];
-        if ($inline) {
+        if (!empty($this->contentParameters["inline"])) {
+            $inline = $this->contentParameters["inline"];
             $this->inline = ($inline === "yes" || $inline === "true" || $inline === "1");
         }
         return $fileInfo;

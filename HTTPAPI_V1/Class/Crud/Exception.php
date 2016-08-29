@@ -247,7 +247,7 @@ namespace {
          */
         const CRUD0602 = 'Cannot resize image "%s" for "%s" size';
         /**
-         * @errorCode The size must be a number or 2 numbers seperate by x
+         * @errorCode The size must be a number or 2 numbers separate by x
          */
         const CRUD0603 = 'Cannot resize image "%s" : incorrect size "%s"';
         /**
@@ -286,6 +286,10 @@ namespace {
          * @errorCode The index to select attribute value is -1 for single value or >=0 for multiple values
          */
         const CRUD0612 = 'Incorrect index "%s" (must be >= -1) attribute "%s" in document "%s"';
+        /**
+         * @errorCode The file to download is not found
+         */
+        const CRUD0613 = 'Cannot find file "%s" for download';
     }
 }
 

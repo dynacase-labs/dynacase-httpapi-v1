@@ -184,18 +184,26 @@ class DocumentFormatter
                 
                 if (is_array($info)) {
                     foreach ($info as & $oneInfo) {
-                        /**
-                         * @var \DocidAttributeValue|\ImageAttributeValue $oneInfo
-                         */
-                        if (!empty($oneInfo->icon)) {
-                            $this->rewriteImageUrl($oneInfo->icon);
-                        }
-                        
-                        if ($attribute->type === "image" && !empty($oneInfo->thumbnail)) {
-                            $this->rewriteThumbUrl($oneInfo->thumbnail);
-                        }
-                        if (($attribute->type === "image" || $attribute->type === "file") && !empty($oneInfo->url)) {
-                            $this->rewriteFileUrl($oneInfo->url);
+                        if (is_array($oneInfo)) {
+                            foreach ($oneInfo as & $subInfo) {
+                                if (!empty($subInfo->icon)) {
+                                    $this->rewriteImageUrl($subInfo->icon);
+                                }
+                            }
+                        } else {
+                            /**
+                             * @var \DocidAttributeValue|\ImageAttributeValue $oneInfo
+                             */
+                            if (!empty($oneInfo->icon)) {
+                                $this->rewriteImageUrl($oneInfo->icon);
+                            }
+                            
+                            if ($attribute->type === "image" && !empty($oneInfo->thumbnail)) {
+                                $this->rewriteThumbUrl($oneInfo->thumbnail);
+                            }
+                            if (($attribute->type === "image" || $attribute->type === "file") && !empty($oneInfo->url)) {
+                                $this->rewriteFileUrl($oneInfo->url);
+                            }
                         }
                     }
                 } else {
@@ -234,12 +242,12 @@ class DocumentFormatter
     {
         $pattern = "/resizeimg.php\\?img=(?:CORE%2F)?Images%2F([^&]+)&size=([0-9]+)/";
         if (preg_match($pattern, $imgUrl, $reg)) {
-            $imgUrl = sprintf("%simages/assets/sizes/%s/%s", $this->rootPath, $reg[2], $reg[1]);
+            $imgUrl = sprintf("%simages/assets/sizes/%sx%sc/%s", $this->rootPath, $reg[2], $reg[2], $reg[1]);
         }
         //http://localhost/tmp32/resizeimg.php?vid=3865333998465762597&size=24
         $pattern = "/resizeimg.php\\?vid=([0-9]+)&size=([0-9]+)/";
         if (preg_match($pattern, $imgUrl, $reg)) {
-            $imgUrl = sprintf("%simages/recorded/sizes/%s/%s.png", $this->rootPath, $reg[2], $reg[1]);
+            $imgUrl = sprintf("%simages/recorded/sizes/%sx%sc/%s.png", $this->rootPath, $reg[2], $reg[2], $reg[1]);
         }
     }
     protected function rewriteThumbUrl(&$imgUrl)
@@ -255,9 +263,9 @@ class DocumentFormatter
     protected function rewriteFileUrl(&$fileUrl)
     {
         //file/66519/1461587595/en_photo/5/Agouti-Animals-Photos.JPG?cache=no&inline=yes
-        $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)%";
+        $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)/(?P<filename>[^/?]+)%";
         if (preg_match($pattern, $fileUrl, $reg)) {
-            $fileUrl = sprintf("%sdocuments/%d/files/%s/%s", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"]);
+            $fileUrl = sprintf("%sdocuments/%d/files/%s/%s/%s", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"], $reg["filename"]);
         }
     }
     /**

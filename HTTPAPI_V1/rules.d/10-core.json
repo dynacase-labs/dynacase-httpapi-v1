@@ -136,9 +136,10 @@
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentFile",
-        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/files/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)$%",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/files/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)(/(?P<filename>-?[^/]+))?$%",
         "description" :  "Download file included in document",
-        "canonicalURL" : "documents/<documentId>/files/<attrid>/<index>"
+        "canonicalURL" : "documents/<documentId>/files/<attrid>/<index>",
+        "acceptExtensions" : ["*"]
     },
     {
         "order" :        100,

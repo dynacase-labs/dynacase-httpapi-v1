@@ -203,9 +203,7 @@ catch(\Exception $exception) {
 $headers = headers_list();
 foreach ($headers as $currentHeader) {
     if (mb_strpos($currentHeader, "ETag") === 0) {
-        header("Cache-Control: private, no-cache, must-revalidate", true);
-        header_remove("Pragma");
-        header_remove("Expires");
+        \Dcp\HttpApi\V1\Etag\Manager::setEtagHeaders();
     }
 }
 if ($tracing === "TRUE") {

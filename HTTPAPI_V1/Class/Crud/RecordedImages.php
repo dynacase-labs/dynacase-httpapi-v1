@@ -11,7 +11,7 @@ class RecordedImage extends ImageAsset
     protected function getSourceImage()
     {
         $vaultId = $this->imageFileName;
-        $location = UtilImage::getVaultPath($vaultId, true);
+        $location = FileUtils::getVaultPath($vaultId, true);
         
         if (!$location || !file_exists($location)) {
             throw new Exception("CRUD0600", $vaultId);

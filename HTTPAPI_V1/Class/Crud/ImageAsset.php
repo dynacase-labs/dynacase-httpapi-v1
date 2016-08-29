@@ -32,7 +32,7 @@ class ImageAsset extends Crud
             $dest = $this->getDestinationCacheImage($this->imageFileName, $this->size);
             
             if (!file_exists($dest)) {
-                $outFile = UtilImage::resizeLocalImage($location, $dest, $this->size);
+                $outFile = FileUtils::resizeLocalImage($location, $dest, $this->size);
             } else {
                 $outFile = $dest;
             }
@@ -44,7 +44,8 @@ class ImageAsset extends Crud
             // original file
             $outFile = $location;
         }
-        UtilImage::downloadFile($outFile);
+        
+        FileUtils::downloadFile($outFile, "", FileUtils::getMimeImage($outFile));
     }
     /**
      * Create new image ressource
