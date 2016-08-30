@@ -11,6 +11,8 @@ class DocumentFile extends Crud
 {
     
     const CACHEIMGDIR = "var/cache/file/";
+    
+    private $tmpFlag = "_tmp_";
     /**
      * @var \Doc
      */
@@ -37,6 +39,10 @@ class DocumentFile extends Crud
         $cache = false;
         // No use cache when download original file from document
         FileUtils::downloadFile($fileInfo->path, $fileInfo->name, $fileInfo->mime_s, $this->inline, $cache);
+        if ($fileInfo->id_file === $this->tmpFlag) {
+            unlink($fileInfo->path);
+        }
+        exit;
     }
     /**
      * Create new tag ressource
@@ -86,56 +92,85 @@ class DocumentFile extends Crud
     protected function getFileInfo($resourceId)
     {
         $this->setDocument($resourceId);
-        $err = $this->_document->control("view");
-        if ($err) {
-            $exception = new Exception("CRUD0201", $resourceId, $err);
-            $exception->setHttpStatus("403", "Forbidden");
-            throw $exception;
-        }
+        
         $attrid = $this->urlParameters["attrid"];
-        $index = intval($this->urlParameters["index"]);
-        
-        $attribut = $this->_document->getAttribute($attrid);
-        if (!$attribut) {
-            throw new Exception("CRUD0605", $attrid, $this->_document->getTitle());
+
+        if ($attrid === "icon") {
+             $fileValue = $this->_document->icon;
+            $index=-1;
+        } else {
+            $attribut = $this->_document->getAttribute($attrid);
+            if (!$attribut) {
+                throw new Exception(
+                    "CRUD0605", $attrid, $this->_document->getTitle()
+                );
+            }
+
+            if (isset($this->urlParameters["index"])) {
+                $index = intval($this->urlParameters["index"]);
+            } else {
+                if (!$attribut->isMultiple()) {
+                    $index = -1;
+                } else {
+                    $index = null;
+                }
+            }
+
+            if ($attribut->mvisibility === "I") {
+                $exception = new Exception(
+                    "CRUD0606", $attrid, $this->_document->getTitle()
+                );
+                $exception->setHttpStatus("403", "Forbidden");
+                throw $exception;
+            }
+
+            if ($attribut->type !== "file" && $attribut->type !== "image") {
+                throw new Exception("CRUD0614", $attrid, $resourceId);
+            }
+
+            $fileValue = $this->_document->getAttributeValue($attribut->id);
+
+        if (is_array($fileValue) && $index === null) {
+            return $this->zipFiles($attribut, $fileValue);
+        }
         }
         
-        if ($attribut->mvisibility === "I") {
-            $exception = new Exception("CRUD0606", $attrid, $this->_document->getTitle());
-            $exception->setHttpStatus("403", "Forbidden");
-            throw $exception;
-        }
-        
-        $imageValue = $this->_document->getAttributeValue($attribut->id);
-        
-        if ($index === - 1 && is_array($imageValue)) {
+        if ($index === - 1 && is_array($fileValue)) {
             throw new Exception("CRUD0610", $index, $attrid, $resourceId);
-        } elseif ($index >= 0 and !is_array($imageValue)) {
+        } elseif ($index >= 0 and !is_array($fileValue)) {
             throw new Exception("CRUD0611", $index, $attrid, $resourceId);
         } elseif ($index < - 1) {
             throw new Exception("CRUD0612", $index, $attrid, $resourceId);
         }
         
         if ($index >= 0) {
-            $imageValue = $imageValue[$index];
+            $fileValue = $fileValue[$index];
         }
-        if (empty($imageValue)) {
+        if (empty($fileValue)) {
             $exception = new Exception("CRUD0607", $attrid, $index, $resourceId);
-            $exception->setHttpStatus("404", "Image not found");
+            $exception->setHttpStatus("404", "File not found");
             throw $exception;
         }
         
-        preg_match(PREGEXPFILE, $imageValue, $reg);
+        preg_match(PREGEXPFILE, $fileValue, $reg);
         
         if (empty($reg["vid"])) {
-            throw new Exception("CRUD0609", $attrid, $index, $resourceId);
+            if ($attrid !== "icon") {
+                throw new Exception("CRUD0609", $attrid, $index, $resourceId);
+            } else {
+                // Redirect to public icon
+                $asset=new ImageAsset();
+                $asset->setUrlParameters(["identifier"=>$fileValue,"size"=>$this->urlParameters["size"]]);
+                $asset->execute("READ");
+                return null;
+            }
         }
         $vaultid = $reg["vid"];
         
         $fileInfo = \Dcp\VaultManager::getFileInfo($vaultid);
         if (!$fileInfo) {
             $exception = new Exception("CRUD0608", $attrid, $index, $resourceId);
-            $exception->setHttpStatus("404", "Image not found");
+            $exception->setHttpStatus("404", "File not found");
             throw $exception;
         }
         
@@ -144,6 +179,33 @@ class DocumentFile extends Crud
             $this->inline = ($inline === "yes" || $inline === "true" || $inline === "1");
         }
         return $fileInfo;
+    }
+    
+    protected function zipFiles(\NormalAttribute $attribute, array $files)
+    {
+        $tmpZip = tempnam(getTmpDir() , "file" . $this->_document->id . "-") . ".zip";
+        
+        $zip = new \ZipArchive();
+        if ($zip->open($tmpZip, \ZipArchive::CREATE) === true) {
+            $fileNamePattern = sprintf("%%0%dd-%%s", floor(log(count($files) , 10)) + 1);
+            foreach ($files as $k => $file) {
+                preg_match(PREGEXPFILE, $file, $reg);
+                if (empty($reg["vid"])) {
+                    throw new Exception("CRUD0609", $attribute->id, $k, $this->_document->id);
+                }
+                $fileInfo = \Dcp\VaultManager::getFileInfo($reg["vid"]);
+                $zip->addFile($fileInfo->path, sprintf($fileNamePattern, $k + 1, $fileInfo->name));
+            }
+            $zip->close();
+            $fileInfo = new \vaultFileInfo();
+            $fileInfo->id_file = $this->tmpFlag;
+            $fileInfo->name = $attribute->getLabel() . ".zip";
+            $fileInfo->path = $tmpZip;
+            $fileInfo->mime_s = "application/x-zip";
+            return $fileInfo;
+        } else {
+            throw new Exception("CRUD0615", $attribute->id, "", $this->_document->id);
+        }
     }
     /**
      * Find the current document and set it in the internal options
@@ -167,6 +229,13 @@ class DocumentFile extends Crud
         if (!$this->_document) {
             $exception = new Exception("CRUD0200", $resourceId);
             $exception->setHttpStatus("404", "Document not found");
+            throw $exception;
+        }
+        
+        $err = $this->_document->control("view");
+        if ($err) {
+            $exception = new Exception("CRUD0201", $resourceId, $err);
+            $exception->setHttpStatus("403", "Forbidden");
             throw $exception;
         }
         

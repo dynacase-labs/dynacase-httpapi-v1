@@ -136,7 +136,7 @@
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentFile",
-        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/files/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)(/(?P<filename>-?[^/]+))?$%",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/files/(?P<attrid>[^/]+)(/(?P<index>-?[0-9]+))?(/(?P<filename>-?[^/]+))?$%",
         "description" :  "Download file included in document",
         "canonicalURL" : "documents/<documentId>/files/<attrid>/<index>",
         "acceptExtensions" : ["*"]
@@ -326,11 +326,11 @@
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
-        "regExp" :       "%^/images/recorded/original/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
+        "regExp" :       "%^/images/recorded/original/(?P<identifier>[0-9]+)((?P<extension>\\.[a-z]+)?)$%",
         "description" :  "Download file image",
         "canonicalURL" : "images/recorded/original/<fileImageName>",
         "standalone" :    true,
-        "acceptExtensions" : ["jpg","png","gif"]
+        "acceptExtensions" : ["*"]
     },
     {
         "order" :        100,

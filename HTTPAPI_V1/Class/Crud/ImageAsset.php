@@ -46,6 +46,7 @@ class ImageAsset extends Crud
         }
         
         FileUtils::downloadFile($outFile, "", FileUtils::getMimeImage($outFile));
+        exit;
     }
     /**
      * Create new image ressource

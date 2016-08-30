@@ -55,7 +55,7 @@ class FileUtils
         ) , $size);
         
         if (preg_match("/^([0-9]+x[0-9]+)c$/", $size, $reg)) {
-            $cmd = sprintf("convert  -resize %s -gravity center -crop %s %s %s", escapeshellarg($reg[1]) , escapeshellarg($reg[1]) , escapeshellarg($sourceFileName) , escapeshellarg($dest));
+            $cmd = sprintf("convert  -resize %s -gravity center -crop %s+0+0 %s %s", escapeshellarg($reg[1] . "^") , escapeshellarg($reg[1]) , escapeshellarg($sourceFileName) , escapeshellarg($dest));
         } else {
             $cmd = sprintf("convert  -resize %s %s %s", escapeshellarg($size) , escapeshellarg($sourceFileName) , escapeshellarg($dest));
         }
@@ -147,7 +147,6 @@ class FileUtils
         //ob_clean();
         //flush();
         readfile($filePath);
-        exit;
     }
     
     public static function getMimeImage($fileName)

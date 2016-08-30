@@ -41,8 +41,8 @@ class DocumentImage extends DocumentFile
         if (!$this->fileInfo) {
             $this->fileInfo = $this->getFileInfo($resourceId);
         }
-        
         $destination = $this->getDestinationCacheImage($this->fileInfo->id_file, $size);
+
         if (file_exists($destination)) {
             $outFile = $destination;
         } else {
@@ -66,6 +66,7 @@ class DocumentImage extends DocumentFile
         }
         \Dcp\HttpApi\V1\Etag\Manager::setEtagHeaders();
         FileUtils::downloadFile($outFile, $fileName, $mime, $this->inline, false);
+        exit;
     }
     
     protected function getDestinationCacheImage($localimage, $size)

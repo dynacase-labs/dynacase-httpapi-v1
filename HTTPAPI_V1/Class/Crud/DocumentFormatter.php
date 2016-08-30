@@ -249,6 +249,11 @@ class DocumentFormatter
         if (preg_match($pattern, $imgUrl, $reg)) {
             $imgUrl = sprintf("%simages/recorded/sizes/%sx%sc/%s.png", $this->rootPath, $reg[2], $reg[2], $reg[1]);
         }
+        http://localhost/tmp32/file/1383/0/icon/-1/200-0.jpg?inline=yes
+        $pattern = "%file/([0-9]+)/[0-9]+/([^/]+)/-1/([^\\?]+)\\?.*&width=([0-9]+)%";
+        if (preg_match($pattern, $imgUrl, $reg)) {
+            $imgUrl = sprintf("%sdocuments/%d/images/%s/-1/sizes/%sx%sc.png", $this->rootPath, $reg[1], $reg[2],  $reg[4], $reg[4]);
+        }
     }
     protected function rewriteThumbUrl(&$imgUrl)
     {

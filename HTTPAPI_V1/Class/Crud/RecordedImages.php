@@ -17,7 +17,7 @@ class RecordedImage extends ImageAsset
             throw new Exception("CRUD0600", $vaultId);
         }
         
-        if (!$this->size && basename($location) !== sprintf("%s%s", $vaultId, $this->urlParameters["extension"])) {
+        if (!$this->size && !empty($this->urlParameters["extension"]) && basename($location) !== sprintf("%s%s", $vaultId, $this->urlParameters["extension"])) {
             throw new Exception("CRUD0604", $vaultId, $this->urlParameters["extension"]);
         }
         

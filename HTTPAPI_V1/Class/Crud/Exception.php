@@ -290,6 +290,14 @@ namespace {
          * @errorCode The file to download is not found
          */
         const CRUD0613 = 'Cannot find file "%s" for download';
+        /**
+         * @errorCode The attribute must reference a file
+         */
+        const CRUD0614 = 'Attribute "%s" is not a file or image attribute in document "%s"';
+        /**
+         * @errorCode Error when try to create temporary archive
+         */
+        const CRUD0615 = 'Cannot create zip archive for attribute "%s" in document "%s"';
     }
 }
 
