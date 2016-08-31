@@ -11,6 +11,7 @@ use Dcp\VaultManager;
 class TemporaryFile extends Crud
 {
     //region CRUD part
+    
     /**
      * Create new ressource
      * @throws Exception
@@ -20,7 +21,7 @@ class TemporaryFile extends Crud
     {
         if (count($_FILES) === 0) {
             $exception = new Exception("CRUD0302", "");
-            $exception->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "HTTPAPI_V1") , $this->getUploadLimit()/1024/1024));
+            $exception->setUserMessage(sprintf(___("File not recorded, File size transfert limited to %d Mb", "HTTPAPI_V1") , $this->getUploadLimit() / 1024 / 1024));
             throw $exception;
         }
         $file = current($_FILES);
@@ -51,13 +52,14 @@ class TemporaryFile extends Crud
         $iconSize = 20;
         $thumbSize = 48;
         // if ($iconFile) $this->icon = $doc->getIcon($iconFile, $info->mime_s);44
+        $rootPath = \Dcp\HttpApi\V1\Api\Router::getHttpApiParameter("REST_BASE_URL");
         $thumbnailUrl = '';
         if (strpos($info->mime_s, "image/") === 0) {
             // try to get thumbnail url
-            $thumbnailUrl = sprintf("resizeimg.php?img=vaultid=%d&size=%d", $info->id_file, $thumbSize);
+            $thumbnailUrl = sprintf("%simages/recorded/sizes/%s/%s.png", $rootPath, $thumbSize, $info->id_file);
         }
         
-        $url = sprintf("file/%s/%d/%s/%s/%s?cache=no&inline=no", 0, $info->id_file, "-", $index = - 1, rawurlencode($info->name));
+        $url = sprintf("%simages/recorded/original/%s.png", $rootPath, $info->id_file);
         
         return array(
             "file" => array(
@@ -68,12 +70,11 @@ class TemporaryFile extends Crud
                 "reference" => sprintf("%s|%s|%s", $info->mime_s, $info->id_file, $info->name) ,
                 "cdate" => $info->cdate,
                 "downloadUrl" => $url,
-                "iconUrl" => sprintf("resizeimg.php?img=Images/%s&size=%d", urlencode($iconFile) , $iconSize) ,
+                "iconUrl" => sprintf("%simages/assets/sizes/%s/%s", $rootPath, $iconSize, urlencode($iconFile)) ,
                 "fileName" => $info->name
             )
         );
     }
-
     /**
      * Get ressource
      * @param string $resourceId Resource identifier
@@ -86,7 +87,6 @@ class TemporaryFile extends Crud
         $exception->setHttpStatus("405", "You cannot read a temporary file");
         throw $exception;
     }
-
     /**
      * Update the ressource
      * @param string $resourceId Resource identifier
@@ -99,7 +99,6 @@ class TemporaryFile extends Crud
         $exception->setHttpStatus("405", "You cannot update a temporary file");
         throw $exception;
     }
-
     /**
      * Delete ressource
      * @param string $resourceId Resource identifier
@@ -112,8 +111,8 @@ class TemporaryFile extends Crud
         $exception->setHttpStatus("501", "Not yet implemented");
         throw $exception;
     }
-
     //endregion CRUD part
+    
     /**
      * Analyze the current php conf to get the upload limit
      *
@@ -127,7 +126,8 @@ class TemporaryFile extends Crud
          * @param $size
          * @return mixed
          */
-        $normalize = function ($size) {
+        $normalize = function ($size)
+        {
             if (preg_match('/^([\d\.]+)([KMG])$/i', $size, $match)) {
                 $pos = array_search($match[2], array(
                     "K",
@@ -141,17 +141,18 @@ class TemporaryFile extends Crud
             return $size;
         };
         $max_upload = $normalize(ini_get('upload_max_filesize'));
-
-        $max_post = (ini_get('post_max_size') == 0) ? function () {
+        
+        $max_post = (ini_get('post_max_size') == 0) ? function ()
+        {
             throw new Exception('Check Your php.ini settings');
         } : $normalize(ini_get('post_max_size'));
-
-        $memory_limit = (ini_get('memory_limit') == -1) ? $max_post : $normalize(ini_get('memory_limit'));
-
+        
+        $memory_limit = (ini_get('memory_limit') == - 1) ? $max_post : $normalize(ini_get('memory_limit'));
+        
         if ($memory_limit < $max_post || $memory_limit < $max_upload) return $memory_limit;
-
+        
         if ($max_post < $max_upload) return $max_post;
-
+        
         $maxFileSize = min($max_upload, $max_post, $memory_limit);
         return $maxFileSize;
     }

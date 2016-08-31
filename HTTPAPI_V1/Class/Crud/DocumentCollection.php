@@ -194,7 +194,7 @@ class DocumentCollection extends Crud
     public function prepareDocumentList()
     {
         $this->prepareSearchDoc();
-        $this->slice = isset($this->contentParameters["slice"]) ? mb_strtolower($this->contentParameters["slice"]) : \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "COLLECTION_DEFAULT_SLICE");
+        $this->slice = isset($this->contentParameters["slice"]) ? mb_strtolower($this->contentParameters["slice"]) : \Dcp\HttpApi\V1\Api\Router::getHttpApiParameter("COLLECTION_DEFAULT_SLICE");
         if ($this->slice !== "all") {
             $this->slice = intval($this->slice);
         }

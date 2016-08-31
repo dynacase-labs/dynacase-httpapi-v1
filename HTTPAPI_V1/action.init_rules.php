@@ -2,7 +2,7 @@
 /*
  * @author Anakeen
  * @package FDL
- */
+*/
 
 function init_rules(Action & $action)
 {
@@ -27,6 +27,12 @@ function init_rules(Action & $action)
         }
         $rules = array_merge($rules, $currentRule);
     }
+    
+    usort($rules, function ($value1, $value2)
+    {
+        return $value1["order"] > $value2["order"];
+    });
+    
     $rules = json_encode($rules);
     ApplicationParameterManager::setParameterValue(ApplicationParameterManager::CURRENT_APPLICATION, "CRUD_CLASS", $rules);
     

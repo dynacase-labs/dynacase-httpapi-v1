@@ -88,6 +88,7 @@ class RecordReturn implements \JsonSerializable
     public function send()
     {
         switch ($this->returnMode) {
+            case "":
             case "json":
                 $this->sendJson();
                 break;
@@ -97,7 +98,7 @@ class RecordReturn implements \JsonSerializable
                 break;
 
             default:
-                $this->sendJson();
+                $this->sendRawData();
         }
     }
     /**
@@ -159,6 +160,7 @@ class RecordReturn implements \JsonSerializable
                          </style></head><body>
 HTML;
                         
+                        
                     }
                     print '<div class="error">';
                     print htmlspecialchars($message->contentText);
@@ -174,7 +176,29 @@ HTML;
             print $this->data;
         }
     }
-    
+    protected function sendRawData()
+    {
+        $hasError = false;
+        header(sprintf('HTTP/1.1 %s', str_replace(array(
+            "\n",
+            "\r"
+        ) , "", $this->httpStatusHeader)));
+        
+        foreach ($this->headers as $key => $currentHeader) {
+            header(sprintf("%s: %s", $key, $currentHeader));
+        }
+        if ($this->messages) {
+            foreach ($this->messages as $message) {
+                if ($message->type === $message::ERROR) {
+                    $hasError = true;
+                    print $message;
+                }
+            }
+        }
+        if ($hasError === false) {
+            print $this->data;
+        }
+    }
     public function jsonSerialize()
     {
         $values = array(

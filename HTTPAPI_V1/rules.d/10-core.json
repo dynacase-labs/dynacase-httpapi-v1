@@ -127,6 +127,22 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentImage",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/images/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)/sizes/(?P<size>[0-9x]+[cfs]?)(?P<extension>\\.[a-z]+)?$%",
+        "description" :  "Download resized file image included in document",
+        "canonicalURL" : "documents/<documentId>/images/<attrid>/<index>/sizes/<width>x<height>",
+        "acceptExtensions" : ["jpg","png","gif"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentFile",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/files/(?P<attrid>[^/]+)(/(?P<index>-?[0-9]+))?(/(?P<filename>-?[^/]+))?$%",
+        "description" :  "Download file included in document",
+        "canonicalURL" : "documents/<documentId>/files/<attrid>/<index>",
+        "acceptExtensions" : ["*"]
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\TrashHistory",
         "regExp" :       "%^/trash/(?P<identifier>[^/]+)/history/$%",
         "description" :  "History of the document <documentId>",
@@ -197,7 +213,6 @@
         "description" :  "Lock of the document <documentId>",
         "canonicalURL" : "families/<familyId>/documents/<documentId>/locks/<temporary|permanent>"
     },
-
     {
         "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Revision",
@@ -249,6 +264,21 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentImage",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/revisions/(?P<revision>[0-9]+)/images/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)/sizes/(?P<size>[0-9x]+[cfs]?)(?P<extension>\\.[a-z]+)?$%",
+        "description" :  "Download resized file image included in document",
+        "canonicalURL" : "documents/<documentId>/revisions/<revisionId>/images/<attrid>/<index>/sizes/<width>x<height>",
+        "acceptExtensions" : ["jpg","png","gif"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\DocumentFile",
+        "regExp" :       "%^/documents/(?P<identifier>[^/]+)/revisions/(?P<revision>[0-9]+)/files/(?P<attrid>[^/]+)/(?P<index>-?[0-9]+)$%",
+        "description" :  "Download resized file image included in document",
+        "canonicalURL" : "documents/<documentId>/revisions/<revisionId>/files/<attrid>/<index>"
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\Folders",
         "regExp" :       "%^/folders/$%",
         "description" :  "List of the folders",
@@ -274,5 +304,41 @@
         "regExp" :       "%^/searches/$%",
         "description" :  "List of the searches",
         "canonicalURL" : "searches/"
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\ImageAsset",
+        "regExp" :       "%^/images/assets/original/(?P<identifier>.+)$%",
+        "description" :  "Download file image",
+        "canonicalURL" : "images/assets/original/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","jpeg","png","gif"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\ImageAsset",
+        "regExp" :       "%^/images/assets/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>.+)$%",
+        "description" :  "Download resized file image",
+        "canonicalURL" : "images/assets/sizes/<width>x<height>/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","jpeg","png","gif"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
+        "regExp" :       "%^/images/recorded/original/(?P<identifier>[0-9]+)((?P<extension>\\.[a-z]+)?)$%",
+        "description" :  "Download file image",
+        "canonicalURL" : "images/recorded/original/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["*"]
+    },
+    {
+        "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
+        "regExp" :       "%^/images/recorded/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
+        "description" :  "Download resized file image",
+        "canonicalURL" : "images/recorded/sizes/<width>x<height>/<fileImageName>",
+        "standalone" :    true,
+        "acceptExtensions" : ["jpg","png","gif"]
     }
 ]

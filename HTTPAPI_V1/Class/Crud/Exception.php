@@ -234,6 +234,70 @@ namespace {
          * @errorCode Unable to restore the document
          */
         const CRUD0505 = 'Unable to restore the document, error : %s';
+        /**
+         * @errorCode The image file must be in "Images" directory
+         */
+        const CRUD0600 = 'Asset Image file "%s" not found';
+        /**
+         * @errorCode The image file must be an real image
+         */
+        const CRUD0601 = 'Asset Image file "%s" is not an image';
+        /**
+         * @errorCode The image file cannot be converted
+         */
+        const CRUD0602 = 'Cannot resize image "%s" for "%s" size';
+        /**
+         * @errorCode The size must be a number or 2 numbers separate by x
+         */
+        const CRUD0603 = 'Cannot resize image "%s" : incorrect size "%s"';
+        /**
+         * @errorCode The file extension asked must be correct
+         */
+        const CRUD0604 = 'Cannot get original recorded image "%s" : extension "%s" not correct';
+        /**
+         * @errorCode The attribute set in url is not part of document
+         */
+        const CRUD0605 = 'Cannot download image : Attribut "%s" of document "%s" not exists';
+        /**
+         * @errorCode The attribute as an "I" visibility
+         */
+        const CRUD0606 = 'Access denied to download image : Attribut "%s" of document "%s" is protected';
+        /**
+         * @errorCode The attribute value is empty
+         */
+        const CRUD0607 = 'No image in attribute "%s" (index "%s") in document "%s"';
+        /**
+         * @errorCode The vault id set in attribute not exists
+         */
+        const CRUD0608 = 'Image id not exists in attribute "%s" (index "%s") in document "%s"';
+        /**
+         * @errorCode The attribute value is malformed
+         */
+        const CRUD0609 = 'Incorrect value in file/image in attribute "%s" (index "%s") in document "%s"';
+        /**
+         * @errorCode The index must be greater or equal to 0
+         */
+        const CRUD0610 = 'Incorrect index "%s" attribute "%s" is multiple in document "%s"';
+        /**
+         * @errorCode The index for a single value must be -1
+         */
+        const CRUD0611 = 'Incorrect index "%s" (must be -1) attribute "%s" is not multiple in document "%s"';
+        /**
+         * @errorCode The index to select attribute value is -1 for single value or >=0 for multiple values
+         */
+        const CRUD0612 = 'Incorrect index "%s" (must be >= -1) attribute "%s" in document "%s"';
+        /**
+         * @errorCode The file to download is not found
+         */
+        const CRUD0613 = 'Cannot find file "%s" for download';
+        /**
+         * @errorCode The attribute must reference a file
+         */
+        const CRUD0614 = 'Attribute "%s" is not a file or image attribute in document "%s"';
+        /**
+         * @errorCode Error when try to create temporary archive
+         */
+        const CRUD0615 = 'Cannot create zip archive for attribute "%s" in document "%s"';
     }
 }
 

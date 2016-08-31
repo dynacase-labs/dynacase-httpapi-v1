@@ -25,7 +25,7 @@ class AnalyzeURL
         } else {
             $coreURL = self::getUrlPath();
         }
-        $baseURL = \ApplicationParameterManager::getParameterValue("HTTPAPI_V1", "REST_BASE_URL");
+        $baseURL = \Dcp\HttpApi\V1\Api\Router::getHttpApiParameter("REST_BASE_URL");
         return $coreURL . $baseURL;
     }
     
