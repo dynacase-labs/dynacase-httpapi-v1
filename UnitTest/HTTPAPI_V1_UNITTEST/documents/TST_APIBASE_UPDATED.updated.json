@@ -3,7 +3,7 @@
         "properties" : {
             "id" :       %updatedId%,
             "title" :    "Updated",
-            "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "icon" :     "api/v1/images/assets/sizes/24x24c/doc.png",
             "initid" :   %updatedInitid%,
             "name" :     "TST_APIBASE_UPDATED",
             "revision" : 0

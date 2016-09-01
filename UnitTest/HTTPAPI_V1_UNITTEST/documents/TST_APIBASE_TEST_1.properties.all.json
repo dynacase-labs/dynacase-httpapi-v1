@@ -19,9 +19,9 @@
             "family" :         {
                 "title" : "Test API",
                 "name" :  "TST_APIBASE",
-                "icon" :  "resizeimg.php?img=Images%2Fdoc.png&size=24"
+                "icon" :  "api/v1/images/assets/sizes/24x24c/doc.png"
             },
-            "icon" :           "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "icon" :           "api/v1/images/assets/sizes/24x24c/doc.png",
             "initid" :         "%test1Id%",
             "locked" :         0,
             "name" :           "TST_APIBASE_TEST_1",

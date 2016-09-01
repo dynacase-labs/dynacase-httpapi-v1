@@ -3,7 +3,7 @@
         "properties" : {
             "id" :       %test1Id%,
             "title" :    "test 1",
-            "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "icon" :     "api/v1/images/assets/sizes/24x24c/doc.png",
             "initid" :   %test1Initid%,
             "name" :     "TST_APIBASE_TEST_1",
             "revision" : 0
@@ -16,7 +16,7 @@
             "tst_apibase_account" :                {
                 "familyRelation" : "",
                 "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
-                "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                 "value" :          "%masterDefaultId%",
                 "displayValue" :   "%masterDefaultTitle%"
             },
@@ -24,14 +24,14 @@
                 {
                     "familyRelation" : "",
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
-                    "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                    "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                     "value" :          "%anonymousGestId%",
                     "displayValue" :   "%anonymousGestTitle%"
                 },
                 {
                     "familyRelation" : "",
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
-                    "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                    "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                     "value" :          "%masterDefaultId%",
                     "displayValue" :   "%masterDefaultTitle%"
                 }
@@ -85,7 +85,7 @@
                 {
                     "familyRelation" : "",
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
-                    "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                    "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                     "value" :          "%anonymousGestId%",
                     "displayValue" :   "%anonymousGestTitle%"
                 },
@@ -99,7 +99,7 @@
                 {
                     "familyRelation" : "",
                     "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
-                    "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                    "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                     "value" :          "%masterDefaultId%",
                     "displayValue" :   "%masterDefaultTitle%"
                 }
@@ -109,7 +109,7 @@
                     {
                         "familyRelation" : "",
                         "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
-                        "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                        "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                         "value" :          "%anonymousGestId%",
                         "displayValue" :   "%anonymousGestTitle%"
                     }
@@ -119,14 +119,14 @@
                     {
                         "familyRelation" : "",
                         "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%anonymousGestId%&amp;latest=Y",
-                        "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                        "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                         "value" :          "%anonymousGestId%",
                         "displayValue" :   "%anonymousGestTitle%"
                     },
                     {
                         "familyRelation" : "",
                         "url" :            "?app=FDL&amp;action=OPENDOC&amp;mode=view&amp;id=%masterDefaultId%&amp;latest=Y",
-                        "icon" :           "resizeimg.php?img=Images%2Fdynacase-iuser.png&size=14",
+                        "icon" :           "api/v1/images/assets/sizes/14x14c/dynacase-iuser.png",
                         "value" :          "%masterDefaultId%",
                         "displayValue" :   "%masterDefaultTitle%"
                     }
