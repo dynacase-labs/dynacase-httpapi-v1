@@ -2,7 +2,7 @@
     "revision" : {
         "properties" : {
             "id" :       %test1Initid%,
-            "icon" :     "resizeimg.php?img=Images%2Fdoc.png&size=24",
+            "icon" :     "api/v1/images/assets/sizes/24x24c/doc.png",
             "initid" :   %test1Initid%,
             "name" :     "TST_APIBASE_TEST_1",
             "revision" : 0

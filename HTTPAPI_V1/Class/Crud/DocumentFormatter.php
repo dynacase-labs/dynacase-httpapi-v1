@@ -232,6 +232,11 @@ class DocumentFormatter
             if (isset($values["properties"]["icon"])) {
                 $this->rewriteImageUrl($values["properties"]["icon"]);
             }
+            foreach ($values["properties"] as & $subProp) {
+                if (!empty($subProp["icon"])) {
+                    $this->rewriteImageUrl($subProp["icon"]);
+                }
+            }
             return $values;
         });
         
@@ -244,42 +249,43 @@ class DocumentFormatter
         if (preg_match($pattern, $imgUrl, $reg)) {
             $imgUrl = sprintf("%simages/assets/sizes/%sx%sc/%s", $this->rootPath, $reg[2], $reg[2], $reg[1]);
         }
-        //http://localhost/tmp32/resizeimg.php?vid=3865333998465762597&size=24
+        //resizeimg.php?vid=3865333998465762597&size=24
         $pattern = "/resizeimg.php\\?vid=([0-9]+)&size=([0-9]+)/";
         if (preg_match($pattern, $imgUrl, $reg)) {
             $imgUrl = sprintf("%simages/recorded/sizes/%sx%sc/%s.png", $this->rootPath, $reg[2], $reg[2], $reg[1]);
         }
-        http://localhost/tmp32/file/1383/0/icon/-1/200-0.jpg?inline=yes
-        $pattern = "%file/([0-9]+)/[0-9]+/([^/]+)/-1/([^\\?]+)\\?.*&width=([0-9]+)%";
-        if (preg_match($pattern, $imgUrl, $reg)) {
-            $imgUrl = sprintf("%sdocuments/%d/images/%s/-1/sizes/%sx%sc.png", $this->rootPath, $reg[1], $reg[2],  $reg[4], $reg[4]);
+        //file/1383/0/icon/-1/200-0.jpg?inline=yes
+            $pattern = "%file/([0-9]+)/[0-9]+/([^/]+)/-1/([^\\?]+)\\?.*&width=([0-9]+)%";
+            if (preg_match($pattern, $imgUrl, $reg)) {
+                $imgUrl = sprintf("%sdocuments/%d/images/%s/-1/sizes/%sx%sc.png", $this->rootPath, $reg[1], $reg[2], $reg[4], $reg[4]);
+            }
         }
-    }
-    protected function rewriteThumbUrl(&$imgUrl)
-    {
-        //http://localhost/tmp32/file/66519/0/en_photo/0/Migaloo-Baleine-04.jpg?cache=no&inline=yes&width=48&size=48&width=48
-        //file/66519/0/en_photo/4/faisan4.gif?cache=no&inline=yes&width=48
-        $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)/.*&width=(?P<size>[0-9]+)%";
-        if (preg_match($pattern, $imgUrl, $reg)) {
-            $imgUrl = sprintf("%sdocuments/%d/images/%s/%s/sizes/%s.png", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"], $reg["size"]);
+        protected function rewriteThumbUrl(&$imgUrl)
+        {
+            //http://localhost/tmp32/file/66519/0/en_photo/0/Migaloo-Baleine-04.jpg?cache=no&inline=yes&width=48&size=48&width=48
+            //file/66519/0/en_photo/4/faisan4.gif?cache=no&inline=yes&width=48
+            $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)/.*&width=(?P<size>[0-9]+)%";
+            if (preg_match($pattern, $imgUrl, $reg)) {
+                $imgUrl = sprintf("%sdocuments/%d/images/%s/%s/sizes/%s.png", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"], $reg["size"]);
+            }
+        }
+        
+        protected function rewriteFileUrl(&$fileUrl)
+        {
+            //file/66519/1461587595/en_photo/5/Agouti-Animals-Photos.JPG?cache=no&inline=yes
+            $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)/(?P<filename>[^/?]+)%";
+            if (preg_match($pattern, $fileUrl, $reg)) {
+                $fileUrl = sprintf("%sdocuments/%d/files/%s/%s/%s", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"], $reg["filename"]);
+            }
+        }
+        /**
+         * Return the format collection
+         *
+         * @return \FormatCollection
+         */
+        public function getFormatCollection()
+        {
+            return $this->formatCollection;
         }
     }
     
-    protected function rewriteFileUrl(&$fileUrl)
-    {
-        //file/66519/1461587595/en_photo/5/Agouti-Animals-Photos.JPG?cache=no&inline=yes
-        $pattern = "%file/(?P<docid>[0-9]+)/([^/]+)/(?P<attrid>[^/]+)/(?P<index>[^/]+)/(?P<filename>[^/?]+)%";
-        if (preg_match($pattern, $fileUrl, $reg)) {
-            $fileUrl = sprintf("%sdocuments/%d/files/%s/%s/%s", $this->rootPath, $reg["docid"], $reg["attrid"], $reg["index"], $reg["filename"]);
-        }
-    }
-    /**
-     * Return the format collection
-     *
-     * @return \FormatCollection
-     */
-    public function getFormatCollection()
-    {
-        return $this->formatCollection;
-    }
-}
