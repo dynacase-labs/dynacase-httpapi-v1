@@ -233,7 +233,7 @@ class DocumentFormatter
                 $this->rewriteImageUrl($values["properties"]["icon"]);
             }
             foreach ($values["properties"] as & $subProp) {
-                if (!empty($subProp["icon"])) {
+                if (is_array($subProp) && !empty($subProp["icon"])) {
                     $this->rewriteImageUrl($subProp["icon"]);
                 }
             }
