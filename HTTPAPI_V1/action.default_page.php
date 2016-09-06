@@ -21,6 +21,7 @@ function default_page(Action &$action) {
         $value["canonicalURL"] = isset($value["canonicalURL"]) ? $value["canonicalURL"] : $value["regExp"];
         $value["canonicalURL"] = $baseURL. $value["canonicalURL"];
         $value["description"] = isset($value["description"]) ? $value["description"] : $value["class"];
+        $value["acceptExtensions"] = isset($value["acceptExtensions"]) ? implode(", ",$value["acceptExtensions"]) : "json";
         return $value;
     };
 
