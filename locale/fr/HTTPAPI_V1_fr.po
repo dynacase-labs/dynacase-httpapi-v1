@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-28 09:46+0100\n"
+"POT-Creation-Date: 2016-10-20 17:27+0200\n"
 "PO-Revision-Date: 2014-12-03 13:44+0100\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
@@ -95,6 +95,12 @@ msgid "HTTPAPI_V1:default value of the slice for collection"
 msgstr ""
 "Valeur par défaut pour le nombre de résultats retourné pour une collection"
 
+msgid "HTTPAPI_V1_ADMIN:Basic ACL"
+msgstr ""
+
+msgid "HTTPAPI_V1_ADMIN:HTTPAPI_V1_ADMIN"
+msgstr ""
+
 msgid "HTTPAPI_V1_DEV:Basic ACL"
 msgstr "ACL Basic"
 
@@ -103,6 +109,9 @@ msgstr "Outil de développement"
 
 msgid "HTTPAPI_V1_DEV:Test HTTP API"
 msgstr "Outil de développement"
+
+msgid "HttpApi:Token Access"
+msgstr ""
 
 msgctxt "ddui"
 msgid "The folders"

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>[TEXT:Token access]</title>
+    [CSS:CUSTOMREF]
+    [JS:REF]
+</head>
+<body>
+<table class="token" lang="[lang]" data-token-url="?app=HTTPAPI_V1_ADMIN&action=TOKEN_DATA">
+    <thead>
+    <tr>
+        <th></th>
+        <th>[TEXT:accesstoken:token]</th>
+        <th>[TEXT:accesstoken:user]</th>
+        <th class="token-date">[TEXT:accesstoken:date]</th>
+        <th class="token-expandable">[TEXT:accesstoken:expandable]</th>
+        <th>[TEXT:accesstoken:description]</th>
+        <th>[TEXT:resttoken:route]</th>
+    </tr>
+    </thead>
+
+</table>
+
+<div style="display:none" data-close="[TEXT:accesstoken:Cancel]" data-confirm="[TEXT:accesstoken:Confirm token deletion]"
+     id="token-deletion-confirm" title="[TEXT:accesstoken:Token Deletion]">
+    <p><span class="ui-icon ui-icon-alert"></span>
+        <span>[TEXT:accesstoken:Delete token. Are you sure ?]</span></p>
+</div>
+
+<div class="token-header">
+    <a class="token-view-createform">[TEXT:resttoken:Create a new token]</a>
+    <label for="ctoken-expired">[TEXT:accesstoken:Show expired tokens] (<span class="token-expired-count"></span>)</label>
+    <input type="checkbox"  id="ctoken-expired">
+</div>
+
+<form  class="token-form-add" title="[TEXT:accesstoken:New token]" action="?app=AUTHENTUI&action=TOKEN_METHOD&method=create">
+    <table>
+        <tbody>
+        <tr>
+            <td><label class="label" for="iuser">[TEXT:accesstoken:user] : </label></td>
+            <td><input type="text" id="iuser" name="user" placeholder="[TEXT:accesstoken:User login]"/></td>
+            <td rowspan="3">
+                <fieldset>
+                    <legend>[TEXT:accesstoken:context]</legend>
+                    <select name="openaction">[BLOCK OPENACTIONS]
+                        <option value="[openAction]">[openActionLabel]</option>
+                        [ENDBLOCK OPENACTIONS]
+                        <option selected="selected" value="">[TEXT:accesstoken:allapplication]</option>
+                    </select><br/>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th><a class="token-add-key" title="[TEXT:accesstoken:Add another key]"></a> [TEXT:accesstoken:parameterKey]</th>
+                            <th>[TEXT:accesstoken:parameterValue]</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><input name="getkey[]" type="text"/></td>
+                            <td><input name="getvalue[]" type="text"/></td>
+                        </tr>
+                        </tbody>
+                        <tfoot style="display:none">
+                        <tr>
+                            <td><input name="getkey[]" type="text"/></td>
+                            <td><input name="getvalue[]" type="text"/></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td><span class="label">[TEXT:accesstoken:date] :</span></td>
+            <td>
+                <input name="expiredate" placeholder="YYYY-MM-DD" type="date" value="[today]"/>
+                <input name="expiretime" placeholder="HH:MM" type="time" value="23:59"/>
+
+                <input name="expireinfinite" type="hidden" value="false"/>
+                <button title="[TEXT:accesstoken:Never expire]" class="token-infinity">&infin;</button>
+            </td>
+        </tr>
+        <tr>
+            <td><label class="label" for="iexpandable">[TEXT:accesstoken:expandable] :</label></td>
+            <td><select name="expandable" id="iexpandable">
+                <option value="one">[TEXT:accesstoken:One shot]</option>
+                <option value="always">[TEXT:accesstoken:Always]</option></select>
+                <input name="description" placeholder="[TEXT:accesstoken:description]" type="text" />
+            </td>
+        </tr>
+
+
+        </tbody>
+    </table>
+    <span class="lastToken">[TEXT:accesstoken:Last created token is] : <em class="lastToken--id"></em></span>
+    <a class="token-add">[TEXT:accesstoken:Create a new token]</a>
+
+</form>
+</body>
+</html>

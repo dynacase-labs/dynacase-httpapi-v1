@@ -35,7 +35,14 @@ webinst-dev:
 	make -C Dev webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-dev VERSION=$(VERSION)
 	mv Dev/*.webinst .
 
-webinst-all: webinst webinst-test webinst-dev
+publish-admin:
+	make -C Admin publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-admin-ui VERSION=$(VERSION)
+
+webinst-admin:
+	make -C Admin webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-admin-ui VERSION=$(VERSION)
+	mv Admin/*.webinst .
+
+webinst-all: webinst webinst-test webinst-dev webinst-admin
 
 clean:
 	/bin/rm -f *.*~ config.* Makefile configure $(appname)/$(appname)_init.php info.xml $(PACKAGE)-*.webinst

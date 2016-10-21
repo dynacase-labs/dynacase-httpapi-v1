@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<module name="@PACKAGE@-admin-uis" disabled="no" version="@VERSION@" release="@RELEASE@" license="http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public License v3.0">
+
+    <description>Dynacase HTTP Api v1 : sandbox</description>
+
+    <requires>
+        <module  name="dynacase-httpapi-v1" />
+        <module  name="dynacase-authent-ui" />
+        <module comp="ge" name="dynacase-core" version="3.2.23"/>
+    </requires>
+
+    <post-install>
+        <process command="programs/record_application HTTPAPI_V1_ADMIN"/>
+        <process command="programs/update_catalog"/>
+    </post-install>
+
+    <post-upgrade>
+        <process command="programs/pre_migration HTTPAPI_V1_ADMIN"/>
+        <process command="programs/record_application HTTPAPI_V1_ADMIN"/>
+        <process command="programs/post_migration HTTPAPI_V1_ADMIN"/>
+        <process command="programs/update_catalog"/>
+    </post-upgrade>
+</module>
