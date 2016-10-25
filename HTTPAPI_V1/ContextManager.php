@@ -37,6 +37,10 @@ class ContextManager
                         $exception->setUserMessage("Could not get authenticator");
                         throw $exception;
                     }
+                    
+                    $exception = new \Dcp\HttpApi\V1\Api\Exception("User must be authenticated");
+                    $exception->setHttpStatus("403", "Forbidden");
+                    throw $exception;
             }
             $_SERVER['PHP_AUTH_USER'] = AuthenticatorManager::$auth->getAuthUser();
         }

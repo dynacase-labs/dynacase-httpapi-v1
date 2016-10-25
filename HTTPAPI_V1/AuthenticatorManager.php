@@ -6,48 +6,36 @@ use Dcp\HttpApi\V1\Api\Exception;
 class AuthenticatorManager extends \AuthenticatorManager
 {
     
-
+    protected static $authType;
     
-    public static function getAuthType()
+
+    protected static function getAuthenticatorClass($authtype = null, $provider = \Authenticator::nullProvider)
     {
-        if (array_key_exists('authtype', $_GET)) {
-            return $_GET['authtype'];
-        }
-
-        if (!empty($_GET["dcp-authorization"])) {
-            return "open";
-        }
-
-        $headers = apache_request_headers();
-        if (!empty($headers["Authorization"])) {
-            return "open";
-        }
-
-
-        return "html";
-    }
-
-    protected static function getAuthenticatorClass($authtype=null, $provider=\Authenticator::nullProvider) {
         if (!$authtype) {
             $authtype = self::getAuthType();
         }
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $authtype)) {
             throw new \Dcp\Exception(sprintf("Invalid authtype '%s'", $authtype));
         }
-
-        $auth=null;
+        
+        $auth = null;
         switch ($authtype) {
-        case "html":
-            $auth=new \htmlAuthenticator($authtype, $provider);
-            break;
-        case "open":
-            $auth=new RestOpenAuthenticator($authtype, $provider);
-            break;
-        default:
-            throw new \Dcp\Exception(sprintf("Cannot find authenticator '%s'", $authtype));
+            case "html":
+                $auth = new \htmlAuthenticator($authtype, $provider);
+                break;
+
+            case "open":
+                $auth = new RestOpenAuthenticator($authtype, $provider);
+                break;
+
+            case "basic":
+                $auth = new \basicAuthenticator($authtype, $provider);
+                break;
+
+            default:
+                throw new \Dcp\Exception(sprintf("Cannot find authenticator '%s'", $authtype));
         }
-
-
+        
         return $auth;
     }
     
