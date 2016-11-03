@@ -8,7 +8,6 @@ class AuthenticatorManager extends \AuthenticatorManager
     
     protected static $authType;
     
-
     protected static function getAuthenticatorClass($authtype = null, $provider = \Authenticator::nullProvider)
     {
         if (!$authtype) {
@@ -49,6 +48,49 @@ class AuthenticatorManager extends \AuthenticatorManager
             throw new Exception("No route given");
         }
         
+        foreach ($routes as $k => $rules) {
+            if (is_array($rules)) {
+                if (empty($rules["route"])) {
+                    throw new Exception("No route given #$k");
+                }
+                
+                $methods = $rules["methods"];
+                $queries = $rules["query"];
+                $route = $rules["route"];
+            } else {
+                // Simple route
+                if (preg_match("/^(GET|POST|PUT|DELETE)\\s+(.*)/", $rules, $reg)) {
+                    $method = $reg[1];
+                    $rules = $reg[2];
+                } else {
+                    $method = "*";
+                }
+                
+                $methods = [$method];
+                $queries = [];
+                $route = $rules;
+            }
+            
+            $apiv1 = preg_quote("api/v1/", $route[0]);
+            
+            if (strlen($route) < 2) {
+                
+                throw new Exception(sprintf("Invalid route given : %s", $route));
+            }
+            $pattern = sprintf("%s%s%s", $route[0], $apiv1, substr($route, 1));
+            
+            $match = @preg_match($pattern, '');
+            if ($match === false) {
+                $errors = error_get_last();
+                if (!empty($errors["message"])) {
+                    $errors = $errors["message"];
+                };
+                
+                throw new Exception(sprintf("Route %d:%s", $k + 1, print_r($errors, true)));
+            }
+            $routes[$k] = ["route" => $route, "methods" => $methods, "query" => $queries];
+        }
+        
         $scontext = serialize($routes);
         
         if (!$userAccount->isAffected()) {
@@ -58,7 +100,14 @@ class AuthenticatorManager extends \AuthenticatorManager
         $uk = new \UserToken("");
         $uk->userid = $userAccount->id;
         $uk->token = $uk->genToken();
-        $uk->expire = $uk->setExpiration($expireDelay);
+        if (is_a($expireDelay, "\\DateTime")) {
+            /**
+             * @var \DateTime $expireDelay
+             */
+            $uk->expire = $expireDelay->format("Y-m-d H:i:s");
+        } else {
+            $uk->expire = $uk->setExpiration($expireDelay);
+        }
         $uk->expendable = $oneshot;
         $uk->type = "REST";
         $uk->context = $scontext;

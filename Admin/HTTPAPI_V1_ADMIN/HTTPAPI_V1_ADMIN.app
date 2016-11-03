@@ -14,8 +14,8 @@ $app_desc = array(
 // ACLs for this application
 $app_acl = array(
     array(
-        "name" => "BASIC",
-        "description" => N_("HTTPAPI_V1_ADMIN:Basic ACL")
+        "name" => "ADMIN",
+        "description" => N_("HTTPAPI_V1_ADMIN:ADMIN ACL")
     )
 );
 // Actions for this application
@@ -36,6 +36,13 @@ $action_desc = array(
         "short_name" => N_("HttpApi:Token Data"),
         "script" => "action.restTokenData.php",
         "function" => "restTokenData"
+    ),
+    array(
+        "name" => "TOKEN_METHOD",
+        "acl" => "ADMIN",
+        "short_name" => N_("HttpApi:Token Method"),
+        "script" => "action.restTokenMethod.php",
+        "function" => "restTokenMethod"
     )
 );
 

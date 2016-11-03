@@ -10,29 +10,31 @@ function restTokenData(Action & $action)
         "false"
     ) , "true") === "true");
     
-    $err = "";
-    
-    $tokenList = new \Dcp\Authent\tokenData();
-    $tokenList->setStart($start);
-    $tokenList->setLength($length);
-    $tokenList->setColumns($columns);
-    $tokenList->setShowExpired($showExpired);
-    $tokenList->setFilterType("REST");
-    
-    $tokenData = $tokenList->getRawData();
-    
-    $data = $tokenList->getDisplayData($tokenData);
-    header('Content-Type: application/json');
-    
-    if ($err) {
-        header("HTTP/1.0 400 Error");
-        $response = ["success" => false, "error" => $err];
-    } else {
+    try {
+        $tokenList = new \Dcp\Authent\tokenData();
+        $tokenList->setStart($start);
+        $tokenList->setLength($length);
+        $tokenList->setColumns($columns);
+        $tokenList->setShowExpired($showExpired);
+        $tokenList->setFilterType("REST");
+        
+        $tokenData = $tokenList->getRawData();
+        
+        $data = $tokenList->getDisplayData($tokenData);
+        
         $total = $tokenList->getShowTotal();
         $totalExpire = $tokenList->getTotalExpire();
         $all = $tokenList->getTotalCount();
         $response = ["recordsTotal" => intval($total) , "recordsFiltered" => $all, "expireCount" => intval($totalExpire) , "data" => $data];
     }
+    catch(Exception $e) {
+        $err = $e->getMessage();
+        
+        header("HTTP/1.0 400 Error");
+        $response = ["success" => false, "error" => $err];
+    }
+    header('Content-Type: application/json');
+    
     $action->lay->noparse = true;
     $action->lay->template = json_encode($response);
 }

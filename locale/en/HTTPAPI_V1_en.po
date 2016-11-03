@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-20 17:27+0200\n"
-"PO-Revision-Date: 2013-05-10 11:59+0200\n"
+"POT-Creation-Date: 2016-11-03 15:58+0100\n"
+"PO-Revision-Date: 2016-11-03 16:01+0100\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: English <distrib@anakeen.com>\n"
 "Language: en\n"
@@ -15,6 +15,20 @@ msgstr ""
 #, php-format
 msgctxt "ddui"
 msgid "%s Documents"
+msgstr ""
+
+#, php-format
+msgctxt "access"
+msgid "<p>Token <b>%s</b></br> has been create.</p>"
+msgstr ""
+
+#, php-format
+msgctxt "access"
+msgid "<p>Token <b>%s</b></br> has been deleted.</p>"
+msgstr ""
+
+msgctxt "resttoken"
+msgid "Api Route List"
 msgstr ""
 
 msgctxt "HTTPAPI_V1"
@@ -89,7 +103,7 @@ msgstr ""
 msgid "HTTPAPI_V1:default value of the slice for collection"
 msgstr ""
 
-msgid "HTTPAPI_V1_ADMIN:Basic ACL"
+msgid "HTTPAPI_V1_ADMIN:ADMIN ACL"
 msgstr ""
 
 msgid "HTTPAPI_V1_ADMIN:HTTPAPI_V1_ADMIN"
@@ -107,12 +121,31 @@ msgstr ""
 msgid "HttpApi:Token Access"
 msgstr ""
 
+msgid "HttpApi:Token Data"
+msgstr ""
+
+msgid "HttpApi:Token Method"
+msgstr ""
+
+#, php-format
+msgctxt "accessToken"
+msgid "Invalid date \"%s\" for token"
+msgstr ""
+
 msgctxt "ddui"
 msgid "The folders"
 msgstr ""
 
 msgctxt "ddui"
 msgid "The trash"
+msgstr ""
+
+#, php-format
+msgctxt "access"
+msgid "Token %s not exists"
+msgstr ""
+
+msgid "Token access"
 msgstr ""
 
 msgctxt "HTTPAPI_V1"
@@ -126,3 +159,113 @@ msgstr ""
 msgctxt "HTTPAPI_V1"
 msgid "Updated by HTTP API"
 msgstr ""
+
+#, php-format
+msgctxt "access"
+msgid "User %s not exists"
+msgstr ""
+
+msgid "accesstoken:Add another key"
+msgstr ""
+
+msgid "accesstoken:Always"
+msgstr ""
+
+msgid "accesstoken:Cancel"
+msgstr ""
+
+msgid "accesstoken:Confirm token deletion"
+msgstr ""
+
+msgid "accesstoken:Create the token"
+msgstr ""
+
+msgid "accesstoken:Delete the token"
+msgstr ""
+
+msgid "accesstoken:Delete token. Are you sure ?"
+msgstr ""
+
+msgid "accesstoken:Identifier"
+msgstr ""
+
+msgid "accesstoken:Last created token is"
+msgstr ""
+
+msgid "accesstoken:Never expire"
+msgstr ""
+
+msgid "accesstoken:New token"
+msgstr ""
+
+msgid "accesstoken:One shot"
+msgstr ""
+
+msgid "accesstoken:Show expired tokens"
+msgstr ""
+
+msgid "accesstoken:Token Deletion"
+msgstr ""
+
+msgid "accesstoken:Token info"
+msgstr ""
+
+msgid "accesstoken:User login"
+msgstr ""
+
+msgid "accesstoken:Write a description"
+msgstr ""
+
+msgid "accesstoken:author"
+msgstr ""
+
+msgid "accesstoken:context"
+msgstr ""
+
+msgid "accesstoken:date"
+msgstr ""
+
+msgid "accesstoken:description"
+msgstr ""
+
+msgid "accesstoken:expandable"
+msgstr ""
+
+msgid "accesstoken:infinity"
+msgstr ""
+
+msgid "accesstoken:oruntil"
+msgstr ""
+
+msgid "accesstoken:token"
+msgstr ""
+
+msgid "accesstoken:user"
+msgstr ""
+
+msgid "accesstoken:validated"
+msgstr ""
+
+msgid "resttoken:Add another matching route"
+msgstr ""
+
+msgid "resttoken:Create a new token"
+msgstr "Create a new API token"
+
+msgid "resttoken:Routes"
+msgstr "Routes"
+
+msgid "resttoken:View routes"
+msgstr "View recorded routes"
+
+msgid "resttoken:all"
+msgstr "*"
+
+msgid "resttoken:method"
+msgstr "Method"
+
+msgid "resttoken:query"
+msgstr "Query"
+
+msgid "resttoken:route"
+msgstr "Route"

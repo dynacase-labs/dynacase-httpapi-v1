@@ -6,6 +6,7 @@ function restTokenAccess(Action & $action)
     $action->parent->addJsRef("lib/jquery-dataTables/1.10/js/jquery.dataTables.js");
     $action->parent->addJsRef("AUTHENTUI/Layout/jquery-ui-combo.js");
     $action->parent->addJsRef("AUTHENTUI/Layout/token_access.js");
+    $action->parent->addJsRef("HTTPAPI_V1_ADMIN/Layout/token_admin.js");
     
     $action->parent->addCssRef("WHAT/Layout/size-normal.css");
     $action->parent->addCssRef("lib/jquery-ui-1.12.0/jquery-ui.css");
