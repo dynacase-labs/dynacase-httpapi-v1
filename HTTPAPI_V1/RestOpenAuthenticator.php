@@ -40,6 +40,7 @@ class RestOpenAuthenticator extends \OpenAuthenticator
         }
         $url = $_SERVER["REDIRECT_URL"];
         
+        $relativeUrl = substr($url, strpos($url, "api/v1/") + strlen("api/v1"));
         $context = unserialize($rawContext);
         if (is_array($context)) {
             $allow = false;
@@ -47,9 +48,8 @@ class RestOpenAuthenticator extends \OpenAuthenticator
                 if (is_array($rules)) {
                     if (!empty($rules["route"])) {
                         $route = $rules["route"];
-                        $pattern = sprintf("%sapi/v1/%s", $route[0], substr($route, 1));
                         
-                        if (preg_match($pattern, $url)) {
+                        if (preg_match($route, $relativeUrl)) {
                             $allow = true;
                             break;
                         }
@@ -63,9 +63,7 @@ class RestOpenAuthenticator extends \OpenAuthenticator
                         $method = "";
                     }
                     
-                    $pattern = sprintf("%sapi/v1/%s", $rules[0], substr($rules, 1));
-                    
-                    $match = @preg_match($pattern, $url);
+                    $match = @preg_match($rules, $relativeUrl);
                     if ($match === false) {
                         $errors = error_get_last();
                         if (!empty($errors["message"])) {

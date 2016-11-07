@@ -33,6 +33,41 @@ namespace {
          */
         const API0006 = 'Unable to return the type from http headers %s';
         /**
+         * @errorCode Auth class authenticator not exists
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0100 = 'Cannot find authenticator "%s"';
+        /**
+         * @errorCode Route  must be defined when set token
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0101 = 'No route given #%d';
+        /**
+         * @errorCode Route must contain at leat 2 characters
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0102 = 'Invalid route given : "%s"';
+        /**
+         * @errorCode Route is not a valid regexp
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0103 = 'Invalid route %d: "%s"';
+        /**
+         * @errorCode Token cannot be recorded in database
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0104 = 'Create token fail: "%s"';
+        /**
+         * @errorCode Token must affect route
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0105 = 'Empty route is not allowed';
+        /**
+         * @errorCode Token must affect route
+         * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
+         */
+        const API0106 = 'User is not valid';
+        /**
          * for beautifier
          */
         private function _bo()
