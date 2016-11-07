@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
-<module name="@PACKAGE@-admin-uis" disabled="no" version="@VERSION@" release="@RELEASE@" license="http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public License v3.0">
+<module name="dynacase-admin-httpapi-v1" disabled="no" version="@VERSION@" release="@RELEASE@" license="http://www.gnu.org/licenses/lgpl-3.0.txt GNU Lesser General Public License v3.0">
 
     <description>Dynacase HTTP Api v1 : sandbox</description>
 
     <requires>
         <module  name="dynacase-httpapi-v1" />
-        <module  name="dynacase-authent-ui" />
+        <module  name="dynacase-admin-authent-ui" />
         <module comp="ge" name="dynacase-core" version="3.2.23"/>
     </requires>
 
