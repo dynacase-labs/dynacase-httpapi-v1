@@ -181,7 +181,9 @@ class Router
             }
         }
         if ($crudFound === false) {
-            throw new Exception("API0004", static::$path);
+            $exception = new Exception("API0004", static::$path);
+            $exception->setHttpStatus(404, "Route not found");
+            throw $exception;
         }
         return $crudFound;
     }
@@ -253,7 +255,7 @@ class Router
     /**
      * @return string
      */
-    protected static function convertActionToCrud()
+    public static function convertActionToCrud()
     {
         if ($_SERVER["REQUEST_METHOD"] === "GET") {
             return Crud::READ;

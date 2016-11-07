@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DOCUMENT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-28 09:46+0100\n"
-"PO-Revision-Date: 2014-12-03 13:44+0100\n"
+"POT-Creation-Date: 2016-11-03 15:58+0100\n"
+"PO-Revision-Date: 2016-11-03 16:00+0100\n"
 "Last-Translator: Eric Brison <eric.brison@anakeen.com>\n"
 "Language-Team: French <distrib@anakeen.com>\n"
 "Language: fr\n"
@@ -19,6 +19,20 @@ msgstr ""
 msgctxt "ddui"
 msgid "%s Documents"
 msgstr "Documents %s"
+
+#, php-format
+msgctxt "access"
+msgid "<p>Token <b>%s</b></br> has been create.</p>"
+msgstr ""
+
+#, php-format
+msgctxt "access"
+msgid "<p>Token <b>%s</b></br> has been deleted.</p>"
+msgstr ""
+
+msgctxt "resttoken"
+msgid "Api Route List"
+msgstr "Listes des routes enregistrées"
 
 msgctxt "HTTPAPI_V1"
 msgid "Cannot store file because vault size limit is reached"
@@ -95,6 +109,12 @@ msgid "HTTPAPI_V1:default value of the slice for collection"
 msgstr ""
 "Valeur par défaut pour le nombre de résultats retourné pour une collection"
 
+msgid "HTTPAPI_V1_ADMIN:ADMIN ACL"
+msgstr "Administrateur"
+
+msgid "HTTPAPI_V1_ADMIN:HTTPAPI_V1_ADMIN"
+msgstr "Administration de l'api HTTP"
+
 msgid "HTTPAPI_V1_DEV:Basic ACL"
 msgstr "ACL Basic"
 
@@ -104,6 +124,20 @@ msgstr "Outil de développement"
 msgid "HTTPAPI_V1_DEV:Test HTTP API"
 msgstr "Outil de développement"
 
+msgid "HttpApi:Token Access"
+msgstr "Jetons d'accès à l'api"
+
+msgid "HttpApi:Token Data"
+msgstr "Donnée des jetons pour l'api"
+
+msgid "HttpApi:Token Method"
+msgstr "Méthode de gestion des jetons"
+
+#, php-format
+msgctxt "accessToken"
+msgid "Invalid date \"%s\" for token"
+msgstr ""
+
 msgctxt "ddui"
 msgid "The folders"
 msgstr "Les dossiers"
@@ -111,6 +145,14 @@ msgstr "Les dossiers"
 msgctxt "ddui"
 msgid "The trash"
 msgstr "La poubelle"
+
+#, php-format
+msgctxt "access"
+msgid "Token %s not exists"
+msgstr ""
+
+msgid "Token access"
+msgstr ""
 
 msgctxt "HTTPAPI_V1"
 msgid "Update failed"
@@ -124,11 +166,136 @@ msgctxt "HTTPAPI_V1"
 msgid "Updated by HTTP API"
 msgstr "Mis à jour par l'API HTTP"
 
+#, php-format
+msgctxt "access"
+msgid "User %s not exists"
+msgstr ""
+
+msgid "accesstoken:Add another key"
+msgstr ""
+
+msgid "accesstoken:Always"
+msgstr ""
+
+msgid "accesstoken:Cancel"
+msgstr ""
+
+msgid "accesstoken:Confirm token deletion"
+msgstr ""
+
+msgid "accesstoken:Create the token"
+msgstr ""
+
+msgid "accesstoken:Delete the token"
+msgstr ""
+
+msgid "accesstoken:Delete token. Are you sure ?"
+msgstr ""
+
+msgid "accesstoken:Identifier"
+msgstr ""
+
+msgid "accesstoken:Last created token is"
+msgstr ""
+
+msgid "accesstoken:Never expire"
+msgstr ""
+
+msgid "accesstoken:New token"
+msgstr ""
+
+msgid "accesstoken:One shot"
+msgstr ""
+
+msgid "accesstoken:Show expired tokens"
+msgstr ""
+
+msgid "accesstoken:Token Deletion"
+msgstr ""
+
+msgid "accesstoken:Token info"
+msgstr ""
+
+msgid "accesstoken:User login"
+msgstr ""
+
+msgid "accesstoken:Write a description"
+msgstr ""
+
+msgid "accesstoken:author"
+msgstr ""
+
+msgid "accesstoken:context"
+msgstr ""
+
+msgid "accesstoken:date"
+msgstr ""
+
+msgid "accesstoken:description"
+msgstr ""
+
+msgid "accesstoken:expandable"
+msgstr ""
+
+msgid "accesstoken:infinity"
+msgstr ""
+
+msgid "accesstoken:oruntil"
+msgstr ""
+
+msgid "accesstoken:token"
+msgstr ""
+
+msgid "accesstoken:user"
+msgstr ""
+
+msgid "accesstoken:validated"
+msgstr ""
+
+msgid "resttoken:Add another matching route"
+msgstr ""
+
+msgid "resttoken:Create a new token"
+msgstr "Créer un jeton pour l'api"
+
+msgid "resttoken:Routes"
+msgstr ""
+
+msgid "resttoken:View routes"
+msgstr "Voir les routes enregistrées"
+
+msgid "resttoken:all"
+msgstr "*"
+
+msgid "resttoken:method"
+msgstr "Méthode"
+
+msgid "resttoken:query"
+msgstr "Query"
+
+msgid "resttoken:route"
+msgstr "Route"
+
 #~ msgid "HTTPAPI_V1:custom crud class"
 #~ msgstr "Classes de CRUD additionnelles"
 
 #~ msgid "HTTPAPI_V1:default crud class"
 #~ msgstr "Classes de CRUD par défaut"
 
+#~ msgid "HTTPAPI_V1_ADMIN:Basic ACL"
+#~ msgstr "ACL Principale"
+
 #~ msgid "api"
 #~ msgstr "api"
+
+#~ msgid "resttoken:DELETE"
+#~ msgstr "DELETE"
+
+#~ msgid "resttoken:GET"
+#~ msgstr "GET"
+
+#~ msgid "resttoken:POST"
+#~ msgstr "POST"
+
+#~ msgid "resttoken:PUT"
+#~ msgstr "PUT"

@@ -176,7 +176,9 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     $return->setHeaders($exception->getHeaders());
     $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString());
     $return->addMessage($message);
-    $return->addMessage($defaultPageMessage());
+    if ($exception->getHttpStatus() !== "403") {
+        $return->addMessage($defaultPageMessage());
+    }
 }
 catch(\Dcp\Exception $exception) {
     $return->setHttpStatusCode(400, "Dcp Exception");

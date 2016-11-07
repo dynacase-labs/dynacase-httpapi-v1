@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>[TEXT:Token access]</title>
+    [CSS:CUSTOMREF]
+    [JS:REF]
+    <style>
+        .token-method {
+            width:8em;
+        }
+        .token-form .token-method {
+            width:11em;
+        }
+        .token-form .context-param input[name="routes[]"] {
+             width: calc(100% - 72px);
+         }
+        .token-query--empty {
+           width:3em;
+
+        }
+        .token-routes-desc {
+            font-style: italic;
+        }
+        .token-routes-url {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<table class="token" lang="[lang]" data-token-url="?app=HTTPAPI_V1_ADMIN&action=TOKEN_DATA">
+    <thead>
+    <tr>
+        <th></th>
+        <th class="token-description">[TEXT:accesstoken:description]</th>
+        <th class="token-id">[TEXT:accesstoken:token]</th>
+        <th class="token-user">[TEXT:accesstoken:user]</th>
+        <th class="token-date">[TEXT:accesstoken:date]</th>
+        <th class="token-expendable">[TEXT:accesstoken:expandable]</th>
+        <th class="token-context">[TEXT:accesstoken:context]</th>
+    </tr>
+    <tr><th class="token-count-info" colspan="7"></th></tr>
+    </thead>
+
+</table>
+
+<div style="display:none" data-close="[TEXT:accesstoken:Cancel]" data-confirm="[TEXT:accesstoken:Confirm token deletion]"
+     id="token-deletion-confirm" title="[TEXT:accesstoken:Token Deletion]">
+    <p><span class="ui-icon ui-icon-alert"></span>
+        <span>[TEXT:accesstoken:Delete token. Are you sure ?]</span></p>
+</div>
+
+<div class="token-header">
+    <a class="token-view-createform">[TEXT:resttoken:Create a new token]</a>
+    <label for="ctoken-expired">[TEXT:accesstoken:Show expired tokens] (<span class="token-expired-count"></span>)</label>
+    <input type="checkbox"  id="ctoken-expired">
+</div>
+
+<form  class="token-form token-form-add" title="[TEXT:accesstoken:New token]" action="?app=HTTPAPI_V1_ADMIN&action=TOKEN_METHOD&method=create">
+    <div>
+        <label  class="label" for="idescription">[TEXT:accesstoken:description]</label>
+        <input id="idescription" name="description" placeholder="[TEXT:accesstoken:Write a description]" type="text" />
+    </div>
+    <div>
+        <label class="label" for="iuser">[TEXT:accesstoken:user]  </label>
+        <input type="text" id="iuser" name="user" placeholder="[TEXT:accesstoken:User login]"/>
+    </div>
+    <div>
+        <div class="label" >[TEXT:accesstoken:validated]  </div>
+
+        <button title="[TEXT:accesstoken:Never expire]" class="token-infinity"><span class="token-infinity--symbol">&infin;</span> <span>[TEXT:accesstoken:infinity]</span></button>
+        <span>[TEXT:accesstoken:oruntil]</span>
+        <input name="expiredate" placeholder="YYYY-MM-DD" type="date" value="[today]"/>
+        <input name="expiretime" placeholder="HH:MM" type="time" value="23:59"/>
+
+        <input name="expireinfinite" type="hidden" value="false"/>
+    </div>
+    <div>
+        <div class="label" >[TEXT:accesstoken:expandable] </div>
+        <label>[TEXT:accesstoken:One shot]<input type="radio" value="one" name="expandable"></label>
+        <label>[TEXT:accesstoken:Always]<input checked="checked" type="radio" value="always" name="expandable"></label>
+
+    </div>
+    <div>
+        <div class="label">[TEXT:resttoken:Routes]</div>
+
+        <table class="context-param" >
+            <thead>
+            <tr>
+                <th class="token-method"><a class="token-add-key" title="[TEXT:accesstoken:Add another key]"></a> [TEXT:resttoken:method]</th>
+                <th class="token-route">[TEXT:resttoken:route]</th>
+                <th class="token-query">[TEXT:resttoken:query]</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+            <tfoot style="display:none">
+            <tr>
+                <td><select class="token-method-select" name="methods[]">
+                    <option value="*">[TEXT:resttoken:all]</option>
+                    <option selected="selected" value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                    <option value="GET,POST">GET, POST</option>
+                    <option value="GET,PUT">GET, PUT</option>
+                    <option value="GET,DELETE">GET, DELETE</option>
+                    <option value="GET,POST,PUT">GET, POST, PUT</option>
+                    <option value="POST,PUT">POST, PUT</option>
+                </select>
+                </td>
+                <td><input name="routes[]" type="text"/><a class="token-view-routes" title="[TEXT:resttoken:View routes]"></a> </td>
+                <td><input name="queries[]" type="text"/></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="lastToken">[TEXT:accesstoken:Last created token is] : <em class="lastToken--id"></em></div>
+    <a class="token-add">[TEXT:accesstoken:Create the token]</a>
+
+
+</form>
+
+<section class="token-info token-form" title="[TEXT:accesstoken:Token info]" style="display:none">
+    <div>
+        <label  class="label" >[TEXT:accesstoken:Identifier]</label>
+        <input  name="tokenid"  type="text" />
+    </div>
+
+    <div>
+        <label  class="label" >[TEXT:accesstoken:description]</label>
+        <input  name="description"  type="text" />
+    </div>
+    <div>
+        <label class="label" >[TEXT:accesstoken:author]  </label>
+        <input type="text" name="author" />
+    </div>
+    <div>
+        <label class="label" >[TEXT:accesstoken:user]  </label>
+        <input type="text" name="user" />
+    </div>
+    <div>
+        <div class="label" >[TEXT:accesstoken:validated]  </div>
+
+        <button title="[TEXT:accesstoken:Never expire]" class="token-infinity"><span class="token-infinity--symbol">&infin;</span> <span>[TEXT:accesstoken:infinity]</span></button>
+        [TEXT:accesstoken:oruntil]
+        <input name="expiredate" placeholder="YYYY-MM-DD" type="date" value="[today]"/>
+        <input name="expiretime" placeholder="HH:MM" type="time" value="23:59"/>
+
+        <input name="expireinfinite" type="hidden" value="false"/>
+    </div>
+    <div>
+        <div class="label" >[TEXT:accesstoken:expandable] :</div>
+        <label>[TEXT:accesstoken:One shot]<input type="radio" value="one" name="expandable"></label>
+        <label>[TEXT:accesstoken:Always]<input type="radio" value="always" name="expandable"></label>
+    </div>
+    <div>
+
+
+
+        <table class="context-param" >
+            <thead>
+            <tr>
+                <th class="token-method"><a class="token-add-key" title="[TEXT:resttoken:Add another matching route]"></a> [TEXT:resttoken:method]</th>
+                <th class="token-route">[TEXT:resttoken:route]</th>
+                <th class="token-query">[TEXT:resttoken:query]</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+            <tfoot style="display:none">
+            <tr>
+                <td><input class="token-param-method" type="text"/></td>
+                <td><input class="token-param-route" type="text"/></td>
+                <td><input class="token-param-query" type="text"/></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <a class="token-delete">[TEXT:accesstoken:Delete the token]</a>
+
+</section>
+</body>
+</html>
