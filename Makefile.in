@@ -36,10 +36,10 @@ webinst-dev:
 	mv Dev/*.webinst .
 
 publish-admin:
-	make -C Admin publish RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-admin-ui VERSION=$(VERSION)
+	make -C Admin publish RELEASE=$(RELEASE) PACKAGE=dynacase-admin-httpapi-v VERSION=$(VERSION)
 
 webinst-admin:
-	make -C Admin webinst RELEASE=$(RELEASE) PACKAGE=$(PACKAGE)-admin-ui VERSION=$(VERSION)
+	make -C Admin webinst RELEASE=$(RELEASE) PACKAGE=dynacase-admin-httpapi-v1 VERSION=$(VERSION)
 	mv Admin/*.webinst .
 
 webinst-all: webinst webinst-test webinst-dev webinst-admin
