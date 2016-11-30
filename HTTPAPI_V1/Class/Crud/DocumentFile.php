@@ -39,6 +39,8 @@ class DocumentFile extends Crud
         $cache = false;
         // No use cache when download original file from document
         FileUtils::downloadFile($fileInfo->path, $fileInfo->name, $fileInfo->mime_s, $this->inline, $cache);
+        
+        $fileInfo = \Dcp\VaultManager::updateAccessDate($fileInfo->id_file);
         if ($fileInfo->id_file === $this->tmpFlag) {
             unlink($fileInfo->path);
         }
@@ -94,45 +96,41 @@ class DocumentFile extends Crud
         $this->setDocument($resourceId);
         
         $attrid = $this->urlParameters["attrid"];
-
+        
         if ($attrid === "icon") {
-             $fileValue = $this->_document->icon;
-            $index=-1;
+            $fileValue = $this->_document->icon;
+            $index = - 1;
         } else {
             $attribut = $this->_document->getAttribute($attrid);
             if (!$attribut) {
-                throw new Exception(
-                    "CRUD0605", $attrid, $this->_document->getTitle()
-                );
+                throw new Exception("CRUD0605", $attrid, $this->_document->getTitle());
             }
-
+            
             if (isset($this->urlParameters["index"])) {
                 $index = intval($this->urlParameters["index"]);
             } else {
                 if (!$attribut->isMultiple()) {
-                    $index = -1;
+                    $index = - 1;
                 } else {
                     $index = null;
                 }
             }
-
+            
             if ($attribut->mvisibility === "I") {
-                $exception = new Exception(
-                    "CRUD0606", $attrid, $this->_document->getTitle()
-                );
+                $exception = new Exception("CRUD0606", $attrid, $this->_document->getTitle());
                 $exception->setHttpStatus("403", "Forbidden");
                 throw $exception;
             }
-
+            
             if ($attribut->type !== "file" && $attribut->type !== "image") {
                 throw new Exception("CRUD0614", $attrid, $resourceId);
             }
-
+            
             $fileValue = $this->_document->getAttributeValue($attribut->id);
-
-        if (is_array($fileValue) && $index === null) {
-            return $this->zipFiles($attribut, $fileValue);
-        }
+            
+            if (is_array($fileValue) && $index === null) {
+                return $this->zipFiles($attribut, $fileValue);
+            }
         }
         
         if ($index === - 1 && is_array($fileValue)) {
@@ -159,8 +157,8 @@ class DocumentFile extends Crud
                 throw new Exception("CRUD0609", $attrid, $index, $resourceId);
             } else {
                 // Redirect to public icon
-                $asset=new ImageAsset();
-                $asset->setUrlParameters(["identifier"=>$fileValue,"size"=>$this->urlParameters["size"]]);
+                $asset = new ImageAsset();
+                $asset->setUrlParameters(["identifier" => $fileValue, "size" => $this->urlParameters["size"]]);
                 $asset->execute("READ");
                 return null;
             }
