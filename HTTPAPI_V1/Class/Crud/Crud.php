@@ -63,13 +63,13 @@ abstract class Crud
      */
     abstract public function delete($resourceId);
     //endregion
-    
+
     /**
      * Execute the request
      * Find the CRUD action to execute and execute it
      *
-     * @param string $method current CRUD method requireds
-     * @param array $messages list of messages to send
+     * @param string $method current CRUD method requireds : CREATE/READ/UPDATE/DELETE
+     * @param RecordReturnMessage[] $messages list of messages to send
      * @return mixed data of process
      * @throws Exception
      */
@@ -78,32 +78,20 @@ abstract class Crud
         
         switch ($method) {
             case "CREATE":
-                if (!$this->checkCrudPermission("POST")) {
-                    throw new Exception("CRUD0105", "POST");
-                }
                 $data = $this->create();
                 $httpStatus = "201 Created";
                 break;
 
             case "READ":
-                if (!$this->checkCrudPermission("GET")) {
-                    throw new Exception("CRUD0105", "GET");
-                }
                 $identifier = isset($this->urlParameters["identifier"]) ? $this->urlParameters["identifier"] : null;
                 $data = $this->read($identifier);
                 break;
 
             case "UPDATE":
-                if (!$this->checkCrudPermission("PUT")) {
-                    throw new Exception("CRUD0105", "PUT");
-                }
                 $data = $this->update($this->urlParameters["identifier"]);
                 break;
 
             case "DELETE":
-                if (!$this->checkCrudPermission("DELETE")) {
-                    throw new Exception("CRUD0105", "DELETE");
-                }
                 $data = $this->delete($this->urlParameters["identifier"]);
                 break;
 
@@ -199,11 +187,11 @@ abstract class Crud
     /**
      * Check the current user have a permission
      *
-     * @param $aclName
+     * @param $method
      * @return bool
      * @throws Exception
      */
-    public function checkCrudPermission($aclName)
+    public function checkCrudPermission($method)
     {
         if (!$this->controlAcl) {
             // No control if access free is set
@@ -217,7 +205,28 @@ abstract class Crud
         catch(Exception $exception) {
             throw new Exception("CRUD0104", "Unkown application");
         }
-        
+
+          switch ($method) {
+              case "CREATE":
+                  $aclName="POST";
+                  break;
+
+              case "READ":
+                  $aclName="GET";
+                  break;
+
+              case "UPDATE":
+                  $aclName="PUT";
+                  break;
+
+              case "DELETE":
+                  $aclName="DELETE";
+                  break;
+              default:
+                  $aclName=$method;
+          }
+
+
         $permission = new \Permission($dbAccess, array(
             \Doc::getSystemUserId() ,
             $applicationId

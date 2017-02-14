@@ -104,10 +104,11 @@ try {
     
     $messages = array();
     //Routing
-    $data = Dcp\HttpApi\V1\Api\Router::execute($messages, $httpStatus);
+    $response = Dcp\HttpApi\V1\Api\Router::execute();
+    $messages = $response->getMessages();
     
-    $return->setData($data);
-    $return->setHttpStatusHeader($httpStatus);
+    $return->setData($response->getBody());
+    $return->setHttpStatusHeader($response->getStatusHeader());
     foreach ($messages as $message) {
         $return->addMessage($message);
     }
@@ -132,6 +133,7 @@ try {
         }
         $action->parent->clearLogMsg();
     }
+    $response->sendHeaders();
 } //region ErrorCatching
 catch(Dcp\HttpApi\V1\Etag\Exception $exception) {
     header("Cache-Control: private, no-cache, must-revalidate", true);

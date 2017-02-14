@@ -14,12 +14,7 @@ class DocumentImage extends DocumentFile
      * @var \Doc
      */
     protected $_document = null;
-    /**
-     * @var \DocFam
-     */
-    protected $_family = null;
-    protected $size;
-    protected $imageFileName;
+    
     protected $inline = true;
     /**
      * @var \vaultFileInfo
@@ -42,7 +37,7 @@ class DocumentImage extends DocumentFile
             $this->fileInfo = $this->getFileInfo($resourceId);
         }
         $destination = $this->getDestinationCacheImage($this->fileInfo->id_file, $size);
-
+        
         if (file_exists($destination)) {
             $outFile = $destination;
         } else {

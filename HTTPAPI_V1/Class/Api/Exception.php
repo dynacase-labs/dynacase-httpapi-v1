@@ -68,6 +68,17 @@ namespace {
          */
         const API0106 = 'User is not valid';
         /**
+         * @errorCode  Middeware declaration (json) must define process value
+         * @see \Dcp\HttpApi\V1\Api\Router::identifyCRUDMiddleware
+         */
+        const API0107 = 'Middleware description "%s" : process must be "before" or "after"';
+
+        /**
+         * @errorCode  header parameter is mandatory to set header
+         * @see \Dcp\HttpApi\V1\Api\HttpRequest::addHeader()
+         */
+        const API0108 = 'Header key missing';
+        /**
          * for beautifier
          */
         private function _bo()

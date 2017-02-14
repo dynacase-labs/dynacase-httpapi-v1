@@ -7,6 +7,8 @@
 
 namespace {
 
+    use Dcp\HttpApi\V1\Crud\MiddleWare;
+
     class ErrorCodeCrud
     {
         /**
@@ -29,6 +31,19 @@ namespace {
          * @errorCode The user don't have the permission %s
          */
         const CRUD0105 = "The user don't have the permission %s";
+        /**
+         * @errorCode The class describe in json is not found
+         */
+        const CRUD0106 = 'Middleware class "%s" not found';
+        /**
+         * @errorCode The class describe in json is mandatory
+         */
+        const CRUD0107 = 'Middleware class is undefined in "%s" description';
+        /**
+         * @errorCode The class describe in json must inherit from Middleware class
+         * @see MiddleWare
+         */
+        const CRUD0108= 'Class "%s" is not a middeware class';
         /**
          * @errorCode The ressource is not found
          */
