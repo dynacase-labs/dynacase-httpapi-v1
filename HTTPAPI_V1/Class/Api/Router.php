@@ -309,8 +309,10 @@ class Router
         }
         return $newValues;
     }
+
     /**
      * @return string
+     * @throws Exception
      */
     public static function convertActionToCrud()
     {
@@ -323,8 +325,11 @@ class Router
         } elseif ($_SERVER["REQUEST_METHOD"] === "DELETE" || (isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"]) && $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] === "DELETE")) {
             return Crud::DELETE;
         }
-        $exception = new Exception("Unable to find the CRUD method");
-        throw new $exception;
+        if (!isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"])) {
+            throw new Exception("API0007", $_SERVER["REQUEST_METHOD"]);
+        } else {
+            throw new Exception("API0008",$_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] ,$_SERVER["REQUEST_METHOD"] );
+        }
     }
     /**
      * Retrieve all application parameters in once time

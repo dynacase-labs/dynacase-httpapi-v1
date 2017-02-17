@@ -33,6 +33,14 @@ namespace {
          */
         const API0006 = 'Unable to return the type from http headers %s';
         /**
+         * @errorCode Only GET/POST/PUT/DELETE can be used
+         */
+        const API0007 = 'No compatible http method  "%s" ';
+        /**
+         * @errorCode Only GET/POST/PUT/DELETE can be used
+         */
+        const API0008 = 'Override http method "%s" not allowed for "%s" /  ';
+        /**
          * @errorCode Auth class authenticator not exists
          * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
          */
