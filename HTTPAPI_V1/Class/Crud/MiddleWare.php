@@ -37,43 +37,39 @@ class MiddleWare
     /**
      * Create new ressource
      *
-     * @return mixed
+     * @return void
      */
     public function create()
     {
-        return null;
     }
     /**
      * Read a ressource
      *
      * @param string|int $resourceId Resource identifier
      *
-     * @return mixed
+     * @return void
      */
     public function read($resourceId)
     {
-        return null;
     }
     /**
      * Update the ressource
      *
      * @param string|int $resourceId Resource identifier
      *
-     * @return mixed
+     * @return void
      */
     public function update($resourceId)
     {
-        return null;
     }
     /**
      * Delete ressource
      *
      * @param string|int $resourceId Resource identifier
      *
-     * @return mixed
+     * @return void
      */
     public function delete($resourceId)
     {
-        return null;
     }
 }

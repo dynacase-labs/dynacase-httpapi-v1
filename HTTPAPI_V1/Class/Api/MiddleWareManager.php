@@ -32,8 +32,10 @@ class MiddleWareManager
     
     protected static function process(array $info, HttpRequest $request, HttpResponse & $response)
     {
-        
-        $response->addHeader("X-Middleware", $info["description"], false);
+        if ($response->responseIsStopped()) {
+            return;
+        }
+        $response->addHeader("X-Dcp-Middleware", $info["description"], false);
         
         $class = $info["class"];
         if (!$class) {

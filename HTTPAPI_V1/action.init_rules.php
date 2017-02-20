@@ -38,12 +38,15 @@ function initRoutes($directoryPath, $verifyProcess = false)
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception("Unable to read and decode " . $currentPath);
             }
-            foreach ($currentRule as $rule) {
+            foreach ($currentRule as $kRule => $rule) {
                 if (empty($rule["order"]) || empty($rule["regExp"]) || empty($rule["class"])) {
                     throw new Exception(sprintf("Incomplete rule : Must contain \"order\", \"regExp\" and \"class\" : file \"%s\" :\n%s ", $currentPath, print_r($rule, true)));
                 }
                 if ($verifyProcess && (empty($rule["process"]) || ($rule["process"] !== "before" && $rule["process"] !== "after"))) {
                     throw new Exception(sprintf("Incomplete middleware : Must contain \"process\" with value \"before\" or \"after\" : file \"%s\" :\n%s ", $currentPath, print_r($rule, true)));
+                }
+                if (empty($rule["description"])) {
+                    $currentRule[$kRule]["description"] = sprintf("Rule %s #%02d", basename($currentPath) , $kRule);
                 }
             }
             $rules = array_merge($rules, $currentRule);

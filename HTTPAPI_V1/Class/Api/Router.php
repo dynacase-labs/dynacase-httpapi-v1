@@ -95,15 +95,17 @@ class Router
         }
         $mainMessages = [];
         MiddleWareManager::preProcess($identifiedCrud, $request, $response);
-        $return = $crud->execute($method, $mainMessages, $httpStatus);
-        $response->setStatusHeader($httpStatus);
-        
-        foreach ($mainMessages as $message) {
-            $response->addMessage($message);
+        if (!$response->responseIsStopped()) {
+            $return = $crud->execute($method, $mainMessages, $httpStatus);
+            $response->setStatusHeader($httpStatus);
+            
+            foreach ($mainMessages as $message) {
+                $response->addMessage($message);
+            }
+            
+            $response->setBody($return);
+            MiddleWareManager::postProcess($identifiedCrud, $request, $response);
         }
-        
-        $response->setBody($return);
-        MiddleWareManager::postProcess($identifiedCrud, $request, $response);
         
         return $response;
     }
@@ -309,7 +311,6 @@ class Router
         }
         return $newValues;
     }
-
     /**
      * @return string
      * @throws Exception
@@ -328,7 +329,7 @@ class Router
         if (!isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"])) {
             throw new Exception("API0007", $_SERVER["REQUEST_METHOD"]);
         } else {
-            throw new Exception("API0008",$_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] ,$_SERVER["REQUEST_METHOD"] );
+            throw new Exception("API0008", $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"], $_SERVER["REQUEST_METHOD"]);
         }
     }
     /**

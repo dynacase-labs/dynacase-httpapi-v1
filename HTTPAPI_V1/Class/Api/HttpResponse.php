@@ -11,6 +11,7 @@ class HttpResponse
      * @var RecordReturnMessage[]
      */
     protected $messages = [];
+    protected $stopResponse = false;
     /**
      * Get list of recorded messages
      * @return RecordReturnMessage[]
@@ -125,5 +126,23 @@ class HttpResponse
     {
         $this->body = $response;
         return $this;
+    }
+    /**
+     * Prevent process for next middleware
+     * Current response will be sent
+     * @return $this
+     */
+    public function sendResponse()
+    {
+        $this->stopResponse = true;
+        return $this;
+    }
+    /**
+     * If true indicated that next middleware processes will be ignored
+     * @return bool
+     */
+    public function responseIsStopped()
+    {
+        return $this->stopResponse;
     }
 }
