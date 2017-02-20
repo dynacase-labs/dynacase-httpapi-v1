@@ -21,7 +21,6 @@ class DocumentFile extends Crud
      * @var \DocFam
      */
     protected $_family = null;
-    protected $imageFileName;
     protected $inline = false;
     //region CRUD part
     
@@ -40,7 +39,7 @@ class DocumentFile extends Crud
         // No use cache when download original file from document
         FileUtils::downloadFile($fileInfo->path, $fileInfo->name, $fileInfo->mime_s, $this->inline, $cache);
         
-        $fileInfo = \Dcp\VaultManager::updateAccessDate($fileInfo->id_file);
+        \Dcp\VaultManager::updateAccessDate($fileInfo->id_file);
         if ($fileInfo->id_file === $this->tmpFlag) {
             unlink($fileInfo->path);
         }

@@ -28,14 +28,12 @@ class Router
     /**
      * Execute the request
      *
-     * @param array $messages
-     * @param string $httpStatus http Status code "200 OK" by example
      * @throws EtagException
      * @throws Exception
      * @throws \Dcp\HttpApi\V1\Crud\Exception
-     * @return mixed
+     * @return HttpResponse
      */
-    public static function execute(array & $messages = array() , &$httpStatus = "")
+    public static function execute()
     {
         $httpStatus = "200 OK";
         $etagManager = false;
@@ -71,8 +69,15 @@ class Router
             \Dcp\HttpApi\V1\ContextManager::controlAuthent();
             \Dcp\HttpApi\V1\ContextManager::initCoreApplication();
         }
+        
+        if (!$crud->checkCrudPermission($method)) {
+            throw new Exception("CRUD0105", $method);
+        }
+        $request = new HttpRequest($method, static::extractContentParameters($method, $crud));
+        $response = new HttpResponse();
+        
         $crud->setUrlParameters($identifiedCrud["param"]);
-        $crud->setContentParameters(static::extractContentParameters($method, $crud));
+        $crud->setContentParameters($request->getQuery());
         $cacheControl = isset($_SERVER['HTTP_CACHE_CONTROL']) ? $_SERVER['HTTP_CACHE_CONTROL'] : false;
         if ($cacheControl !== "no-cache" && $method === Crud::READ && self::getHttpApiParameter("ACTIVATE_CACHE") === "TRUE") {
             $etag = $crud->getEtagInfo();
@@ -88,8 +93,21 @@ class Router
         if ($etagManager !== false && $etag !== false) {
             $etagManager->generateResponseHeader($etag);
         }
-        $return = $crud->execute($method, $messages, $httpStatus);
-        return $return;
+        $mainMessages = [];
+        MiddleWareManager::preProcess($identifiedCrud, $request, $response);
+        if (!$response->responseIsStopped()) {
+            $return = $crud->execute($method, $mainMessages, $httpStatus);
+            $response->setStatusHeader($httpStatus);
+            
+            foreach ($mainMessages as $message) {
+                $response->addMessage($message);
+            }
+            
+            $response->setBody($return);
+            MiddleWareManager::postProcess($identifiedCrud, $request, $response);
+        }
+        
+        return $response;
     }
     /**
      * @return null
@@ -178,6 +196,7 @@ class Router
             if (preg_match($currentCrud["regExp"], $searchPath, $param) === 1) {
                 $currentCrud["param"] = $param;
                 $crudFound = $currentCrud;
+                break;
             }
         }
         if ($crudFound === false) {
@@ -185,7 +204,47 @@ class Router
             $exception->setHttpStatus(404, "Route not found");
             throw $exception;
         }
+        
+        $middleware = self::identifyCRUDMiddleware();
+        $crudFound = array_merge($crudFound, $middleware);
         return $crudFound;
+    }
+    /**
+     * Identify the CRUD class
+     *
+     * @return array crud identified and url request
+     * @throws Exception
+     */
+    protected static function identifyCRUDMiddleware()
+    {
+        $pathInfo = static::$path;
+        /* Extract extension for format */
+        if (preg_match('/^(?P<path>.*)\.(?P<ext>[a-z]+)$/', $pathInfo, $matches)) {
+            static::$extension = $matches['ext'];
+            static::$path = $matches['path'];
+        }
+        
+        $systemCrud = json_decode(self::getHttpApiParameter("CRUD_MIDDLECLASS") , true);
+        // rules are already ordered
+        $crudMiddles = ["postProcessMiddleWare" => [], "preProcessMiddleWare" => []];
+        if (static::$extension && static::$extension !== "json") {
+            $searchPath = static::$path . "." . static::$extension;
+        } else {
+            $searchPath = static::$path;
+        }
+        foreach ($systemCrud as $currentCrud) {
+            $param = array();
+            if (preg_match($currentCrud["regExp"], $searchPath, $param) === 1) {
+                $currentCrud["param"] = $param;
+                if ($currentCrud["process"] !== "after" && $currentCrud["process"] !== "before") {
+                    throw new Exception("API0107", print_r($currentCrud, true));
+                }
+                $index = ($currentCrud["process"] === "after") ? "postProcessMiddleWare" : "preProcessMiddleWare";
+                $crudMiddles[$index][] = $currentCrud;
+            }
+        }
+        
+        return $crudMiddles;
     }
     /**
      * Extract the content of the request
@@ -254,6 +313,7 @@ class Router
     }
     /**
      * @return string
+     * @throws Exception
      */
     public static function convertActionToCrud()
     {
@@ -266,8 +326,11 @@ class Router
         } elseif ($_SERVER["REQUEST_METHOD"] === "DELETE" || (isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"]) && $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] === "DELETE")) {
             return Crud::DELETE;
         }
-        $exception = new Exception("Unable to find the CRUD method");
-        throw new $exception;
+        if (!isset($_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"])) {
+            throw new Exception("API0007", $_SERVER["REQUEST_METHOD"]);
+        } else {
+            throw new Exception("API0008", $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"], $_SERVER["REQUEST_METHOD"]);
+        }
     }
     /**
      * Retrieve all application parameters in once time

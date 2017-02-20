@@ -33,6 +33,14 @@ namespace {
          */
         const API0006 = 'Unable to return the type from http headers %s';
         /**
+         * @errorCode Only GET/POST/PUT/DELETE can be used
+         */
+        const API0007 = 'No compatible http method  "%s" ';
+        /**
+         * @errorCode Only GET/POST/PUT/DELETE can be used
+         */
+        const API0008 = 'Override http method "%s" not allowed for "%s" /  ';
+        /**
          * @errorCode Auth class authenticator not exists
          * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
          */
@@ -67,6 +75,17 @@ namespace {
          * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
          */
         const API0106 = 'User is not valid';
+        /**
+         * @errorCode  Middeware declaration (json) must define process value
+         * @see \Dcp\HttpApi\V1\Api\Router::identifyCRUDMiddleware
+         */
+        const API0107 = 'Middleware description "%s" : process must be "before" or "after"';
+
+        /**
+         * @errorCode  header parameter is mandatory to set header
+         * @see \Dcp\HttpApi\V1\Api\HttpRequest::addHeader()
+         */
+        const API0108 = 'Header key missing';
         /**
          * for beautifier
          */

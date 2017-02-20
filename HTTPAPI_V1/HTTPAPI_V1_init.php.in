@@ -19,6 +19,11 @@ $app_const = array(
         "descr" => N_("HTTPAPI_V1:crud class"),
         "kind" => "static"
     ),
+    "CRUD_MIDDLECLASS" => array(
+        "val" => "[]",
+        "descr" => N_("HTTPAPI_V1:middleware crud classes"),
+        "kind" => "static"
+    ),
     "SYSTEM_LOGGER" => array(
         "val" => $json_system_logger,
         "descr" => N_("HTTPAPI_V1:default logger class"),
