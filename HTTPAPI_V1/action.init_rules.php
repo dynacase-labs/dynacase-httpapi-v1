@@ -11,22 +11,18 @@ function init_rules(Action & $action)
     
     $usage->setStrictMode(false);
     $usage->verify(true);
-
-
-    $rules=initRoutes("./HTTPAPI_V1/rules.d/");
+    
+    $rules = initRoutes("./HTTPAPI_V1/rules.d/");
     ApplicationParameterManager::setParameterValue(ApplicationParameterManager::CURRENT_APPLICATION, "CRUD_CLASS", $rules);
-
-
-    $rules=initRoutes("./HTTPAPI_V1/rules.d/middleware.d/");
+    
+    $rules = initRoutes("./HTTPAPI_V1/rules.d/middleware.d/", true);
     ApplicationParameterManager::setParameterValue(ApplicationParameterManager::CURRENT_APPLICATION, "CRUD_MIDDLECLASS", $rules);
-
-
     
     Redirect($action, "HTTPAPI_V1", "DEFAULT_PAGE");
 }
 
-
-function initRoutes($directoryPath) {
+function initRoutes($directoryPath, $verifyProcess = false)
+{
     $rules = array();
     if (is_dir($directoryPath)) {
         $directoryIterator = new DirectoryIterator($directoryPath);
@@ -42,14 +38,21 @@ function initRoutes($directoryPath) {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception("Unable to read and decode " . $currentPath);
             }
+            foreach ($currentRule as $rule) {
+                if (empty($rule["order"]) || empty($rule["regExp"]) || empty($rule["class"])) {
+                    throw new Exception(sprintf("Incomplete rule : Must contain \"order\", \"regExp\" and \"class\" : file \"%s\" :\n%s ", $currentPath, print_r($rule, true)));
+                }
+                if ($verifyProcess && (empty($rule["process"]) || ($rule["process"] !== "before" && $rule["process"] !== "after"))) {
+                    throw new Exception(sprintf("Incomplete middleware : Must contain \"process\" with value \"before\" or \"after\" : file \"%s\" :\n%s ", $currentPath, print_r($rule, true)));
+                }
+            }
             $rules = array_merge($rules, $currentRule);
         }
-
-        usort($rules, function ($value1, $value2) {
+        
+        usort($rules, function ($value1, $value2)
+        {
             return ($value1["order"] > $value2["order"]) ? -1 : (($value1["order"] < $value2["order"]) ? 1 : 0);
         });
-
-        $rules = json_encode($rules);
     }
-    return $rules;
+    return json_encode($rules);
 }
