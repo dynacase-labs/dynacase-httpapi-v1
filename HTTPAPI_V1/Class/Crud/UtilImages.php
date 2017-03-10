@@ -120,7 +120,7 @@ class FileUtils
             $fileName = basename($filePath);
         }
         if (!file_exists($filePath)) {
-            throw new Exception("CRUD0602", basename($filePath));
+            throw new Exception("CRUD0600", basename($filePath));
         }
         // Double quote not supported by all browsers - replace by minus
         $name = str_replace('"', '-', $fileName);
