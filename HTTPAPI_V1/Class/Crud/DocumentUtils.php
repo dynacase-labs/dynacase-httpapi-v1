@@ -169,7 +169,7 @@ class DocumentUtils
             {
                 return str_replace($prefix, "", $currentField);
             }
-                , $restrictedAttributes);
+            , $restrictedAttributes);
         }
         return $attributes;
     }
@@ -191,18 +191,19 @@ class DocumentUtils
         $propertiesList = array_keys(\Doc::$infofields);
         foreach ($orderElements as $currentElement) {
             $detectOrder = explode(":", $currentElement);
-            $orderBy = pg_escape_string($detectOrder[0]);
+            
+            $orderBy = $detectOrder[0];
             $orderDirection = isset($detectOrder[1]) ? mb_strtolower($detectOrder[1]) : "asc";
             if ($orderDirection !== "asc" && $orderDirection !== "desc") {
                 throw new Exception("CRUD0501", $orderDirection);
             }
-            if (!in_array($orderBy, $propertiesList) && !self::isAttribute($currentDoc, $currentElement)) {
+            if (!in_array($orderBy, $propertiesList) && !self::isAttribute($currentDoc, $orderBy)) {
                 throw new Exception("CRUD0502", $orderBy);
             }
             if ($orderBy === "id") {
                 $hasId = true;
             }
-            $result[] = sprintf("%s %s", $orderBy, $orderDirection);
+            $result[] = sprintf("%s %s", pg_escape_string($orderBy) , $orderDirection);
         }
         // if the id is not asked add it (for avoid double result in slice)
         if (!$hasId) {

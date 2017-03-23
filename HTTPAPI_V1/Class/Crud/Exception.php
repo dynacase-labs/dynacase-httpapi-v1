@@ -232,11 +232,11 @@ namespace {
         /**
          * @errorCode The sort direction must be desc or asc (not %s)
          */
-        const CRUD0501 = 'The sort direction must be desc or asc (not %s)';
+        const CRUD0501 = 'The sort direction must be desc or asc (not "%s")';
         /**
          * @errorCode The sort direction must be desc or asc (not %s)
          */
-        const CRUD0502 = 'The element must be an attribute or a property (not %s)';
+        const CRUD0502 = 'The element must be an attribute or a property (not "%s")';
         /**
          * @errorCode The collection must be a search
          */
