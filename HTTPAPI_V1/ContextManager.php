@@ -22,8 +22,11 @@ class ContextManager
             }
         } else {
             // Ask authentification if HTML required
-            $noAskAuthent = (preg_match("/\\.html$/", $_SERVER["REQUEST_URI"]) === 0);
-            $status = AuthenticatorManager::checkAccess(null, $noAskAuthent);
+            $urlInfo = parse_url($_SERVER["REQUEST_URI"]);
+            $headers = apache_request_headers();
+            $askAuthent= (preg_match("/\\.html$/", $urlInfo["path"]) || preg_match("@\\btext/html\\b@", $headers["Accept"]));
+
+            $status = AuthenticatorManager::checkAccess(null, !$askAuthent);
             
             switch ($status) {
                 case \Authenticator::AUTH_OK: // it'good, user is authentified
