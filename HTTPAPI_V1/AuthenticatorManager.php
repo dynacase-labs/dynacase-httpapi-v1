@@ -32,7 +32,11 @@ class AuthenticatorManager extends \AuthenticatorManager
                 break;
 
             default:
-                throw new Exception("API0100", $authtype);
+                $authClass = strtolower($authtype) . "Authenticator";
+                if (!\Dcp\Autoloader::classExists($authClass)) {
+                    throw new Exception("API0100", $authtype);
+                }
+                $auth = new $authClass($authtype, $provider);
         }
         
         return $auth;
