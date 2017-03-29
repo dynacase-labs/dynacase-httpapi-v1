@@ -198,7 +198,7 @@ class DocumentUtils
                 throw new Exception("CRUD0501", $orderDirection);
             }
             if (!in_array($orderBy, $propertiesList) && !self::isAttribute($currentDoc, $orderBy)) {
-                throw new Exception("CRUD0502", $orderBy);
+                throw new Exception("CRUD0506", $orderBy);
             }
             if ($orderBy === "id") {
                 $hasId = true;
@@ -224,7 +224,17 @@ class DocumentUtils
         if ($currentDoc) {
             $currentAttribute = $currentDoc->getAttribute($currentElement);
             if ($currentAttribute === false || $currentAttribute->type === "frame" || $currentAttribute->type === "array" || $currentAttribute->type === "tab" || $currentAttribute->type === "menu" || $currentAttribute->usefor === "Q" || $currentAttribute->mvisibility === "I") {
-                throw new Exception("CRUD0502", $currentElement);
+                if ($currentAttribute) {
+                    /**
+                     * @var \BasicAttribute $currentAttribute
+                     */
+                    if ($currentAttribute->mvisibility === "I") {
+                        throw new Exception("CRUD0508", $currentElement, $currentAttribute->getLabel());
+                    }
+                    throw new Exception("CRUD0507", $currentElement, $currentAttribute->getLabel() , $currentAttribute->type);
+                } else {
+                    throw new Exception("CRUD0502", $currentElement);
+                }
             }
         }
         return true;
