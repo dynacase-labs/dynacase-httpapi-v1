@@ -236,7 +236,7 @@ namespace {
         /**
          * @errorCode The sort direction must be desc or asc (not %s)
          */
-        const CRUD0502 = 'The element must be an attribute or a property (not "%s")';
+        const CRUD0502 = 'The required field must be an attribute with value or a property (not "%s")';
         /**
          * @errorCode The collection must be a search
          */
@@ -249,6 +249,18 @@ namespace {
          * @errorCode Unable to restore the document
          */
         const CRUD0505 = 'Unable to restore the document, error : %s';
+        /**
+         * @errorCode The sort direction must be desc or asc (not %s)
+         */
+        const CRUD0506 = 'The order must be an attribute or a property (not "%s")';
+        /**
+         * @errorCode The required attribute query must have value
+         */
+        const CRUD0507 = 'The required field must not be a structured attribute : not "%s" (%s) - type : "%s"';
+        /**
+         * @errorCode Visibility is "I" for this attribute
+         */
+        const CRUD0508 = 'The required field "%s" (%s) has protected access';
         /**
          * @errorCode The image file must be in "Images" directory
          */
