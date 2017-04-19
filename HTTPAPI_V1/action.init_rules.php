@@ -18,7 +18,8 @@ function init_rules(Action & $action)
     $rules = initRoutes("./HTTPAPI_V1/rules.d/middleware.d/", true);
     ApplicationParameterManager::setParameterValue(ApplicationParameterManager::CURRENT_APPLICATION, "CRUD_MIDDLECLASS", $rules);
     
-    Redirect($action, "HTTPAPI_V1", "DEFAULT_PAGE");
+    $action->set("DEFAULT_PAGE", $action->parent);
+    $action->execute();
 }
 
 function initRoutes($directoryPath, $verifyProcess = false)

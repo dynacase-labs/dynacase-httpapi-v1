@@ -334,6 +334,15 @@
     },
     {
         "order" :        100,
+        "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedFile",
+        "regExp" :       "%^/files/recorded/temporary/(?P<identifier>[0-9]+)((?P<extension>\\.[a-z]+)?)$%",
+        "description" :  "Download temporary file",
+        "canonicalURL" : "files/recorded/temporary/<fileRef>",
+        "standalone" :    true,
+        "acceptExtensions" : ["*"]
+    },
+    {
+        "order" :        100,
         "class" :        "\\Dcp\\HttpApi\\V1\\Crud\\RecordedImage",
         "regExp" :       "%^/images/recorded/sizes/(?P<size>[0-9x]+[cfs]?)/(?P<identifier>[0-9]+)(?P<extension>\\.[a-z]+)$%",
         "description" :  "Download resized file image",
