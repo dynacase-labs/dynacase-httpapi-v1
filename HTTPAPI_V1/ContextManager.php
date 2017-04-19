@@ -24,8 +24,8 @@ class ContextManager
             // Ask authentification if HTML required
             $urlInfo = parse_url($_SERVER["REQUEST_URI"]);
             $headers = apache_request_headers();
-            $askAuthent= (preg_match("/\\.html$/", $urlInfo["path"]) || preg_match("@\\btext/html\\b@", $headers["Accept"]));
-
+            $askAuthent = (preg_match("/\\.html$/", $urlInfo["path"]) || (!empty($headers["Accept"]) && preg_match("@\\btext/html\\b@", $headers["Accept"])));
+            
             $status = AuthenticatorManager::checkAccess(null, !$askAuthent);
             
             switch ($status) {

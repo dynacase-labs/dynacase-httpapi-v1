@@ -325,6 +325,14 @@ namespace {
          * @errorCode Error when try to create temporary archive
          */
         const CRUD0615 = 'Cannot create zip archive for attribute "%s" in document "%s"';
+        /**
+         * @errorCode The file is not a temporary file
+         */
+        const CRUD0616 = 'Access denied to download file : not a temporary file';
+        /**
+         * @errorCode The reference file is unknow
+         */
+        const CRUD0617 = 'Temporary file "%s"  not found';
     }
 }
 

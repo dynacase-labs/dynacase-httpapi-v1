@@ -59,7 +59,7 @@ class TemporaryFile extends Crud
             $thumbnailUrl = sprintf("%simages/recorded/sizes/%s/%s.png", $rootPath, $thumbSize, $info->id_file);
         }
         
-        $url = sprintf("%simages/recorded/original/%s.png", $rootPath, $info->id_file);
+        $url = sprintf("%sfiles/recorded/temporary/%s.%s", $rootPath, $info->id_file, getFileExtension($file["name"]));
         
         return array(
             "file" => array(
