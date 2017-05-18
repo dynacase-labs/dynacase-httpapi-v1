@@ -32,6 +32,7 @@ $jsonFatalShutdown = function () use (&$loggers)
             $message->contentText = join(", ", $error);
             $message->type = $message::ERROR;
             $return->addMessage($message);
+            $return->exceptionMessage=$message->contentText;
             $return->success = false;
             $return->send();
             foreach ($loggers as $currentLogger) {
