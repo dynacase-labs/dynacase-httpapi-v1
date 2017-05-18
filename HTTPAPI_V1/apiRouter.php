@@ -143,6 +143,7 @@ catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
     $return->setHttpStatusCode($exception->getHttpStatus() , $exception->getHttpMessage());
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
+    
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
     $message->contentText = $exception->getDcpMessage();
     $message->contentText = $exception->getUserMessage();
@@ -151,7 +152,8 @@ catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
     }
     $message->type = $message::ERROR;
     $message->code = $exception->getDcpCode();
-    $message->data = $exception->getData();
+    $return->data = $exception->getData();
+    $message->data = $return->data;
     $message->uri = $exception->getURI();
     $return->setHeaders($exception->getHeaders());
     
@@ -172,7 +174,8 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     }
     $message->type = $message::ERROR;
     $message->code = $exception->getDcpCode();
-    $message->data = $exception->getData();
+    $return->data = $exception->getData();
+    $message->data = $return->data;
     $message->uri = $exception->getURI();
     
     $return->setHeaders($exception->getHeaders());
@@ -185,6 +188,7 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
 catch(\Dcp\Exception $exception) {
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
+    $return->exceptionMessage = $exception->getDcpMessage();
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
     $message->contentText = $exception->getDcpMessage();
     $message->type = $message::ERROR;
@@ -195,6 +199,7 @@ catch(\Dcp\Exception $exception) {
 catch(\Exception $exception) {
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
+    $return->exceptionMessage = $exception->getMessage();
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
     $message->contentText = $exception->getMessage();
     $message->type = $message::ERROR;
