@@ -480,7 +480,12 @@ class Document extends Crud
             } else {
                 $defaultValue = $this->_document->getFamilyDocument()->getDefValue($attribute->id);
             }
+            if ($defaultValue) {
+                $defaultValue = $this->_document->applyMethod($defaultValue, $defaultValue);
+            }
+            
             $formatDefaultValue = $this->documentFormater->getFormatCollection()->getInfo($attribute, $defaultValue, $this->_document);
+            
             if ($formatDefaultValue) {
                 if ($attribute->isMultipleInArray()) {
                     foreach ($formatDefaultValue as $aDefvalue) {
