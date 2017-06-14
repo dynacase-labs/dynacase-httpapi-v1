@@ -509,8 +509,9 @@ class Document extends Crud
                 }
                 $info["enumItems"] = $enumItems;
             }
-            $info["enumUrl"] = sprintf("families/%s/enumerates/%s", ($this->_document->doctype === "C" ? $this->_document->name : $this->_document->fromname) , $attribute->id);
-            $info["enumUri"] = $this->generateURL($info["enumUrl"]);
+            $url=sprintf("families/%s/enumerates/%s", ($this->_document->doctype === "C" ? $this->_document->name : $this->_document->fromname) , $attribute->id);
+            $info["enumUrl"] = "api/v1/".$url ;
+            $info["enumUri"] = $this->generateURL($url);
         }
         
         return $info;

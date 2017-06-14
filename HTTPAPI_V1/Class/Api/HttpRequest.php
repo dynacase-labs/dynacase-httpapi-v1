@@ -38,7 +38,7 @@ class HttpRequest
             case Crud::DELETE:
                 return "DELETE";
             case Crud::UPDATE:
-                return "POST";
+                return "PUT";
         }
         return $_SERVER["REQUEST_METHOD"];
     }
