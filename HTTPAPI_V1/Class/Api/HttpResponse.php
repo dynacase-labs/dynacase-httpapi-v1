@@ -6,6 +6,7 @@ class HttpResponse
     
     protected $headers = [];
     protected $body;
+    protected $response = null;
     protected $httpStatusHeader;
     /**
      * @var RecordReturnMessage[]
@@ -108,7 +109,7 @@ class HttpResponse
         return $this;
     }
     /**
-     * Return recorded response
+     * Return recorded data
      * @return \JsonSerializable|string
      */
     public function getBody()
@@ -116,15 +117,36 @@ class HttpResponse
         return $this->body;
     }
     /**
+     * Affect data response
+     *
+     * @param \JsonSerializable|string $body
+     *
+     * @return $this
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+        return $this;
+    }
+    /**
+     * Return recorded response
+     * @return \JsonSerializable|string
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+    /**
      * Affect request response
+     * Overhide body response, force a complete custom response
      *
      * @param \JsonSerializable|string $response
      *
      * @return $this
      */
-    public function setBody($response)
+    public function setResponse($response)
     {
-        $this->body = $response;
+        $this->response = $response;
         return $this;
     }
     /**

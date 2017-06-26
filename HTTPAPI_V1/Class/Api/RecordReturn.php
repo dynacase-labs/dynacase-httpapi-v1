@@ -25,6 +25,10 @@ class RecordReturn implements \JsonSerializable
      */
     public $data = null;
     /**
+     * @var \stdClass|string misc custom response
+     */
+    public $response = null;
+    /**
      * @var string system message
      */
     public $exceptionMessage = '';
@@ -56,6 +60,10 @@ class RecordReturn implements \JsonSerializable
     public function setHttpStatusHeader($statusHeader)
     {
         $this->httpStatusHeader = $statusHeader;
+    }
+    public function setResponse($response)
+    {
+        $this->response = $response;
     }
     /**
      * Add new message to return structure
@@ -201,11 +209,15 @@ HTML;
     }
     public function jsonSerialize()
     {
-        $values = array(
-            "success" => $this->success,
-            "messages" => $this->messages,
-            "data" => $this->data
-        );
+        if ($this->response === null) {
+            $values = array(
+                "success" => $this->success,
+                "messages" => $this->messages,
+                "data" => $this->data
+            );
+        } else {
+            $values = $this->response;
+        }
         if (!empty($this->exceptionMessage)) {
             $values["exceptionMessage"] = $this->exceptionMessage;
         }
