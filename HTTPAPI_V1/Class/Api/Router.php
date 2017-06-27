@@ -96,7 +96,7 @@ class Router
         $mainMessages = [];
         MiddleWareManager::preProcess($identifiedCrud, $request, $response);
         if (!$response->responseIsStopped()) {
-            $return = $crud->execute($method, $mainMessages, $httpStatus);
+            $return = $crud->execute($request->getCrudMethod() , $mainMessages, $httpStatus);
             $response->setStatusHeader($httpStatus);
             
             foreach ($mainMessages as $message) {
@@ -274,6 +274,9 @@ class Router
      */
     protected static function getHttpAttributeValues(Crud $crudElement)
     {
+        if (empty($_SERVER["CONTENT_TYPE"])) {
+            throw new Exception("API0009");
+        }
         if (preg_match('/(x-www-form-urlencoded|form-data)/', $_SERVER["CONTENT_TYPE"])) {
             return static::getFormAttributeValues();
         } elseif (preg_match('/application\/json/', $_SERVER["CONTENT_TYPE"])) {

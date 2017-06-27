@@ -42,6 +42,20 @@ class HttpRequest
         }
         return $_SERVER["REQUEST_METHOD"];
     }
+    
+    public function getCrudMethod()
+    {
+        return $this->method;
+    }
+    
+    public function setCrudMethod($method)
+    {
+        if (!in_array($method, [Crud::READ, Crud::CREATE, Crud::DELETE, Crud::UPDATE])) {
+            throw new \Dcp\HttpApi\V1\Crud\Exception("CRUD0109", $method);
+        }
+        
+        $this->method = $method;
+    }
     /**
      * Return list of request parameters
      * Based on $_GET or $_POST depends on method request

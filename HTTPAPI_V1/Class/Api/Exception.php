@@ -41,6 +41,10 @@ namespace {
          */
         const API0008 = 'Override http method "%s" not allowed for "%s" /  ';
         /**
+         * @errorCode Content type must not be empty. Must be application/x-www-form-urlencoded or application/json
+         */
+        const API0009 = 'Content type is mandatory';
+        /**
          * @errorCode Auth class authenticator not exists
          * @see \Dcp\HttpApi\V1\AuthenticatorManager::getAuthorizationToken
          */
@@ -80,7 +84,6 @@ namespace {
          * @see \Dcp\HttpApi\V1\Api\Router::identifyCRUDMiddleware
          */
         const API0107 = 'Middleware description "%s" : process must be "before" or "after"';
-
         /**
          * @errorCode  header parameter is mandatory to set header
          * @see \Dcp\HttpApi\V1\Api\HttpRequest::addHeader()

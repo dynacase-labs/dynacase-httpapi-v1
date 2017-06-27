@@ -45,6 +45,11 @@ namespace {
          */
         const CRUD0108= 'Class "%s" is not a middeware class';
         /**
+         * @errorCode Only Create, Read, Update, Delete are allowed
+         * @see MiddleWare
+         */
+        const CRUD0109= 'Invalid crud method "%s"';
+        /**
          * @errorCode The ressource is not found
          */
         const CRUD0200 = 'Document "%s" not found';

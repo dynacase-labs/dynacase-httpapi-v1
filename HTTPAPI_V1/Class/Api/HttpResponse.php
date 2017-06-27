@@ -130,7 +130,7 @@ class HttpResponse
     }
     /**
      * Return recorded response
-     * @return \JsonSerializable|string
+     * @return \JsonSerializable|string|array
      */
     public function getResponse()
     {
@@ -140,7 +140,7 @@ class HttpResponse
      * Affect request response
      * Overhide body response, force a complete custom response
      *
-     * @param \JsonSerializable|string $response
+     * @param \JsonSerializable|string|array $response
      *
      * @return $this
      */
