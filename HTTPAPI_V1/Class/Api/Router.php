@@ -185,7 +185,7 @@ class Router
         
         $systemCrud = json_decode(self::getHttpApiParameter("CRUD_CLASS") , true);
         // rules are already ordered
-        $crudFound = false;
+        $crudFound = [];
         if (static::$extension && static::$extension !== "json") {
             $searchPath = static::$path . "." . static::$extension;
         } else {
@@ -199,7 +199,7 @@ class Router
                 break;
             }
         }
-        if ($crudFound === false) {
+        if ($crudFound === []) {
             $exception = new Exception("API0004", static::$path);
             $exception->setHttpStatus(404, "Route not found");
             throw $exception;
@@ -282,7 +282,8 @@ class Router
         } elseif (preg_match('/application\/json/', $_SERVER["CONTENT_TYPE"])) {
             return static::getJSONAttributeValues($crudElement);
         } else {
-            throw new Exception("API0003", $_SERVER["CONTENT_TYPE"]);
+            // Extraction of request content must by performed by the crud code method
+            return null;
         }
     }
     /**
