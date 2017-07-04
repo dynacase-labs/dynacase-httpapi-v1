@@ -215,6 +215,10 @@ namespace {
          */
         const CRUD0302 = 'No file transferred';
         /**
+         * @errorCode Uploaded file cannot be retrieved
+         */
+        const CRUD0303 = 'Error recording file : %s';
+        /**
          * @errorCode The enum attribute is not a part of family structure
          */
         const CRUD0400 = 'Enum "%s" not exists in family "%s"';
