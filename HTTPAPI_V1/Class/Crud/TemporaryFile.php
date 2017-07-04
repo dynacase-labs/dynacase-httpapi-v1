@@ -25,6 +25,11 @@ class TemporaryFile extends Crud
             throw $exception;
         }
         $file = current($_FILES);
+        
+        if ($file["error"]) {
+            throw new Exception("CRUD0303", $this->getUploadErrorMessage($file["error"]));
+        }
+        
         include_once ('FDL/Lib.Vault.php');
         try {
             $vaultid = VaultManager::storeTemporaryFile($file["tmp_name"], $file["name"]);
@@ -74,6 +79,43 @@ class TemporaryFile extends Crud
                 "fileName" => $info->name
             )
         );
+    }
+    protected function getUploadErrorMessage($errorCode)
+    {
+        switch ($errorCode) {
+            case UPLOAD_ERR_INI_SIZE:
+                $message = sprintf("The uploaded file exceeds the upload_max_filesize (%s) directive in php.ini", ini_get("upload_max_filesize"));
+                break;
+
+            case UPLOAD_ERR_FORM_SIZE:
+                $message = sprintf("The uploaded file exceeds the MAX_FILE_SIZE (%s) directive that was specified in the HTML form", ini_get("max_file_size"));
+                break;
+
+            case UPLOAD_ERR_PARTIAL:
+                $message = "The uploaded file was only partially uploaded";
+                break;
+
+            case UPLOAD_ERR_NO_FILE:
+                $message = "No file was uploaded";
+                break;
+
+            case UPLOAD_ERR_NO_TMP_DIR:
+                $message = "Missing a temporary folder";
+                break;
+
+            case UPLOAD_ERR_CANT_WRITE:
+                $message = "Failed to write file to disk";
+                break;
+
+            case UPLOAD_ERR_EXTENSION:
+                $message = "File upload stopped by extension";
+                break;
+
+            default:
+                $message = "Unknown upload error";
+                break;
+        }
+        return $message;
     }
     /**
      * Get ressource
