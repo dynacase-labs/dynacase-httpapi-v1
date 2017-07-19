@@ -283,7 +283,7 @@ class Router
             return static::getJSONAttributeValues($crudElement);
         } else {
             // Extraction of request content must by performed by the crud code method
-            return null;
+            return [];
         }
     }
     /**
