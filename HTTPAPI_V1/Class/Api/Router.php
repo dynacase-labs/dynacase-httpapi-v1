@@ -275,7 +275,8 @@ class Router
     protected static function getHttpAttributeValues(Crud $crudElement)
     {
         if (empty($_SERVER["CONTENT_TYPE"])) {
-            throw new Exception("API0009");
+	    // If no content
+            return [];
         }
         if (preg_match('/(x-www-form-urlencoded|form-data)/', $_SERVER["CONTENT_TYPE"])) {
             return static::getFormAttributeValues();
