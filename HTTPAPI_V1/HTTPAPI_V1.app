@@ -50,7 +50,7 @@ $action_desc = array(
         "script" => "action.default_page.php",
         "function" => "default_page",
         "root" => "Y",
-        "acl" => "GET"
+        "acl" => "ADMIN"
     ),
     array(
         "name" => "INIT_RULES",
