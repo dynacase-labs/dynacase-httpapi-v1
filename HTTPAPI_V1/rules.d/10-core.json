@@ -338,7 +338,6 @@
         "regExp" :       "%^/files/recorded/temporary/(?P<identifier>[0-9]+)((?P<extension>\\.[a-z]+)?)$%",
         "description" :  "Download temporary file",
         "canonicalURL" : "files/recorded/temporary/<fileRef>",
-        "standalone" :    true,
         "acceptExtensions" : ["*"]
     },
     {
