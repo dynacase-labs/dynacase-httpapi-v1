@@ -9,7 +9,7 @@ namespace Dcp\HttpApi\V1\Logger;
 
 class Logger
 {
-    public function writeError($message, $context = null, $stack = null)
+    public function writeError($message, $context = null, $stack = null, $exception = null)
     {
 
     }
