@@ -15,7 +15,7 @@ class Dcp extends Logger
         $this->logger = new \Log(false, "HTTAPI_V1", "LOGGER");
     }
 
-    public function writeError($message, $context = null, $stack = null)
+    public function writeError($message, $context = null, $stack = null, $exception = null)
     {
         if ($context === null && \Doc::getUserId()) {
             $context = "User : " . $this->getUserInfo();
