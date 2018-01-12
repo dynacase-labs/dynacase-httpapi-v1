@@ -198,6 +198,7 @@ HTML;
         if ($this->messages) {
             foreach ($this->messages as $message) {
                 if ($message->type === $message::ERROR) {
+                    header('Content-Type: text/plain');
                     $hasError = true;
                     print $message;
                 }
