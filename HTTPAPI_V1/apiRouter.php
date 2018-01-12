@@ -29,7 +29,8 @@ $jsonFatalShutdown = function () use (&$loggers)
             $return = new \Dcp\HttpApi\V1\Api\RecordReturn();
             $return->setHttpStatusCode(500, "Dynacase Fatal Error");
             $message = new \Dcp\HttpApi\V1\Api\RecordReturnMessage();
-            $message->contentText = join(", ", $error);
+            $errorMessage= \Dcp\Core\LogException::getMessage($error, $errId, $logMessage);
+            $message->contentText = sprintf("[%s] %s", $errId, $errorMessage);
             $message->type = $message::ERROR;
             $return->addMessage($message);
             $return->exceptionMessage = $message->contentText;
@@ -37,7 +38,7 @@ $jsonFatalShutdown = function () use (&$loggers)
             $return->send();
             foreach ($loggers as $currentLogger) {
                 /* @var \Dcp\HttpApi\V1\Logger\Logger $currentLogger */
-                $currentLogger->writeError("PHP Error : " . $message->contentText);
+                $currentLogger->writeError( sprintf("[%s] %s", $errId, $logMessage), "fatal");
             }
         }
     }
@@ -159,7 +160,7 @@ catch(Dcp\HttpApi\V1\Crud\Exception $exception) {
     $message->uri = $exception->getURI();
     $return->setHeaders($exception->getHeaders());
     
-    $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString(), $exception);
+    $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString() , $exception);
     $return->addMessage($message);
 }
 
@@ -169,7 +170,6 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     $return->exceptionMessage = $exception->getDcpMessage();
     $return->success = false;
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
-    $message->contentText = $exception->getDcpMessage();
     $message->contentText = $exception->getUserMessage();
     if (!$message->contentText) {
         $message->contentText = $exception->getDcpMessage();
@@ -181,33 +181,37 @@ catch(Dcp\HttpApi\V1\Api\Exception $exception) {
     $message->uri = $exception->getURI();
     
     $return->setHeaders($exception->getHeaders());
-    $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString(), $exception);
+    $writeError("API Exception " . $message->contentText, null, $exception->getTraceAsString() , $exception);
     $return->addMessage($message);
     if ($exception->getHttpStatus() !== "403") {
         $return->addMessage($defaultPageMessage());
     }
 }
 catch(\Dcp\Exception $exception) {
+    $exceptionMsg = \Dcp\Core\LogException::getMessage($exception, $errId);
+    
     $return->setHttpStatusCode(400, "Dcp Exception");
     $return->success = false;
-    $return->exceptionMessage = $exception->getDcpMessage();
+    $return->exceptionMessage = $exceptionMsg;
+    
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
-    $message->contentText = $exception->getDcpMessage();
+    $message->contentText = sprintf("[%s] %s", $errId, $exceptionMsg);
     $message->type = $message::ERROR;
     $message->code = $exception->getDcpCode();
     $return->addMessage($message);
-    $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString(), $exception);
+    $writeError("DCP Exception " . $message->contentText, null, $exception->getTraceAsString() , $exception);
 }
 catch(\Exception $exception) {
     $return->setHttpStatusCode(400, "Exception");
     $return->success = false;
     $return->exceptionMessage = $exception->getMessage();
+    
     $message = new Dcp\HttpApi\V1\Api\RecordReturnMessage();
-    $message->contentText = $exception->getMessage();
+    $message->contentText = \Dcp\Core\LogException::getMessage($exception, $errId);
     $message->type = $message::ERROR;
     $message->code = "API0001";
     $return->addMessage($message);
-    $writeError("PHP Exception " . $message->contentText, null, $exception->getTraceAsString(), $exception);
+    $writeError("PHP Exception " . $message->contentText, null, $exception->getTraceAsString() , $exception);
 }
 //endregion ErrorCatching
 //Send the HTTP return
