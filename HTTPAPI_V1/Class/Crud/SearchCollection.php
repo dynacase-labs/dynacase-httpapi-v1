@@ -25,6 +25,13 @@ class SearchCollection extends DocumentCollection
             $exception->setHttpStatus("404", "Document not found");
             throw $exception;
         }
+
+        if ($this->_document->control("execute")) {
+            $exception = new Exception("CRUD0201", $ressourceId, "Execute not granted");
+            $exception->setHttpStatus("403", "Cannot execute search");
+            throw $exception;
+        }
+
         if ($this->_document->doctype === "Z") {
             $exception = new Exception("CRUD0219", $ressourceId);
             $exception->setHttpStatus("404", "Document deleted");
