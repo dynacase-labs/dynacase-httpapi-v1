@@ -3,7 +3,6 @@
     Allow from All
 </FilesMatch>
 
-AddType application/x-httpd-php .php
 AddType application/json .php
 
 Options -MultiViews
