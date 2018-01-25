@@ -31,6 +31,13 @@ class FolderCollection extends DocumentCollection
             $exception->setHttpStatus("404", "Document not found");
             throw $exception;
         }
+
+        if ($this->_document->control("open")) {
+            $exception = new Exception("CRUD0201", $ressourceId, "Open not granted");
+            $exception->setHttpStatus("403", "Cannot open folder");
+            throw $exception;
+        }
+
         if ($this->_document->doctype === "Z") {
             $exception = new Exception("CRUD0219", $ressourceId);
             $exception->setHttpStatus("404", "Document deleted");
