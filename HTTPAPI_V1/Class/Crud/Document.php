@@ -499,7 +499,7 @@ class Document extends Crud
         
         if ($attribute->type === "enum") {
             if ($attribute->getOption("eformat") !== "auto") {
-                $enums = $attribute->getEnumLabel();
+                $enums = $attribute->getEnumLabel(null, false);
                 $enumItems = array();
                 foreach ($enums as $key => $label) {
                     $enumItems[] = array(
