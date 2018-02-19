@@ -81,7 +81,7 @@ class Enumerates extends Crud
         /**
          * @var \NormalAttribute $attribute
          */
-        $enums = $attribute->getEnumLabel();
+        $enums = $attribute->getEnumLabel(null, false);
         $info = array(
             "uri" => $this->generateEnumUrl($this->family->name, $resourceId) ,
             "label" => $attribute->getLabel()
