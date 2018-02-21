@@ -334,6 +334,15 @@ class Document extends Crud
         
         return false;
     }
+
+    /**
+     * @return DocumentFormatter
+     * @throws Exception
+     */
+    protected function getDocumentFormatter() {
+         return new DocumentFormatter($this->_document);
+    }
+
     /**
      * Get document data
      *
@@ -343,7 +352,7 @@ class Document extends Crud
     protected function getDocumentData()
     {
         $return = array();
-        $this->documentFormater = new DocumentFormatter($this->_document);
+        $this->documentFormater = $this->getDocumentFormatter();
         $correctField = false;
         $hasProperties = false;
         
