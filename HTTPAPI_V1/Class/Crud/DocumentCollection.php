@@ -195,10 +195,14 @@ class DocumentCollection extends Crud
     {
         $this->prepareSearchDoc();
         $this->slice = isset($this->contentParameters["slice"]) ? mb_strtolower($this->contentParameters["slice"]) : \Dcp\HttpApi\V1\Api\Router::getHttpApiParameter("COLLECTION_DEFAULT_SLICE");
+
         if ($this->slice !== "all") {
             $this->slice = intval($this->slice);
+            $this->_searchDoc->setSlice($this->slice);
+        } else {
+            $this->_searchDoc->setSlice("ALL");
         }
-        $this->_searchDoc->setSlice($this->slice);
+
         $this->offset = isset($this->contentParameters["offset"]) ? $this->contentParameters["offset"] : 0;
         $this->offset = intval($this->offset);
         $this->_searchDoc->setStart($this->offset);
