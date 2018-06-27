@@ -38,7 +38,7 @@ class SearchCollection extends DocumentCollection
             $exception->setURI($this->generateURL(sprintf("trash/%d.json", $this->_document->initid)));
             throw $exception;
         }
-        if ($this->_document->doctype !== "S") {
+        if ($this->_document->defDoctype !== "S") {
             $exception = new Exception("CRUD0503", $ressourceId);
             $exception->setHttpStatus("400", "The document is not a search");
             $exception->setURI($this->generateURL(sprintf("documents/%d.json", $this->_document->initid)));
