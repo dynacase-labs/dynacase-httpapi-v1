@@ -16,7 +16,7 @@ $(pubdir)/api:
 $(pubdir)/api/.htaccess: api.htaccess $(pubdir)/api
 	cp $< $@
 
-$(pubdir)/api/v1.php: apiRouter.php  $(pubdir)/api
-	ln -sf ../$(appname)/$< $@
+$(pubdir)/api/v1.php: v1.php $(pubdir)/api
+	cp $< $@
 
 publish : $(pubdir)/api/.htaccess $(pubdir)/api/v1.php
