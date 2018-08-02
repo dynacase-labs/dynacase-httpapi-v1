@@ -139,6 +139,9 @@ class DocManager
         // it is not really on initid
         simpleQuery($dbaccess, sprintf("select id from docread where initid=(select initid from docread where id=%d) and locked != -1", $initid) , $id, true, true);
         if ($id > 0) return intval($id);
+        // it is perhaps a temporary document
+        simpleQuery($dbaccess, sprintf("select id from doc where initid='%d' and doctype = 'T'", $initid) , $id, true, true);
+        if ($id > 0) return intval($id);
         return null;
     }
     /**
@@ -187,7 +190,10 @@ class DocManager
             if ($id > 0) return intval($id);
             // it is not really on initid
             simpleQuery($dbaccess, sprintf("select id from docread where initid=(select initid from docread where id=%d) and revision = %d", $initid, $revision) , $id, true, true);
-            
+            if ($id > 0) return intval($id);
+
+            // it is perhaps a temporary document
+            simpleQuery($dbaccess, sprintf("select id from doc where initid='%d' and revision = %d and doctype = 'T'", $initid, $revision) , $id, true, true);
             if ($id > 0) return intval($id);
         } else {
             if (preg_match('/^state:(.+)$/', $revision, $regStates)) {
